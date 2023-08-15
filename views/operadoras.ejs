@@ -52,7 +52,7 @@
                         <input type="text" class="form-control" id="codans" name="codans" required>
                     </div>
                     <div class="mb-3">
-                        <label for="endereco" class="form-label">Endereço:</label>
+                        <label for="endereco" class="form-label">Endereço:<span>(digite o endereço sem complemento e sem número)</span></label>
                         <input type="text" class="form-control" id="endereco" name="endereco" required>
                     </div>
                     <div class="mb-3">
@@ -67,15 +67,15 @@
                         <input type="text" class="form-control" id="complemento" name="complemento">
                     </div>
                     <div class="mb-3">
-                        <label for="cep" class="form-label">CEP: <span>(Apenas números)</span></label>
+                        <label for="cep" class="form-label">CEP: <span>(apenas números)</span></label>
                         <input type="text" class="form-control" id="cep" name="cep" required>
                     </div>
                     <div class="mb-3">
-                        <label for="cidade" class="form-label">Cidade:</label>
+                        <label for="cidade" class="form-label">Cidade:<span> (digite o nome da cidade)</span></label>
                         <input type="text" class="form-control" id="cidade" name="cidade" required>
                     </div>
                     <div class="mb-3">
-                        <label for="uf" class="form-label">UF:</label>
+                        <label for="uf" class="form-label">UF:<span> (selecione o estado)</span></label>
                         <select class="form-control" id="uf" name="uf" required>
                             <option value="" disable-selected>Selecione o Estado</option>
                             <option value="AC">Acre</option>
@@ -112,11 +112,11 @@
                         <input type="text" class="form-control" id="website" name="website">
                     </div>
                     <div class="mb-3">
-                        <label for="telatendimento" class="form-label">Telefone Atendimento: <span>(Se iniciar com 4004 inserir dois "00" como DDD)</span></label>
+                        <label for="telatendimento" class="form-label">Telefone Atendimento: <span>(se iniciar com 4004 inserir dois "00" como DDD)</span></label>
                         <input type="text" class="form-control" id="telatendimento" name="telatendimento" required>
                     </div>
                     <div class="mb-3">
-                        <label for="telouvidoria" class="form-label">Telefone Ouvidoria: <span>(Se iniciar com 4004 inserir dois "00" como DDD)</span></label>
+                        <label for="telouvidoria" class="form-label">Telefone Ouvidoria: <span>(se iniciar com 4004 inserir dois "00" como DDD)</span></label>
                         <input type="text" class="form-control" id="telouvidoria" name="telouvidoria" required>
                     </div>
                 </div>
@@ -218,7 +218,7 @@
                                                     name="codans" value="<%= operadora.codans %>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="endereco" class="form-label">Endereço:</label>
+                                                <label for="endereco" class="form-label">Endereço:<span>(Digite o endereço sem complemento e sem número)</span></label>
                                                 <input type="text" class="form-control" id="endereco"
                                                     name="endereco" value="<%= operadora.endereco %>" required>
                                             </div>
@@ -248,13 +248,41 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="uf" class="form-label">UF:</label>
-                                                <input type="text" class="form-control" id="uf"
-                                                    name="uf" value="<%= operadora.uf %>" required>
+                                                <select class="form-control" id="uf" name="uf" required>
+                                                    <option value="AC">Acre</option>
+                                                    <option value="AL">Alagoas</option>
+                                                    <option value="AP">Amapá</option>
+                                                    <option value="AM">Amazonas</option>
+                                                    <option value="BA">Bahia</option>
+                                                    <option value="CE">Ceará</option>
+                                                    <option value="DF">Distrito Federal</option>
+                                                    <option value="ES">Espírito Santo</option>
+                                                    <option value="GO">Goiás</option>
+                                                    <option value="MA">Maranhão</option>
+                                                    <option value="MT">Mato Grosso</option>
+                                                    <option value="MS">Mato Grosso do Sul</option>
+                                                    <option value="MG">Minas Gerais</option>
+                                                    <option value="PA">Pará</option>
+                                                    <option value="PB">Paraíba</option>
+                                                    <option value="PR">Paraná</option>
+                                                    <option value="PE">Pernambuco</option>
+                                                    <option value="PI">Piauí</option>
+                                                    <option value="RJ">Rio de Janeiro</option>
+                                                    <option value="RN">Rio Grande do Norte</option>
+                                                    <option value="RS">Rio Grande do Sul</option>
+                                                    <option value="RO">Rondônia</option>
+                                                    <option value="RR">Roraima</option>
+                                                    <option value="SC">Santa Catarina</option>
+                                                    <option value="SP">São Paulo</option>
+                                                    <option value="SE">Sergipe</option>
+                                                    <option value="TO">Tocantins</option>
+                                                </select>
+                                                <input type="hidden" class="form-control" id="uf-value" name="uf-value" value="<%= operadora.uf %>">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="website" class="form-label">Website:</label>
                                                 <input type="text" class="form-control" id="website"
-                                                    name="website" value="<%= operadora.website %>" required>
+                                                    name="website" value="<%- operadora.website %>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="telatendimento" class="form-label">Telefone Atendimento:</label>

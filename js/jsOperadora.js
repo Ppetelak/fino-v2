@@ -3,13 +3,29 @@ let numContatos = 1;
 
 $(document).ready(function () {
     mascaras();
+    $('.editar-form').each(function () {
+        const ufSelected = $(this).find('[name="uf-value"]').val();
+        $(this).find('#uf option').each(function () {
+            if ($(this).val() === ufSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+    });
 });
 
 function mascaras() {
     $('[name="cep"]').mask(('00000-000'), {reverse: true});
     $('[name="cnpj"]').mask(('00.000.000/0000-00'), {reverse: true});
-    $('[name="telatendimento"], [name="telouvidoria"]').inputmask({
-        mask: ['(00) 0000-0000', '0800-000-0000', '4004-0000'],
+    $('[name="codans"]').mask(('00000-0'), {reverse: true});
+    $('[name="telatendimento"], [name="telouvidoria"], [name="telefone_contato"]').inputmask({
+        mask: [
+            '(99) 9999-9999',
+            '0800-000-0000',
+            '(00) 0000-0000',
+            '(00) 00000-0000',
+            '4004-0000',
+            '3003-0000'
+        ],
         greedy: false,
         definitions: {
             '0': {
@@ -276,10 +292,10 @@ function getCookieValue(name) {
     return '';
 }
 
-if (document.cookie.includes('alertSucess')) {
-    const alertSucess = getCookieValue('alertSucess');
-    showMessage(alertSucess);
-    document.cookie = 'alertSucess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+if (document.cookie.includes('alertSuccess')) {
+    const alertSuccess = getCookieValue('alertSuccess');
+    showMessage(alertSuccess);
+    document.cookie = 'alertSuccess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 }
 
 if (document.cookie.includes('alertError')) {

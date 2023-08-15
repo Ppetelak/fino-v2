@@ -11,6 +11,8 @@
 }
 
 .content {
+    display: flex;
+    flex-direction: column;
     padding-top: 20px;
     width: 70vw;
     margin-left: 25vw;
@@ -21,6 +23,41 @@
     margin-bottom: 20px;
     background-color: var(--thirdColor);
     color:#ffffff;
+    margin-top: 20px;
+}
+
+.content h3{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    background-color: var(--secondColor);
+    color:#ffffff;
+}
+
+.content h4{
+    text-align: center;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-right: 5px solid var(--primaryColor);
+    border-left: 5px solid var(--primaryColor);
+    border-bottom: 1px solid var(--primaryColor);
+}
+
+.cooparticipacao{
+    border: 1px solid #a1a1a186;
+    padding-bottom: 10px;
+    margin: auto;
+}
+
+.procedimento{
+    border: 1px solid var(--secondColor);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.row{
+    margin: auto;
 }
 
 .navbar {
@@ -63,7 +100,6 @@
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: bold;
-
     color: #fb923c;
 }
 
@@ -101,13 +137,6 @@
     text-decoration: none;
     color: #ffffff;
     font-size: 18px;
-}
-.navbar .user a, .navbar .user i {
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-
-    color: #fb923c;
 }
 
 label{
@@ -156,4 +185,22 @@ span{
 }
 .input-wrapper{
     width: 100%;
+}
+
+.adicionar-procedimento{
+    background: var(--secondColor);
+    border-color: var(--secondColor);
+}
+
+.adicionar-procedimento:hover{
+    background: #097c7a;
+}
+
+.procedimentos{
+    gap: 20px;
+}
+
+.excluir-div{
+    display: flex;
+    justify-content: space-around;
 }

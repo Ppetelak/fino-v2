@@ -329,7 +329,7 @@ app.post('/editar-operadora/:id', async (req, res) => {
   const formData = req.body.formData;
   const contatos = req.body.contatos;
 
-  const sqlOperadora =
+  const sqlOperadoraUpdate =
     'UPDATE operadora SET razaosocial=?, cnpj=?, nomefantasia=?, codans=?, endereco=?, numeroendereco=?, complemento=?, cep=?, cidade=?, uf=?, website=?, telatendimento=?, telouvidoria=? WHERE id=?';
 
   const sqlContatoInsert = 
@@ -341,8 +341,12 @@ app.post('/editar-operadora/:id', async (req, res) => {
   const queryPromise = util.promisify(db.query).bind(db);
 
   try {
+    // Excluir todos os contatos vinculados ao id_operadora
+    await queryPromise(sqlContatoDelete, [idOperadora]);
+
+    // Atualizar os dados da operadora no banco de dados
     await queryPromise(
-      sqlOperadora,
+      sqlOperadoraUpdate,
       [
         formData.razaosocial,
         formData.cnpj,
@@ -361,21 +365,20 @@ app.post('/editar-operadora/:id', async (req, res) => {
       ]
     );
 
-    // Excluir todos os contatos vinculados ao id_operadora
-    await queryPromise(sqlContatoDelete, [idOperadora]);
-
-    // Inserir os novos contatos vindos do front-end
-    for (const contato of contatos) {
-      await queryPromise(
-        sqlContatoInsert,
-        [
-          contato.nome_contato,
-          contato.email_contato,
-          contato.telefone_contato,
-          contato.cargo_contato,
-          idOperadora,
-        ]
-      );
+    // Verificar se existem contatos para adicionar
+    if (Array.isArray(contatos)) {
+      for (const contato of contatos) {
+        await queryPromise(
+          sqlContatoInsert,
+          [
+            contato.nome_contato,
+            contato.email_contato,
+            contato.telefone_contato,
+            contato.cargo_contato,
+            idOperadora,
+          ]
+        );
+      }
     }
 
     res.cookie('alertSuccess', 'Operadora atualizada com sucesso', { maxAge: 3000 });
@@ -455,7 +458,6 @@ app.delete('/excluir-operadora/:id', (req, res) => {
   });
 });
 
-
 app.get('/entidades', (req,res) =>{
   db.query('SELECT * FROM entidades', (error, results) => {
     if(error) throw error;
@@ -472,7 +474,7 @@ app.post('/cadastrar-entidade', (req, res) => {
           res.cookie('alertError', 'Erro ao cadastrar Entidade, verifique e tente novamente', { maxAge:3000});
           res.status(500).json({ message: 'Erro interno do servidor' });
       }
-      res.cookie('alertSucess', 'Entidade criada com Sucesso', { maxAge: 3000});
+      res.cookie('alertSuccess', 'Entidade criada com Sucesso', { maxAge: 3000});
       res.status(200).json({ message: 'Nova entidade criada com sucesso' });
   })
 });
@@ -508,7 +510,7 @@ app.post('/editar-entidade/:id', (req, res) => {
         });
         res.status(500).json({ message: 'Erro interno do servidor' });
       } else {
-        res.cookie('alertSucess', 'Entidade atualizada com Sucesso', { maxAge: 3000 });
+        res.cookie('alertSuccess', 'Entidade atualizada com Sucesso', { maxAge: 3000 });
         res.status(200).json({ message: 'Entidade atualizada com sucesso' });
       }
     }
@@ -540,7 +542,7 @@ app.delete('/excluir-entidade/:id', (req, res) => {
             console.error('Erro ao excluir a entidade:', error);
             res.status(500).json({ message: 'Erro interno do servidor' });
           } else {
-            res.cookie('alertSucess', 'Entidade excluída com sucesso', {maxAge: 3000})
+            res.cookie('alertSuccess', 'Entidade excluída com sucesso', {maxAge: 3000})
             res.status(200).json({ message: 'Entidade excluída com sucesso' });
           }
         });
@@ -550,8 +552,44 @@ app.delete('/excluir-entidade/:id', (req, res) => {
 });
 
 app.get('/produtos', (req, res) => {
-    res.render('produtos')
+  let operadoras;
+
+  const fetchOperadoras = new Promise((resolve, reject) => {
+    db.query('SELECT * FROM operadora', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        operadoras = results;
+        resolve();
+      }
+    });
+  });
+
+  fetchOperadoras
+    .then(() => {
+      res.render('produtos', { operadoras: operadoras });
+    })
+    .catch((error) => {
+      console.error('Erro ao buscar dados:', error);
+      res.status(500).send('Erro interno do servidor');
+    })
 })
+
+app.get('/produtos/:id', async (req, res) => {
+  const idOperadora = req.params.id;
+
+  const sql = 'SELECT * FROM produtos WHERE id_operadora = ?';
+
+  try {
+      const queryPromise = util.promisify(db.query).bind(db);
+      const produtos = await queryPromise(sql, [idOperadora]);
+
+      res.render('produto', { produtos: produtos });
+  } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      res.status(500).send('Erro interno do servidor');
+  }
+});
 
 app.get('/gerar', (req, res) =>{
     res.render('gerar-fino')
