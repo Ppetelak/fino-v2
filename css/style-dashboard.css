@@ -188,19 +188,45 @@ span{
 }
 
 .adicionar-procedimento{
-    background: var(--secondColor);
-    border-color: var(--secondColor);
+    background: #198754;
+    border-color: #198754;
+    width: max-content;
 }
 
 .adicionar-procedimento:hover{
-    background: #097c7a;
+    background: #157347;
 }
 
 .procedimentos{
+    display: flex;
+    flex-direction: column;
     gap: 20px;
+    align-items: center;
 }
 
-.excluir-div{
+.procedimento{
+    position: relative;
+}
+
+.excluir-procedimento{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 12px;
+    margin-right: 12px;
+}
+
+.title{
+    background: #ffffff;
+    position: fixed;
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
+    font-size: 24px;
+    border-left: 1px solid var(--primaryColor);
+    border-bottom: 1px solid var(--primaryColor);
+    border-right: 1px solid var(--primaryColor);
+    padding: 12px;
+    top: 0;
+    z-index: 999;
+    gap: 12px;
 }

@@ -25,8 +25,12 @@
         <%- include('navbar') %>
     </div>
     <div class="container mt-5 content">
+        <div class="title">
+            <p> Você está editando os produtos da Operadora:<strong> <%= operadora.nomefantasia %> </strong> </p>
+            <a href="/produtos"><button type="button" class="btn btn-secondary voltar"> Voltar </button></a>
+        </div>
         <h2> Formulário de Cadastro de Produtos </h2>
-            <form>
+            <form id="cadastrar-produto-form">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -101,7 +105,7 @@
                 </div>
                 <div class="row">
                     <div class="mb">
-                        <label for="acomodacaplano" class="form-label">Área de abrangência</label>
+                        <label for="areaabrangencia" class="form-label">Área de abrangência</label>
                         <textarea name="areaabrangencia" id="areaabrangencia" class="form-control" placeholder="Insira as localidades (se não se aplicar, deixe em branco"></textarea>   
                     </div>         
                 </div>
@@ -310,15 +314,17 @@
                         </div>
                         <div class="row mb-3 excluir-div">
                             <div class="col-sm-4">
-                                <button type="button" class="btn btn-danger excluir-procedimento">Excluir Procedimento</button>
+                                <button type="button" class="btn btn-danger excluir-procedimento"><i class="bi bi-trash-fill"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <button type="button" class="btn btn-primary adicionar-procedimento">Adicionar Procedimento</button>
-                    </div>
+                    <button type="button" class="btn btn-primary adicionar-procedimento"><i class="bi bi-plus-circle"></i></button>
+                </div>
+                <div class="row">
+                    <button type="submit" form="cadastrar-produto-form" class="btn btn-primary" id="cadastrar-produto">CADASTRAR PRODUTO</button>
                 </div>
             </form>
+            
 
         <h2 class="mb-4">Produtos Vinculados</h2>
         <% if (produtos.length > 0) { %>

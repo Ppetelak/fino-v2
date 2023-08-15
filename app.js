@@ -578,18 +578,20 @@ app.get('/produtos', (req, res) => {
 app.get('/produtos/:id', async (req, res) => {
   const idOperadora = req.params.id;
 
-  const sql = 'SELECT * FROM produtos WHERE id_operadora = ?';
-
   try {
-      const queryPromise = util.promisify(db.query).bind(db);
-      const produtos = await queryPromise(sql, [idOperadora]);
+    const operadoraPromise = util.promisify(db.query).bind(db);
+    const produtosPromise = util.promisify(db.query).bind(db);
 
-      res.render('produto', { produtos: produtos });
+    const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
+    const produtos = await produtosPromise('SELECT * FROM produtos WHERE id_operadora = ?', [idOperadora]);
+
+    res.render('produto', { operadora: operadora[0], produtos: produtos });
   } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
-      res.status(500).send('Erro interno do servidor');
+    console.error('Erro ao buscar produtos:', error);
+    res.status(500).send('Erro interno do servidor');
   }
 });
+
 
 app.get('/gerar', (req, res) =>{
     res.render('gerar-fino')
