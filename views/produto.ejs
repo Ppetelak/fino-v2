@@ -11,250 +11,371 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@200;300;400;700&display=swap"
         rel="stylesheet">
-        <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js" integrity="sha512-efAcjYoYT0sXxQRtxGY37CKYmqsFVOIwMApaEbrxJr4RwqVVGw8o+Lfh/+59TU07+suZn1BWq4fDl5fdgyCNkw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"
+        integrity="sha512-efAcjYoYT0sXxQRtxGY37CKYmqsFVOIwMApaEbrxJr4RwqVVGw8o+Lfh/+59TU07+suZn1BWq4fDl5fdgyCNkw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style-dashboard.css">
 </head>
 
 
 <body>
-    <div class="navbardiv">
+    <div>
         <%- include('navbar') %>
+    </div>
+    <div class="alert alert-success alert-dismissible fade show fixed-top" role="alert" id="Message"
+        style="display:none">
+        Sucesso!
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert" id="MessageError"
+        style="display:none">
+        Erro!
     </div>
     <div class="container mt-5 content">
         <div class="title">
-            <p> Você está editando os produtos da Operadora:<strong> <%= operadora.nomefantasia %> </strong> </p>
+            <p> Você está editando os produtos da Operadora:<strong>
+                    <%= operadora.nomefantasia %>
+                </strong> </p>
             <a href="/produtos"><button type="button" class="btn btn-secondary voltar"> Voltar </button></a>
         </div>
         <h2> Formulário de Cadastro de Produtos </h2>
-            <form id="cadastrar-produto-form">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="nomeplano" class="form-label">Nome do Plano<span>(nome do plano como será comercializado)</span></label>
-                            <input class="form-control" type="text" name="nomeplano" id="nomeplano" placeholder="Nome do plano" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ansplano" class="form-label">ANS</label>
-                            <input class="form-control" type="text" name="ansplano" id="ansplano" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="contratoplano" class="form-label">Contratação:</label>
-                            <select name="contratoplano" id="contratoplano" class="form-control" required>
-                                <option value="" disabled selected hidden>Selecionar</option>
-                                <option value="Individual">Individual ou familiar</option>
-                                <option value="Empresarial">Coletivo empresarial</option>
-                                <option value="Adesão">Coletivo por adesão</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="abrangenciaplano" class="form-label">Abrangência</label>
-                                <select name="abrangenciaplano" id="abrangenciaplano" class="form-control" required>
-                                    <option value="" disabled selected hidden>Selecionar</option>
-                                    <option value="Nacional">Nacional</option>
-                                    <option value="Grupo de estados">Grupo de estados</option>
-                                    <option value="Estadual">Estadual</option>
-                                    <option value="Grupo de municípios">Grupo de municípios</option>
-                                    <option value="Municipal">Municipal</option>
-                                </select>   
-                        </div>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
+            Abrir Formulário
+        </button>
+        <form id="cadastrar-produto-form" data-id="<%= operadora.id %>">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nomeplano" class="form-label">Nome do Plano<span>(nome do plano como será
+                                comercializado)</span></label>
+                        <input class="form-control" type="text" name="nomeplano" id="nomeplano"
+                            placeholder="Nome do plano" required>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="cooparticipacao" class="form-label">Cooparticipação</label>
-                            <select name="cooparticipacao" id="cooparticipacao" class="form-control" required>
-                                <option value="" disabled selected hidden>Selecionar</option>
-                                <option value="Com Cooparticipação">Com Cooparticipação</option>
-                                <option value="Sem cooparticipação">Sem Cooparticipação</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="coberturaplano" class="form-label">Cobertura</label>
-                                    <select name="coberturaplano" id="coberturaplano" class="form-control" required>
-                                        <option value="" disabled selected hidden>Selecionar</option>
-                                        <option value="Ambulatorial">Ambulatorial</option>
-                                        <option value="Ambulatorial + Hospitalar COM obstetrícia">Ambulatorial +
-                                            Hospitalar COM obstetrícia</option>
-                                        <option value="Ambulatorial + Hospitalar COM obstetrícia + Odontológico">
-                                            Ambulatorial + Hospitalar COM obstetrícia + Odontológico</option>
-                                        <option value="Ambulatorial + Hospitalar SEM obstetrícia">Ambulatorial +
-                                            Hospitalar SEM obstetrícia</option>
-                                        <option value="Ambulatorial + Hospitalar SEM obstetrícia + Odontológico">
-                                            Ambulatorial + Hospitalar SEM obstetrícia + Odontológico</option>
-                                        <option value="Ambulatorial + Odontológico">Ambulatorial + Odontológico</option>
-                                        <option value="Hospitalar COM obstetrícia">Hospitalar COM obstetrícia</option>
-                                        <option value="Hospitalar COM obstetrícia + Odontológico">Hospitalar COM
-                                            obstetrícia + Odontológico</option>
-                                        <option value="Hospitalar SEM obstetrícia">Hospitalar SEM obstetrícia</option>
-                                        <option value="Hospitalar SEM obstetrícia + Odontológico">Hospitalar SEM
-                                            obstetrícia + Odontológico</option>
-                                        <option value="Odontológico">Odontológico</option>
-                                    </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="acomodacaoplano" class="form-label">Acomodação</label>
-                                <select name="acomodacaoplano" id="acomodacaoplano" class="form-control" required>
-                                    <option value="" disabled selected hidden>Selecionar</option>
-                                    <option value="Enfermaria">Enfermaria</option>
-                                    <option value="Apartamento">Apartamento</option>
-                                </select>
-                        </div>
+                    <div class="mb-3">
+                        <label for="ansplano" class="form-label">ANS</label>
+                        <input class="form-control" type="text" name="ansplano" id="ansplano" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contratoplano" class="form-label">Contratação:</label>
+                        <select name="contratoplano" id="contratoplano" class="form-control" required>
+                            <option value="" disabled selected hidden>Selecionar</option>
+                            <option value="Individual ou Familiar">Individual ou familiar</option>
+                            <option value="Coletivo empresarial">Coletivo empresarial</option>
+                            <option value="Coletivo por Adesão">Coletivo por adesão</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="abrangenciaplano" class="form-label">Abrangência</label>
+                        <select name="abrangenciaplano" id="abrangenciaplano" class="form-control" required>
+                            <option value="" disabled selected hidden>Selecionar</option>
+                            <option value="Nacional">Nacional</option>
+                            <option value="Grupo de estados">Grupo de estados</option>
+                            <option value="Estadual">Estadual</option>
+                            <option value="Grupo de municípios">Grupo de municípios</option>
+                            <option value="Municipal">Municipal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="cooparticipacao" class="form-label">Cooparticipação</label>
+                        <select name="cooparticipacao" id="cooparticipacao" class="form-control" required>
+                            <option value="" disabled selected hidden>Selecionar</option>
+                            <option value="Com Cooparticipação">Com Cooparticipação</option>
+                            <option value="Sem cooparticipação">Sem Cooparticipação</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="coberturaplano" class="form-label">Cobertura</label>
+                        <select name="coberturaplano" id="coberturaplano" class="form-control" required>
+                            <option value="" disabled selected hidden>Selecionar</option>
+                            <option value="Ambulatorial">Ambulatorial</option>
+                            <option value="Ambulatorial + Hospitalar COM obstetrícia">Ambulatorial +
+                                Hospitalar COM obstetrícia</option>
+                            <option value="Ambulatorial + Hospitalar COM obstetrícia + Odontológico">
+                                Ambulatorial + Hospitalar COM obstetrícia + Odontológico</option>
+                            <option value="Ambulatorial + Hospitalar SEM obstetrícia">Ambulatorial +
+                                Hospitalar SEM obstetrícia</option>
+                            <option value="Ambulatorial + Hospitalar SEM obstetrícia + Odontológico">
+                                Ambulatorial + Hospitalar SEM obstetrícia + Odontológico</option>
+                            <option value="Ambulatorial + Odontológico">Ambulatorial + Odontológico</option>
+                            <option value="Hospitalar COM obstetrícia">Hospitalar COM obstetrícia</option>
+                            <option value="Hospitalar COM obstetrícia + Odontológico">Hospitalar COM
+                                obstetrícia + Odontológico</option>
+                            <option value="Hospitalar SEM obstetrícia">Hospitalar SEM obstetrícia</option>
+                            <option value="Hospitalar SEM obstetrícia + Odontológico">Hospitalar SEM
+                                obstetrícia + Odontológico</option>
+                            <option value="Odontológico">Odontológico</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="acomodacaoplano" class="form-label">Acomodação</label>
+                        <select name="acomodacaoplano" id="acomodacaoplano" class="form-control" required>
+                            <option value="" disabled selected hidden>Selecionar</option>
+                            <option value="Enfermaria">Enfermaria</option>
+                            <option value="Apartamento">Apartamento</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="mb">
                         <label for="areaabrangencia" class="form-label">Área de abrangência</label>
-                        <textarea name="areaabrangencia" id="areaabrangencia" class="form-control" placeholder="Insira as localidades (se não se aplicar, deixe em branco"></textarea>   
-                    </div>         
+                        <textarea name="areaabrangencia" id="areaabrangencia" class="form-control"
+                            placeholder="Insira as localidades (se não se aplicar, deixe em branco"></textarea>
+                    </div>
                 </div>
                 <div class="row">
                     <h3> Condições de dependentes conforme o parentesco</h3>
                     <div class="mb-3 row">
                         <label for="conjuges" class="col-sm-3 col-form-label">Conjugês</label>
                         <div class="col-sm-4">
-                            <input type="text" name="condicoesdependentes_conjuge" id="condicoesdependentes_conjuge" placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
+                            <input type="text" name="condicoesdependentes_conjuge" id="condicoesdependentes_conjuge"
+                                placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                         <div class="col-sm-5">
-                            <input type="text" name="documentosdependentes_conjuge" id="documentosdependentes_conjuge" placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
+                            <input type="text" name="documentosdependentes_conjuge" id="documentosdependentes_conjuge"
+                                placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="filhos" class="col-sm-3 col-form-label">Filhos</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_filhos" id="condicoesdependentes_filhos"
-                                    class="form-control" placeholder="Condições" title="Caso não haja, deixe em branco.">
+                                class="form-control" placeholder="Condições" title="Caso não haja, deixe em branco.">
                         </div>
                         <div class="col-sm-5">
                             <input type="text" name="documentosdependentes_filhos" id="documentosdependentes_filhos"
-                                    placeholder="Documentos" class="form-control" title="Caso não haja, deixe em branco.">
+                                placeholder="Documentos" class="form-control" title="Caso não haja, deixe em branco.">
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="filhos" class="col-sm-3 col-form-label">Netos</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_netos" id="condicoesdependentes_netos"
-                                    placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                         <div class="col-sm-5">
                             <input type="text" name="documentosdependentes_netos" id="documentosdependentes_netos"
-                                    placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_pais" id="condicoesdependentes_pais"
-                                    placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                         <div class="col-sm-5">
                             <input type="text" name="documentosdependentes_pais" id="documentosdependentes_pais"
-                                    placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_outros" id="condicoesdependentes_outros"
-                                    placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                         <div class="col-sm-5">
                             <input type="text" name="documentosdependentes_outros" id="documentosdependentes_outros"
-                                    placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
+                                placeholder="Documentos" title="Caso não haja, deixe em branco." class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="row tabela-de-precos">
                     <h3>Tabela de preços</h3>
-                    <div class="row">
+                    <div class="mb-3 row">
+                        <div class="col-sm-4">
+                            <h5> Idades </h5>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5> Tabela Net </h5>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5> Tabela Comercial </h5>
+                        </div>
+                    </div>
+                    <div class="row faixaetaria">
                         <label for="fxetaria1" class="col-sm-4 col-form-label">De 0 a 18 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria1" id="fxetaria1" class="form-control">
+                                <input type="number" name="fxetaria1" id="fxetaria1" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx1Comercial" id="fx1Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria2" class="col-sm-4 col-form-label">De 19 a 23 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria2" id="fxetaria2" class="form-control">
+                                <input type="number" name="fxetaria2" id="fxetaria2" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx2Comercial" id="fx2Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria3" class="col-sm-4 col-form-label">De 24 a 28 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria3" id="fxetaria3" class="form-control">
+                                <input type="number" name="fxetaria3" id="fxetaria3" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx3Comercial" id="fx3Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria4" class="col-sm-4 col-form-label">De 29 a 33 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria4" id="fxetaria4" class="form-control">
+                                <input type="number" name="fxetaria4" id="fxetaria4" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx4Comercial" id="fx4Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria5" class="col-sm-4 col-form-label">De 34 a 38 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria5" id="fxetaria5" class="form-control">
+                                <input type="number" name="fxetaria5" id="fxetaria5" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx5Comercial" id="fx5Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria6" class="col-sm-4 col-form-label">De 39 a 43 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria6" id="fxetaria6" class="form-control">
+                                <input type="number" name="fxetaria6" id="fxetaria6" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx6Comercial" id="fx6Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria7" class="col-sm-4 col-form-label">De 44 a 48 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria7" id="fxetaria7" class="form-control">
+                                <input type="number" name="fxetaria7" id="fxetaria7" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx7Comercial" id="fx7Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria8" class="col-sm-4 col-form-label">De 49 a 53 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria8" id="fxetaria8" class="form-control">
+                                <input type="number" name="fxetaria8" id="fxetaria8" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx8Comercial" id="fx8Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria9" class="col-sm-4 col-form-label">De 54 a 58 anos</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria9" id="fxetaria9" class="form-control">
+                                <input type="number" name="fxetaria9" id="fxetaria9" class="form-control fxetaria">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx9Comercial" id="fx9Comercial"
+                                    class="form-control fxComercial" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row faixaetaria">
                         <label for="fxetaria10" class="col-sm-4 col-form-label">De 59+</label>
                         <div class="col-sm-4">
-                                <div class="input-group">
+                            <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="number" name="fxetaria10" id="fxetaria10" class="form-control">
+                                <input type="number" name="fxetaria10" id="fxetaria10" class="form-control fxetaria">
                             </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" name="fx10Comercial" id="fx10Comercial"
+                                    class="form-control fxComercial" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row infoSpread">
+                        <div class="col-sm-4">
+                            <label for="ValorSpread" class="formllabel">
+                                Valor de Spread
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text">(%)</span>
+                                <input type="number" name="valorSpread" id="valorSpread" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-secondary calcular">Calcular</button>
                         </div>
                     </div>
                 </div>
@@ -262,22 +383,25 @@
                     <h3> Outras informações </h3>
                     <div class="mb">
                         <label for="planoobs" class="form-label">Observações sobre o plano</label>
-                        <textarea name="planoobs" id="planoobs" class="form-control" placeholder="Escreva aqui..."></textarea>
-                    </div> 
+                        <textarea name="planoobs" id="planoobs" class="form-control"
+                            placeholder="Escreva aqui..."></textarea>
+                    </div>
                 </div>
                 <div class="row procedimentos">
                     <h3>Procedimentos</h3>
                     <div class="row procedimento" id="procedimento-1">
                         <div class=" row mb-3">
                             <label for="procedimentodescricao" class="form-label">Descrição do procedimento</label>
-                            <textarea name="procedimentodescricao" id="procedimentodescricao" required class="form-control" rows="1"></textarea>
+                            <textarea name="procedimentodescricao" id="procedimentodescricao" required
+                                class="form-control" rows="1"></textarea>
                         </div>
                         <div class="mb-3 row cooparticipacao">
                             <h4> Coparticipação e Carências</h4>
                             <div class="col-sm-3">
-                                <label for="procedimentocopay" class="form-label">Valor Coparticipação <span>(%)</span></label>
-                                <input type="number" name="procedimentocopay" id="procedimentocopay" placeholder="Valor (%)"
-                                    required class="form-control">
+                                <label for="procedimentocopay" class="form-label">Valor Coparticipação
+                                    <span>(%)</span></label>
+                                <input type="number" name="procedimentocopay" id="procedimentocopay"
+                                    placeholder="Valor (%)" required class="form-control">
                             </div>
                             <div class="col-sm-3">
                                 <label for="procedimentolimitecopay" class="form-label">Limite</label>
@@ -291,11 +415,13 @@
                                 <label for="procedimentofranquiacopay" class="form-label">Franquia</label>
                                 <div class="input-group">
                                     <span class="input-group-text">R$</span>
-                                    <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay" required class="form-control" placeholder="Franquia (R$)">
+                                    <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay"
+                                        required class="form-control" placeholder="Franquia (R$)">
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <label for="procedimentolimitecarencia" class="form-label">Limite Carência <span>(dias)</span></label>
+                                <label for="procedimentolimitecarencia" class="form-label">Limite Carência
+                                    <span>(dias)</span></label>
                                 <input type="number" name="procedimentolimitecarencia" id="procedimentolimitecarencia"
                                     required class="form-control">
                             </div>
@@ -314,20 +440,23 @@
                         </div>
                         <div class="row mb-3 excluir-div">
                             <div class="col-sm-4">
-                                <button type="button" class="btn btn-danger excluir-procedimento"><i class="bi bi-trash-fill"></i></button>
+                                <button type="button" class="btn btn-danger excluir-procedimento"><i
+                                        class="bi bi-trash-fill"></i></button>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary adicionar-procedimento"><i class="bi bi-plus-circle"></i></button>
+                    <button type="button" class="btn btn-primary adicionar-procedimento"><i
+                            class="bi bi-plus-circle"></i></button>
                 </div>
                 <div class="row">
-                    <button type="submit" form="cadastrar-produto-form" class="btn btn-primary" id="cadastrar-produto">CADASTRAR PRODUTO</button>
+                    <button type="submit" form="cadastrar-produto-form" class="btn btn-primary"
+                        id="cadastrar-produto">CADASTRAR PRODUTO</button>
                 </div>
-            </form>
-            
+            </div>
+        </form>
 
         <h2 class="mb-4">Produtos Vinculados</h2>
-        <% if (produtos.length > 0) { %>
+        <% if (produtos.length> 0) { %>
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
@@ -341,22 +470,559 @@
                 <tbody>
                     <% produtos.forEach(function(produto) { %>
                         <tr>
-                            <td><%= produto.nomedoplano %></td>
-                            <td><%= produto.ans %></td>
-                            <td><%= produto.contratacao %></td>
-                            <td><%= produto.acomodacao %></td>
                             <td>
-                                <a href="/editar-produto/<%= produto.id %>" class="btn btn-primary">Editar</a>
+                                <%= produto.nomedoplano %>
+                            </td>
+                            <td>
+                                <%= produto.ans %>
+                            </td>
+                            <td>
+                                <%= produto.contratacao %>
+                            </td>
+                            <td>
+                                <%= produto.acomodacao %>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary editar-btn" data-bs-toggle="collapse"
+                                    data-bs-target="#editar<%= produto.id %>" aria-expanded="false"
+                                    aria-controls="editar<%= produto.id %>">
+                                    Editar
+                                </button>
+                                <button type="button" class="btn btn-secondary cancelar-btn d-none">Cancelar</button>
                             </td>
                         </tr>
-                    <% }); %>
+                        <tr class="collapse editar-form-container" id="editar<%= produto.id %>"
+                            data-id="<%= produto.id %>">
+                            <td colspan="4">
+                                <h4 class="text-center">Dados do Produto </h4>
+                                <form class="editar-form" data-id="<%= produto.id %>" id="atualizar-produto">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="nomeplano" class="form-label">Nome do Plano<span>(nome do
+                                                        plano como será comercializado)</span></label>
+                                                <input class="form-control" type="text" name="nomeplano" id="nomeplano"
+                                                    placeholder="Nome do plano" required
+                                                    value="<%= produto.nomedoplano %>">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="ansplano" class="form-label">ANS</label>
+                                                <input class="form-control" type="text" name="ansplano" id="ansplano"
+                                                    required value="<%= produto.ans %>">
+                                            </div>
+                                            <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="contratoplano-value"
+                                                    name="contratoplano-value" value="<%= produto.contratacao %>">
+                                                <label for="contratoplano" class="form-label">Contratação:</label>
+                                                <select name="contratoplano" id="contratoplano" class="form-control"
+                                                    required>
+                                                    <option value="" disabled selected hidden>Selecionar</option>
+                                                    <option value="Individual ou Familiar">Individual ou familiar
+                                                    </option>
+                                                    <option value="Coletivo empresarial">Coletivo empresarial</option>
+                                                    <option value="Coletivo por Adesão">Coletivo por adesão</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="abrangenciaplano" class="form-label">Abrangência</label>
+                                                <select name="abrangenciaplano" id="abrangenciaplano"
+                                                    class="form-control" required>
+                                                    <option value="" disabled selected hidden>Selecionar</option>
+                                                    <option value="Nacional">Nacional</option>
+                                                    <option value="Grupo de estados">Grupo de estados</option>
+                                                    <option value="Estadual">Estadual</option>
+                                                    <option value="Grupo de municípios">Grupo de municípios</option>
+                                                    <option value="Municipal">Municipal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="cooparticipacao" class="form-label">Cooparticipação</label>
+                                                <select name="cooparticipacao" id="cooparticipacao" class="form-control"
+                                                    required>
+                                                    <option value="" disabled selected hidden>Selecionar</option>
+                                                    <option value="Com Cooparticipação">Com Cooparticipação</option>
+                                                    <option value="Sem cooparticipação">Sem Cooparticipação</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="coberturaplano" class="form-label">Cobertura</label>
+                                                <select name="coberturaplano" id="coberturaplano" class="form-control"
+                                                    required>
+                                                    <option value="" disabled selected hidden>Selecionar</option>
+                                                    <option value="Ambulatorial">Ambulatorial</option>
+                                                    <option value="Ambulatorial + Hospitalar COM obstetrícia">
+                                                        Ambulatorial +
+                                                        Hospitalar COM obstetrícia</option>
+                                                    <option
+                                                        value="Ambulatorial + Hospitalar COM obstetrícia + Odontológico">
+                                                        Ambulatorial + Hospitalar COM obstetrícia + Odontológico
+                                                    </option>
+                                                    <option value="Ambulatorial + Hospitalar SEM obstetrícia">
+                                                        Ambulatorial +
+                                                        Hospitalar SEM obstetrícia</option>
+                                                    <option
+                                                        value="Ambulatorial + Hospitalar SEM obstetrícia + Odontológico">
+                                                        Ambulatorial + Hospitalar SEM obstetrícia + Odontológico
+                                                    </option>
+                                                    <option value="Ambulatorial + Odontológico">Ambulatorial +
+                                                        Odontológico</option>
+                                                    <option value="Hospitalar COM obstetrícia">Hospitalar COM
+                                                        obstetrícia</option>
+                                                    <option value="Hospitalar COM obstetrícia + Odontológico">Hospitalar
+                                                        COM
+                                                        obstetrícia + Odontológico</option>
+                                                    <option value="Hospitalar SEM obstetrícia">Hospitalar SEM
+                                                        obstetrícia</option>
+                                                    <option value="Hospitalar SEM obstetrícia + Odontológico">Hospitalar
+                                                        SEM
+                                                        obstetrícia + Odontológico</option>
+                                                    <option value="Odontológico">Odontológico</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="acomodacaoplano" class="form-label">Acomodação</label>
+                                                <select name="acomodacaoplano" id="acomodacaoplano" class="form-control"
+                                                    required>
+                                                    <option value="" disabled selected hidden>Selecionar</option>
+                                                    <option value="Enfermaria">Enfermaria</option>
+                                                    <option value="Apartamento">Apartamento</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb">
+                                                <label for="areaabrangencia" class="form-label">Área de
+                                                    abrangência</label>
+                                                <textarea name="areaabrangencia" id="areaabrangencia"
+                                                    class="form-control"
+                                                    placeholder="Insira as localidades (se não se aplicar, deixe em branco"><%= produto.areadeabrangencia %>"</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <h3> Condições de dependentes conforme o parentesco</h3>
+                                            <div class="mb-3 row">
+                                                <label for="conjuges" class="col-sm-3 col-form-label">Conjugês</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="condicoesdependentes_conjuge"
+                                                        id="condicoesdependentes_conjuge" placeholder="Condições"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.condicoesconjuges %>">
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="text" name="documentosdependentes_conjuge"
+                                                        id="documentosdependentes_conjuge" placeholder="Documentos"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.documentosconjuges %>">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="filhos" class="col-sm-3 col-form-label">Filhos</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="condicoesdependentes_filhos"
+                                                        id="condicoesdependentes_filhos" class="form-control"
+                                                        placeholder="Condições" title="Caso não haja, deixe em branco."
+                                                        value="<%= produto.condicoesfilhos %>">
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="text" name="documentosdependentes_filhos"
+                                                        id="documentosdependentes_filhos" placeholder="Documentos"
+                                                        class="form-control" title="Caso não haja, deixe em branco."
+                                                        value="<%= produto.documentosfilhos %>">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="filhos" class="col-sm-3 col-form-label">Netos</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="condicoesdependentes_netos"
+                                                        id="condicoesdependentes_netos" placeholder="Condições"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.condicoesnetos %>">
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="text" name="documentosdependentes_netos"
+                                                        id="documentosdependentes_netos" placeholder="Documentos"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.documentosnetos %>">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="condicoesdependentes_pais"
+                                                        id="condicoesdependentes_pais" placeholder="Condições"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.condicoespais %>">
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="text" name="documentosdependentes_pais"
+                                                        id="documentosdependentes_pais" placeholder="Documentos"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.documentospais %>">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="condicoesdependentes_outros"
+                                                        id="condicoesdependentes_outros" placeholder="Condições"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.condicoesoutros %>">
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="text" name="documentosdependentes_outros"
+                                                        id="documentosdependentes_outros" placeholder="Documentos"
+                                                        title="Caso não haja, deixe em branco." class="form-control"
+                                                        value="<%= produto.documentosoutros %>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row tabela-de-precos">
+                                            <h3>Tabela de preços</h3>
+                                            <div class="mb-3 row">
+                                                <div class="col-sm-4">
+                                                    <h5> Idades </h5>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <h5> Tabela Net </h5>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <h5> Tabela Comercial </h5>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria1" class="col-sm-4 col-form-label">De 0 a 18
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria1" id="fxetaria1"
+                                                            class="form-control fxetaria" value="<%= produto.fx1 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx1Comercial" id="fx1Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx1comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria2" class="col-sm-4 col-form-label">De 19 a 23
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria2" id="fxetaria2"
+                                                            class="form-control fxetaria" value="<%= produto.fx2 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx2Comercial" id="fx2Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx2comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria3" class="col-sm-4 col-form-label">De 24 a 28
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria3" id="fxetaria3"
+                                                            class="form-control fxetaria" value="<%= produto.fx3 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx3Comercial" id="fx3Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx3comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria4" class="col-sm-4 col-form-label">De 29 a 33
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria4" id="fxetaria4"
+                                                            class="form-control fxetaria" value="<%= produto.fx4 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx4Comercial" id="fx4Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx4comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria5" class="col-sm-4 col-form-label">De 34 a 38
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria5" id="fxetaria5"
+                                                            class="form-control fxetaria" value="<%= produto.fx5 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx5Comercial" id="fx5Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx5comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria6" class="col-sm-4 col-form-label">De 39 a 43
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria6" id="fxetaria6"
+                                                            class="form-control fxetaria" value="<%= produto.fx6 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx6Comercial" id="fx6Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx6comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria7" class="col-sm-4 col-form-label">De 44 a 48
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria7" id="fxetaria7"
+                                                            class="form-control fxetaria" value="<%= produto.fx7 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx7Comercial" id="fx7Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx7comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria8" class="col-sm-4 col-form-label">De 49 a 53
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria8" id="fxetaria8"
+                                                            class="form-control fxetaria" value="<%= produto.fx8 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx8Comercial" id="fx8Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx8comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria9" class="col-sm-4 col-form-label">De 54 a 58
+                                                    anos</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria9" id="fxetaria9"
+                                                            class="form-control fxetaria" value="<%= produto.fx9 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx9Comercial" id="fx9Comercial"
+                                                            class="form-control fxComercial" disabled
+                                                            value="<%= produto.fx9comercial %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row faixaetaria">
+                                                <label for="fxetaria10" class="col-sm-4 col-form-label">De 59+</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fxetaria10" id="fxetaria10"
+                                                            class="form-control fxetaria" value="<%= produto.fx10 %>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" name="fx10Comercial" id="fx10Comercial"
+                                                            class="form-control fxComercial"
+                                                            value="<%= produto.fx10comercial %>" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row infoSpread">
+                                                <div class="col-sm-4">
+                                                    <label for="ValorSpread" class="formllabel">
+                                                        Valor de Spread
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">(%)</span>
+                                                        <input type="number" name="valorSpread" id="valorSpread"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button type="button"
+                                                        class="btn btn-secondary calcular">Calcular</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <h3> Outras informações </h3>
+                                            <div class="mb">
+                                                <label for="planoobs" class="form-label">Observações sobre o
+                                                    plano</label>
+                                                <textarea name="planoobs" id="planoobs" class="form-control"
+                                                    placeholder="Escreva aqui..."><%= produto.observacoes %></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row procedimentos">
+                                            <h3>Procedimentos</h3>
+                                            <% for (let i=0; i < procedimentos.length; i++) { const
+                                                procedimento=procedimentos[i]; if (procedimento.id_produto===produto.id)
+                                                { %>
+                                                <div class="row procedimento" id="procedimento-1"
+                                                    data-id="<%= procedimento.id %>">
+                                                    <div class=" row mb-3">
+                                                        <label for="procedimentodescricao" class="form-label">Descrição
+                                                            do procedimento</label>
+                                                        <textarea name="procedimentodescricao"
+                                                            id="procedimentodescricao" required class="form-control"
+                                                            rows="1"><%= procedimento.descricao %></textarea>
+                                                    </div>
+                                                    <div class="mb-3 row cooparticipacao">
+                                                        <h4> Coparticipação e Carências</h4>
+                                                        <div class="col-sm-3">
+                                                            <label for="procedimentocopay" class="form-label">Valor
+                                                                Coparticipação <span>(%)</span></label>
+                                                            <input type="number" name="procedimentocopay"
+                                                                id="procedimentocopay" placeholder="Valor (%)" required
+                                                                class="form-control"
+                                                                value="<%= procedimento.valorcop %>">
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <label for="procedimentolimitecopay"
+                                                                class="form-label">Limite</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">R$</span>
+                                                                <input type="number" name="procedimentolimitecopay"
+                                                                    id="procedimentolimitecopay"
+                                                                    placeholder="Limite (R$)" required
+                                                                    class="form-control"
+                                                                    value="<%= procedimento.limitecop %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <label for="procedimentofranquiacopay"
+                                                                class="form-label">Franquia</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">R$</span>
+                                                                <input type="text" name="procedimentofranquiacopay"
+                                                                    id="procedimentofranquiacopay" required
+                                                                    class="form-control" placeholder="Franquia (R$)"
+                                                                    value="<%= procedimento.franquiacop %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <label for="procedimentolimitecarencia"
+                                                                class="form-label">Limite Carência
+                                                                <span>(dias)</span></label>
+                                                            <input type="number" name="procedimentolimitecarencia"
+                                                                id="procedimentolimitecarencia" required
+                                                                class="form-control"
+                                                                value="<%= procedimento.limitecarenciadias %>">
+                                                        </div>
+                                                    </div>
+                                                    <div class=" row mb-3">
+                                                        <div class="col-sm-6">
+                                                            <label for="procedimentoreducaocarencia"
+                                                                class="form-label">Redução de carências</label>
+                                                            <textarea name="procedimentoreducaocarencia"
+                                                                id="procedimentoreducaocarencia"
+                                                                placeholder="Condições de redução..."
+                                                                class="form-control"
+                                                                rows="2"><%= procedimento.condicoesreducaocarencia %></textarea>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label for="procedimentocongenere"
+                                                                class="form-label">Congêneres</label>
+                                                            <textarea name="procedimentocongenere"
+                                                                id="procedimentocongenere"
+                                                                placeholder="Condições de congêneres..."
+                                                                class="form-control"
+                                                                rows="2"><%= procedimento.condicoescongeneres %></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3 excluir-div">
+                                                        <div class="col-sm-4">
+                                                            <button type="button"
+                                                                class="btn btn-danger excluir-procedimento"><i
+                                                                    class="bi bi-trash-fill"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }} %>
+                                                    <button type="button"
+                                                        class="btn btn-primary adicionar-procedimento"><i
+                                                            class="bi bi-plus-circle"></i></button>
+                                                    <div class="row acoes-produto">
+                                                        <!-- Botões "Salvar" e "Cancelar" -->
+                                                        <button type="submit" class="btn btn-success salvar-btn">Salvar
+                                                            Alterações</button>
+                                                        <button type="button" class="btn btn-danger excluir-btn"
+                                                            data-id="<%= produto.id %>">Excluir Produto <%=
+                                                                produto.nomedoplano %></button>
+                                                    </div>
+                                        </div>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <% }); %>
                 </tbody>
             </table>
-        <% } else { %>
-            <p>Não há produtos vinculados a essa operadora.</p>
-        <% } %>
+            <% } else { %>
+                <p>Não há produtos vinculados a essa operadora.</p>
+                <% } %>
     </div>
 </body>
 <script src="/js/jsProduto.js"></script>
+<script src="/js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+
 
 </html>

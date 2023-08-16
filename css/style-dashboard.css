@@ -8,6 +8,7 @@
     --primaryColor :#20325d ;
     --secondColor: #2BB3B1;
     --thirdColor: #ED7923;
+    font-size: 72.5%;
 }
 
 .content {
@@ -229,4 +230,13 @@ span{
     top: 0;
     z-index: 999;
     gap: 12px;
+}
+
+.infoSpread{
+    margin-top: 15px;
+
+}
+
+.acoes-produto button{
+    width: 50%;
 }

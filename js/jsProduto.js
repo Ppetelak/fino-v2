@@ -1,4 +1,83 @@
 let numProcedimentos = 0;
+let formularioAberto = false;
+
+$(document).ready(function () {
+    //mascaras();
+    $('.editar-form').each(function () {
+        const contratacaoSelected = $(this).find('[name="contratoplano-value"]').val();
+        $(this).find('#contratoplano option').each(function () {
+            if ($(this).val() === contratacaoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const abrangenciaSelected = $(this).find('[name="abrangencia-value"]').val();
+        $(this).find('#abrangenciaplano option').each(function () {
+            if ($(this).val() === abrangenciaSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+    });
+});
+
+function getCookieValue(name) {
+    const cookieName = `${name}=`;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.startsWith(cookieName)) {
+            return cookie.substring(cookieName.length, cookie.length);
+        }
+    }
+    return '';
+}
+
+if (document.cookie.includes('alertSucess')) {
+    const alertSucess = getCookieValue('alertSucess');
+    showMessage(alertSucess);
+    document.cookie = 'alertSucess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
+
+if (document.cookie.includes('alertError')) {
+    const alertError = getCookieValue('alertError');
+    showMessageError(alertError);
+    document.cookie = 'alertError=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
+
+function showMessage(message) {
+    const Mensagem = document.getElementById('Message')
+    Mensagem.innerHTML = `${decodeURIComponent(message)} 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>`
+    Mensagem.style.display = 'block';
+}
+
+function showMessageError(message) {
+    const Mensagem = document.getElementById('MessageError')
+    Mensagem.innerHTML = `ALERTA: ${decodeURIComponent(message)} 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>`
+    Mensagem.style.display = 'block';
+}
+
+$('.editar-btn').click(function () {
+
+    const tr = $(this).closest('tr');
+    const formContainer = tr.next('.editar-form-container');
+    const form = formContainer.find('.editar-form');
+    //mascaras();
+
+    if (!formularioAberto) {
+        // Abrir o formulário para edição
+        form.find('.form-control').prop('disabled', false);
+        formContainer.show();
+        $(this).text("Cancelar");
+    } else {
+        // Fechar o formulário e desabilitar os campos
+        form.find('.form-control').prop('disabled', true);
+        formContainer.hide();
+        $(this).text("Editar");
+    }
+
+    formularioAberto = !formularioAberto;
+})
 
 $('.adicionar-procedimento').click(function () {
     const $button = $(this)
@@ -94,7 +173,8 @@ $('#cadastrar-produto').click(function (e) {
     })
 
     let formData = {
-        nomedoplano: $('#nomedoplano').val(),
+        idOperadora: $('#cadastrar-produto-form').attr('data-id'),
+        nomedoplano: $('#nomeplano').val(),
         ansplano: $('#ansplano').val(),
         contratoplano: $('#contratoplano').val(),
         abrangenciaplano: $('#abrangenciaplano').val(),
@@ -102,29 +182,88 @@ $('#cadastrar-produto').click(function (e) {
         coberturaplano: $('#coberturaplano').val(),
         acomodacao: $('#acomodacaoplano').val(),
         areaabrangencia: $('#areaabrangencia').val(),
-        condicoesdependentes_conjuge: $('#condicoesdependentes_conjuge').val(),
-        condicoesdependentes_filhos: $('#condicoesdependentes_filhos').val(),
-        documentosdependentes_filhos: $('#documentosdependentes_filhos').val(),
-        condicoesdependentes_netos: $('#condicoesdependentes_netos').val(),
-        documentosdependentes_netos: $('#documentosdependentes_netos').val(),
-        condicoesdependentes_pais: $('#condicoesdependentes_pais').val(),
-        documentosdependentes_pais: $('#documentosdependentes_pais').val(),
-        condicoesdependentes_outros: $('#condicoesdependentes_outros').val(),
-        documentosdependentes_outros: $('#documentosdependentes_outros').val(),
-        fxetaria1: $('#fxetaria1').val(),
-        fxetaria2: $('#fxetaria2').val(),
-        fxetaria3: $('#fxetaria3').val(),
-        fxetaria4: $('#fxetaria4').val(),
-        fxetaria5: $('#fxetaria5').val(),
-        fxetaria6: $('#fxetaria6').val(),
-        fxetaria7: $('#fxetaria7').val(),
-        fxetaria8: $('#fxetaria8').val(),
-        fxetaria9: $('#fxetaria9').val(),
-        fxetaria10: $('#fxetaria10').val(),
+        condicoesconjuges: $('#condicoesdependentes_conjuge').val(),
+        documentosconjuges: $('#condicoesdependentes_conjuge').val(),
+        condicoesfilhos: $('#condicoesdependentes_filhos').val(),
+        documentosfilhos: $('#documentosdependentes_filhos').val(),
+        condicoesnetos: $('#condicoesdependentes_netos').val(),
+        documentosnetos: $('#documentosdependentes_netos').val(),
+        condicoespais: $('#condicoesdependentes_pais').val(),
+        documentospais: $('#documentosdependentes_pais').val(),
+        condicoesoutros: $('#condicoesdependentes_outros').val(),
+        documentosoutros: $('#documentosdependentes_outros').val(),
+        fx1: $('#fxetaria1').val(),
+        fxComercial1: $('#fx1Comercial').val(),
+        fx2: $('#fxetaria2').val(),
+        fxComercial2: $('#fx2Comercial').val(),
+        fx3: $('#fxetaria3').val(),
+        fxComercial3: $('#fx3Comercial').val(),
+        fx4: $('#fxetaria4').val(),
+        fxComercial4: $('#fx4Comercial').val(),
+        fx5: $('#fxetaria5').val(),
+        fxComercial5: $('#fx5Comercial').val(),
+        fx6: $('#fxetaria6').val(),
+        fxComercial6: $('#fx6Comercial').val(),
+        fx7: $('#fxetaria7').val(),
+        fxComercial7: $('#fx7Comercial').val(),
+        fx8: $('#fxetaria8').val(),
+        fxComercial8: $('#fx8Comercial').val(),
+        fx9: $('#fxetaria9').val(),
+        fxComercial9: $('#fx9Comercial').val(),
+        fx10: $('#fxetaria10').val(),
+        fxComercial10: $('#fx10Comercial').val(),
         planoobs: $('#planoobs').val()
     };
 
     console.log(procedimentos)
-    console.log(formData) 
-     
-})
+    console.log(formData)
+
+    $.ajax({
+        type: 'POST',
+        url: '/cadastrar-produto',
+        data: JSON.stringify({ formData: formData, procedimentos: procedimentos }),
+        processData: false,
+        contentType: 'application/json',
+        success: function (response) {
+            console.log('Resposta Backend', response);
+            location.reload();
+        },
+        error: function (response) {
+            showMessageError(response.message)
+            console.error('Erro ao cadastrar produto:', response)
+        },
+    });  
+});
+
+$('.calcular').click(function () {
+    const valorSpread = parseFloat($('#valorSpread').val());
+
+    if (!isNaN(valorSpread)) {
+        $('.tabela-de-precos .faixaetaria').each(function () {
+            const $row = $(this);
+            const $fxNetInput = $row.find('.fxetaria');
+            const $fxComercialInput = $row.find('.fxComercial');
+
+            const fxNetValue = parseFloat($fxNetInput.val());
+
+            if (!isNaN(fxNetValue)) {
+                const novoValorFxComercial = fxNetValue + (fxNetValue * valorSpread / 100);
+                const duasCasasDecimais = novoValorFxComercial.toFixed(2);
+                const valorArredondado = parseFloat(duasCasasDecimais);
+                
+                // Verifica se a terceira casa decimal é maior ou igual a 5
+                const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
+                if (terceiraCasaDecimal > 0) {
+                    $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
+                } else {
+                    $fxComercialInput.val(valorArredondado.toFixed(2));
+                }
+            }
+            else {
+                alert("Preencha todos os campos antes de calcular");
+            }
+        });
+    } else {
+        alert('Insira um valor numérico válido no campo Valor de Spread.');
+    }
+});
