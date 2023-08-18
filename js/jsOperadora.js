@@ -66,7 +66,6 @@ $('.editar-btn').click(function () {
 $('.editar-form').submit(function (e) {
     e.preventDefault();
     mascaras();
-    console.log('clicou em salvar')
     const form = $(this);
     const formData = {
         razaosocial: form.find('#razaosocial').val(),

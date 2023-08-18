@@ -45,10 +45,8 @@
                 </strong> </p>
             <a href="/produtos"><button type="button" class="btn btn-secondary voltar"> Voltar </button></a>
         </div>
+        <input type="hidden" id="idOperadora" value="<%= operadora.id %>">
         <h2> Formulário de Cadastro de Produtos </h2>
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
-            Abrir Formulário
-        </button>
         <form id="cadastrar-produto-form" data-id="<%= operadora.id %>">
             <div class="row">
                 <div class="col-md-6">
@@ -371,7 +369,7 @@
                         <div class="col-sm-4">
                             <div class="input-group">
                                 <span class="input-group-text">(%)</span>
-                                <input type="number" name="valorSpread" id="valorSpread" class="form-control">
+                                <input type="number" name="valorSpread" id="valorSpread" class="form-control valorSpread">
                             </div>
                         </div>
                         <div class="col-sm-4">
@@ -495,7 +493,7 @@
                             data-id="<%= produto.id %>">
                             <td colspan="4">
                                 <h4 class="text-center">Dados do Produto </h4>
-                                <form class="editar-form" data-id="<%= produto.id %>" id="atualizar-produto">
+                                <form class="editar-form" data-id="<%= produto.id %>">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
@@ -524,6 +522,8 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="abrangencia-value"
+                                                    name="abrangencia-value" value="<%= produto.abrangencia %>">
                                                 <label for="abrangenciaplano" class="form-label">Abrangência</label>
                                                 <select name="abrangenciaplano" id="abrangenciaplano"
                                                     class="form-control" required>
@@ -538,15 +538,19 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="coparticipacao-value"
+                                                    name="cooparticipacao-value" value="<%= produto.cooparticipacao %>">
                                                 <label for="cooparticipacao" class="form-label">Cooparticipação</label>
                                                 <select name="cooparticipacao" id="cooparticipacao" class="form-control"
                                                     required>
                                                     <option value="" disabled selected hidden>Selecionar</option>
                                                     <option value="Com Cooparticipação">Com Cooparticipação</option>
-                                                    <option value="Sem cooparticipação">Sem Cooparticipação</option>
+                                                    <option value="Sem Cooparticipação">Sem Cooparticipação</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="cobertura-value"
+                                                    name="cobertura-value" value="<%= produto.cobertura %>">
                                                 <label for="coberturaplano" class="form-label">Cobertura</label>
                                                 <select name="coberturaplano" id="coberturaplano" class="form-control"
                                                     required>
@@ -582,6 +586,8 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="acomodacao-value"
+                                                    name="acomodacao-value" value="<%= produto.acomodacao %>">
                                                 <label for="acomodacaoplano" class="form-label">Acomodação</label>
                                                 <select name="acomodacaoplano" id="acomodacaoplano" class="form-control"
                                                     required>
@@ -705,7 +711,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx1Comercial" id="fx1Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx1comercial %>">
                                                     </div>
                                                 </div>
@@ -724,7 +730,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx2Comercial" id="fx2Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx2comercial %>">
                                                     </div>
                                                 </div>
@@ -743,7 +749,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx3Comercial" id="fx3Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx3comercial %>">
                                                     </div>
                                                 </div>
@@ -762,7 +768,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx4Comercial" id="fx4Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx4comercial %>">
                                                     </div>
                                                 </div>
@@ -781,7 +787,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx5Comercial" id="fx5Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx5comercial %>">
                                                     </div>
                                                 </div>
@@ -793,14 +799,14 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria6" id="fxetaria6"
-                                                            class="form-control fxetaria" value="<%= produto.fx6 %>">
+                                                            class="form-control fxetaria" value="<%= produto.fx6 %>" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx6Comercial" id="fx6Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx6comercial %>">
                                                     </div>
                                                 </div>
@@ -812,14 +818,14 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria7" id="fxetaria7"
-                                                            class="form-control fxetaria" value="<%= produto.fx7 %>">
+                                                            class="form-control fxetaria" value="<%= produto.fx7 %>" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx7Comercial" id="fx7Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx7comercial %>">
                                                     </div>
                                                 </div>
@@ -831,14 +837,14 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria8" id="fxetaria8"
-                                                            class="form-control fxetaria" value="<%= produto.fx8 %>">
+                                                            class="form-control fxetaria" value="<%= produto.fx8 %>" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx8Comercial" id="fx8Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx8comercial %>">
                                                     </div>
                                                 </div>
@@ -850,14 +856,14 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria9" id="fxetaria9"
-                                                            class="form-control fxetaria" value="<%= produto.fx9 %>">
+                                                            class="form-control fxetaria" value="<%= produto.fx9 %>" >
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx9Comercial" id="fx9Comercial"
-                                                            class="form-control fxComercial" disabled
+                                                            class="form-control fxComercial"
                                                             value="<%= produto.fx9comercial %>">
                                                     </div>
                                                 </div>
@@ -876,7 +882,7 @@
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx10Comercial" id="fx10Comercial"
                                                             class="form-control fxComercial"
-                                                            value="<%= produto.fx10comercial %>" disabled>
+                                                            value="<%= produto.fx10comercial %>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -890,7 +896,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">(%)</span>
                                                         <input type="number" name="valorSpread" id="valorSpread"
-                                                            class="form-control">
+                                                            class="form-control valorSpread" value="<%= produto.valorSpread %>">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">

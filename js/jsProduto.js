@@ -16,7 +16,31 @@ $(document).ready(function () {
                 $(this).prop('selected', true);
             }
         });
+        const cooparticipacaoSelected = $(this).find('[name="cooparticipacao-value"]').val();
+        $(this).find('#cooparticipacao option').each(function () {
+            if ($(this).val() === cooparticipacaoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const coberturaSelected = $(this).find('[name="cobertura-value"]').val();
+        $(this).find('#coberturaplano option').each(function () {
+            if ($(this).val() === coberturaSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const acomodacaoSelected = $(this).find('[name="acomodacao-value"]').val();
+        $(this).find('#acomodacaoplano option').each(function () {
+            if ($(this).val() === acomodacaoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
     });
+});
+
+$('.calcular').click(function () {
+    const $button = $(this);
+    const $container = $button.closest('.tabela-de-precos');
+    calcularTabelaComercial($container);
 });
 
 function getCookieValue(name) {
@@ -146,11 +170,70 @@ $('.procedimentos').on('click', '.excluir-procedimento', function () {
     reorganizarIdsProcedimentos();
 });
 
+$('.excluir-btn').click(function () {
+    const form = $(this);
+    const idProduto = form.data('id');
+
+    // Exibir um alerta de confirmação
+    const confirmDelete = window.confirm(`Tem certeza que deseja excluir este Produto?`);
+
+    // Verificar se o usuário clicou em "Sim"
+    if (confirmDelete) {
+        // Envie a ação de excluir para a rota do servidor responsável por realizar a exclusão
+        $.ajax({
+            type: 'DELETE',
+            url: `/excluir-produto/${idProduto}`,
+            success: function (response) {
+                console.log('Sucesso', response);
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                const response = JSON.parse(xhr.responseText);
+                showMessageError(response.message);
+                console.error('Erro ao excluir a operadora:', error);
+            },
+        });
+    }
+});
+
 function reorganizarIdsProcedimentos() {
     $('.procedimento').each(function (index) {
         const novoId = `procedimento-${index + 1}`;
         $(this).attr('id', novoId);
     });
+}
+
+function calcularTabelaComercial($container) {
+    const valorSpread =  parseFloat($container.find('.valorSpread').val());
+
+    if (!isNaN(valorSpread)) {
+        $container.find('.faixaetaria').each(function () {
+            const $row = $(this);
+            const $fxNetInput = $row.find('.fxetaria');
+            const $fxComercialInput = $row.find('.fxComercial');
+
+            const fxNetValue = parseFloat($fxNetInput.val());
+
+            if (!isNaN(fxNetValue)) {
+                const novoValorFxComercial = fxNetValue + (fxNetValue * valorSpread / 100);
+                const duasCasasDecimais = novoValorFxComercial.toFixed(2);
+                const valorArredondado = parseFloat(duasCasasDecimais);
+
+                // Verifica se a terceira casa decimal é maior ou igual a 5
+                const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
+                if (terceiraCasaDecimal > 0) {
+                    $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
+                } else {
+                    $fxComercialInput.val(valorArredondado.toFixed(2));
+                }
+            }
+            else {
+                alert("Preencha todos os campos antes de calcular");
+            }
+        });
+    } else {
+        alert('Insira um valor numérico válido no campo Valor de Spread.');
+    }
 }
 
 $('#cadastrar-produto').click(function (e) {
@@ -212,7 +295,8 @@ $('#cadastrar-produto').click(function (e) {
         fxComercial9: $('#fx9Comercial').val(),
         fx10: $('#fxetaria10').val(),
         fxComercial10: $('#fx10Comercial').val(),
-        planoobs: $('#planoobs').val()
+        planoobs: $('#planoobs').val(),
+        valorSpread: $('#valorSpread').val()
     };
 
     console.log(procedimentos)
@@ -232,38 +316,95 @@ $('#cadastrar-produto').click(function (e) {
             showMessageError(response.message)
             console.error('Erro ao cadastrar produto:', response)
         },
-    });  
+    });
 });
 
-$('.calcular').click(function () {
-    const valorSpread = parseFloat($('#valorSpread').val());
+$('.editar-form').submit(function (e) {
+    e.preventDefault();
+    const form = $(this);
+    const idOperadora = document.getElementById('idOperadora').value
 
-    if (!isNaN(valorSpread)) {
-        $('.tabela-de-precos .faixaetaria').each(function () {
-            const $row = $(this);
-            const $fxNetInput = $row.find('.fxetaria');
-            const $fxComercialInput = $row.find('.fxComercial');
-
-            const fxNetValue = parseFloat($fxNetInput.val());
-
-            if (!isNaN(fxNetValue)) {
-                const novoValorFxComercial = fxNetValue + (fxNetValue * valorSpread / 100);
-                const duasCasasDecimais = novoValorFxComercial.toFixed(2);
-                const valorArredondado = parseFloat(duasCasasDecimais);
-                
-                // Verifica se a terceira casa decimal é maior ou igual a 5
-                const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
-                if (terceiraCasaDecimal > 0) {
-                    $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
-                } else {
-                    $fxComercialInput.val(valorArredondado.toFixed(2));
-                }
-            }
-            else {
-                alert("Preencha todos os campos antes de calcular");
-            }
-        });
-    } else {
-        alert('Insira um valor numérico válido no campo Valor de Spread.');
+    const formData = {
+        idOperadora: idOperadora,
+        nomedoplano: form.find('#nomeplano').val(),
+        ansplano: form.find('#ansplano').val(),
+        contratoplano: form.find('#contratoplano').val(),
+        abrangenciaplano: form.find('#abrangenciaplano').val(),
+        cooparticipacao: form.find('#cooparticipacao').val(),
+        coberturaplano: form.find('#coberturaplano').val(),
+        acomodacao: form.find('#acomodacaoplano').val(),
+        areaabrangencia: form.find('#areaabrangencia').val(),
+        condicoesconjuges: form.find('#condicoesdependentes_conjuge').val(),
+        documentosconjuges: form.find('#condicoesdependentes_conjuge').val(),
+        condicoesfilhos: form.find('#condicoesdependentes_filhos').val(),
+        documentosfilhos: form.find('#documentosdependentes_filhos').val(),
+        condicoesnetos: form.find('#condicoesdependentes_netos').val(),
+        documentosnetos: form.find('#documentosdependentes_netos').val(),
+        condicoespais: form.find('#condicoesdependentes_pais').val(),
+        documentospais: form.find('#documentosdependentes_pais').val(),
+        condicoesoutros: form.find('#condicoesdependentes_outros').val(),
+        documentosoutros: form.find('#documentosdependentes_outros').val(),
+        fx1: form.find('#fxetaria1').val(),
+        fxComercial1: form.find('#fx1Comercial').val(),
+        fx2: form.find('#fxetaria2').val(),
+        fxComercial2: form.find('#fx2Comercial').val(),
+        fx3: form.find('#fxetaria3').val(),
+        fxComercial3: form.find('#fx3Comercial').val(),
+        fx4: form.find('#fxetaria4').val(),
+        fxComercial4: form.find('#fx4Comercial').val(),
+        fx5: form.find('#fxetaria5').val(),
+        fxComercial5: form.find('#fx5Comercial').val(),
+        fx6: form.find('#fxetaria6').val(),
+        fxComercial6: form.find('#fx6Comercial').val(),
+        fx7: form.find('#fxetaria7').val(),
+        fxComercial7: form.find('#fx7Comercial').val(),
+        fx8: form.find('#fxetaria8').val(),
+        fxComercial8: form.find('#fx8Comercial').val(),
+        fx9: form.find('#fxetaria9').val(),
+        fxComercial9: form.find('#fx9Comercial').val(),
+        fx10: form.find('#fxetaria10').val(),
+        fxComercial10: form.find('#fx10Comercial').val(),
+        planoobs: form.find('#planoobs').val()
     }
-});
+
+    let procedimentos = [];
+
+    form.find('.procedimento').each(function () {
+        const procedimento = $(this);
+        const procedimentoData = {
+            id: procedimento.data('id'),
+            descricao: procedimento.find('[name="procedimentodescricao"]').val(),
+            copay: procedimento.find('[name="procedimentocopay"]').val(),
+            limitecopay: procedimento.find('[name="procedimentolimitecopay"]').val(),
+            franquiacopay: procedimento.find('[name="procedimentofranquiacopay"]').val(),
+            limitecarencia: procedimento.find('[name="procedimentolimitecarencia"]').val(),
+            reducaocarencia: procedimento.find('[name="procedimentoreducaocarencia"]').val(),
+            congenere: procedimento.find('[name="procedimentocongenere"]').val(),
+        };
+        procedimentos.push(procedimentoData);
+    })
+
+    const idProduto = form.data('id');
+    const actionUrl = `/editar-produto/${idProduto}`
+
+    console.log(formData)
+    console.log(procedimentos)
+    console.log(idProduto)
+
+    $.ajax({
+        type: 'POST',
+        url: actionUrl,
+        data: ({ formData: formData, procedimentos: procedimentos }),
+        success: function (response) {
+            console.log('Sucesso', response)
+            location.reload();
+
+        },
+        error: function (err) {
+            showMessageError('Erro ao enviar os dados:', err);
+            console.error('Erro ao enviar os dados:', err);
+        },
+    });
+
+})
+
