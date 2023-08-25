@@ -89,7 +89,7 @@ CREATE TABLE formularios(
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_operadora INT, 
     datacriacao DATE, 
-    dataatualizacao DATE
+    dataatualizacao DATE,
     administradora ENUM('Classe Administradora', 'Compar', 'Mount Hermon'),
     origem ENUM('Estipulante', 'Subestipulante'),
     enviopropostas ENUM('Preenchimento direto no portal da operadora', 'Envio por e-mail'),
@@ -97,6 +97,32 @@ CREATE TABLE formularios(
     analisedoc ENUM('Sim', 'Não'),
     aniversariocontrato VARCHAR(10)
 
+)
+
+CREATE TABLE formularios(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_operadora INT, 
+    numero_fino INT,
+    modalidade ENUM('Estipulante', 'Subestipulante'),
+    datacriacao DATE, 
+    dataatualizacao DATE,
+    administradora ENUM('Classe Administradora', 'Compar', 'Mount Hermon'),
+    negcomissao ENUM('Sim', 'Não'),
+    comissaovalor DECIMAL (10,2),
+    negagenciamento ENUM('Sim', 'Não'),
+    agenciamentovalor DECIMAL(10,2),
+    negobs VARCHAR (1300),
+    docoperadora ENUM('Sim', 'Não'),
+    assOperadora ENUM('Sim', 'Não'),
+    assAdministradora ENUM ('Sim','Não')
+    aniversariocontrato DATE,
+    enviopropostas ENUM('Preenchimento direto no portal da operadora', 'Envio por e-mail'),
+    layoutpropostas ENUM('Padrão da Operadora', 'Sugerido pela Administradora'),
+    logoOperadora ENUM('Sim', 'Não'),
+    manualmarca ENUM('Sim', 'Não'),
+    modelodeclaracao ENUM('Sim', 'Não'),
+    analisedoc ENUM('Sim', 'Não'),
+    obsFino VARCHAR (1300)
 )
 
 CREATE TABLE vigencias(

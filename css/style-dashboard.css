@@ -188,7 +188,7 @@ span{
     width: 100%;
 }
 
-.adicionar-procedimento{
+.adicionar-procedimento, .adicionar-vigencia{
     background: #198754;
     border-color: #198754;
     width: max-content;
@@ -239,4 +239,22 @@ span{
 
 .acoes-produto button{
     width: 50%;
+}
+
+.checkboxes{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.form-check label{
+    font-weight: 400;
+}
+
+.documentacao, .outros, .layouts{
+    gap: 10px;
+}
+
+.vigencias{
+    gap: 12px;
 }

@@ -674,63 +674,6 @@ app.post('/editar-produto/:id', async (req, res) => {
   }
 });
 
-/* app.delete('/excluir-produto/:id', (req, res) => {
-  const idProduto = req.params.id;
-
-  // Verifique se o produto está associado a procedimentos
-  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto = ?';
-  db.query(sqlProcedimentos, [idProduto], (errorProcedimentos, resultProcedimentos) => {
-    if (errorProcedimentos) {
-      console.error('Erro ao verificar procedimentos associados ao produto:', errorProcedimentos);
-      res.status(500).json({ message: 'Erro interno do servidor' });
-    } else if (resultProcedimentos.length > 0) {
-      res.status(400).json({ message: 'Existem procedimentos vinculados a esse produto' });
-    } else {
-      // Se não estiver associado a procedimentos, prossiga com a exclusão
-      const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
-      const sqlExcluirProcedimentos = 'DELETE FROM procedimentos WHERE id_produto = ?';
-
-      db.beginTransaction((transactionError) => {
-        if (transactionError) {
-          console.error('Erro ao iniciar a transação:', transactionError);
-          res.status(500).json({ message: 'Erro interno do servidor' });
-          return;
-        }
-
-        db.query(sqlExcluirProcedimentos, [idProduto], (errorExcluirProcedimentos, resultExcluirProcedimentos) => {
-          if (errorExcluirProcedimentos) {
-            console.error('Erro ao excluir procedimentos do produto:', errorExcluirProcedimentos);
-            db.rollback(() => {
-              res.status(500).json({ message: 'Erro interno do servidor' });
-            });
-          } else {
-            db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
-              if (errorExcluirProduto) {
-                console.error('Erro ao excluir o produto:', errorExcluirProduto);
-                db.rollback(() => {
-                  res.status(500).json({ message: 'Erro interno do servidor' });
-                });
-              } else {
-                db.commit((commitError) => {
-                  if (commitError) {
-                    console.error('Erro ao finalizar a transação:', commitError);
-                    db.rollback(() => {
-                      res.status(500).json({ message: 'Erro interno do servidor' });
-                    });
-                  } else {
-                    res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
-                    res.status(200).json({ message: 'Produto excluído com sucesso' });
-                  }
-                });
-              }
-            });
-          }
-        });
-      });
-    }
-  });
-}); */
-
 app.delete('/excluir-produto/:id', (req, res) => {
   const idProduto = req.params.id;
 
@@ -775,6 +718,89 @@ app.delete('/excluir-produto/:id', (req, res) => {
       });
     }
   });
+});
+
+app.get('/finos', (req,res) => {
+  const sqlFinos = 'SELECT *FROM formularios';
+  const sqlOperadora = 'SELECT *FROM operadora';
+  const sqlVigencias = 'SELECT *FROM vigencias'
+  const sqlEntidades = 'SELECT *FROM entidades'
+  let finos = [];
+  let operadoras = [];
+  let vigencias = [];
+  let entidades = [];
+  db.query(sqlFinos,(err ,BDfinos)=>{
+    if(err){
+      console.error('Erro na busca dos formulários no BD', err)
+    }
+    finos = BDfinos;
+    db.query(sqlOperadora, (err, BDoperadoras) => {
+      if(err){
+        console.error('Erro na busca das Operadoras no BD', err)
+      }
+      operadoras = BDoperadoras;
+      db.query(sqlVigencias, (err, BDvigencias) => {
+        if(err){
+          console.error('Erro na busca das vigências no BD', err)
+        }
+        vigencias = BDvigencias;
+        db.query(sqlEntidades, (err, BDentidades) =>{
+          if(err){
+            console.error("Erro na busca das Entidades", err)
+          }
+          entidades = BDentidades
+          res.render('finos', { finos:finos, operadoras:operadoras, vigencias:vigencias, entidades:entidades })
+        })
+      })
+    })
+  })
+}); 
+
+app.post('/cadastrar-fino', (req, res) => {
+  const { formData } = req.body;
+  const { vigencias } = req.body;
+  const { entidades } = req.body;
+
+  const partesData = formData.dataAtual.split('/');
+  const dataFormatada = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
+
+  const sqlFino = 'INSERT INTO formularios (id_operadora, datacriacao, administradora, enviopropostas, layoutpropostas, aniversariocontrato, negcomissao, comissaovalor, negagenciamento, agenciamentovalor, negobs, docoperadora, assOperadora, assAdministradora, logoOperadora, manualmarca, modelodeclaracao, obsFino) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+  const sqlVigencia = 'INSERT INTO vigencias (id_fino, iniciodavigencia, movimentacao, datafaturamento) VALUES (?, ?, ?, ?)';
+
+  const sqlEntidades = 'INSERT INTO formularios_entidades (formulario_id, entidade_id) VALUES (?, ?)'
+
+
+  db.query(sqlFino, [formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino ], (error, result) => {
+    if(error) {
+      console.error(`Error ao cadastrar o Fino`, error);
+      res.cookie('alertError', 'Erro ao cadastrar Fino, verifique e tente novamente', { maxage: 3000});
+      res.status(500).json({ message: 'Erro interno do servidor'});
+    }
+
+    const idFino = result.insertId;
+
+      if(Array.isArray(vigencias)) {
+        vigencias.forEach((vigencia) => {
+          db.query(sqlVigencia, [idFino, vigencia.iniciodavigencia, vigencia.movimentacao, vigencia.datafaturamento], (error, result) => {
+            if(error) {
+              console.error('Erro ao cadastrar vigencias', error);
+            }
+            if(Array.isArray(entidades)) {
+              entidades.forEach((entidade) => {
+                db.query(sqlEntidades, [idFino, entidade.idEntidade ], (error, result) =>{
+                  if(error){
+                    console.error('Erro ao relacionar entidades', error);
+                  }
+                })
+             })
+            }
+          });
+        })
+      }
+    });
+  res.cookie('alertSuccess', 'Fino cadastrado com Sucesso', { maxAge: 3000});
+  res.status(200).json({ message: 'Novo Fino criado com sucesso'})
 });
 
 app.get('/gerar', (req, res) => {
