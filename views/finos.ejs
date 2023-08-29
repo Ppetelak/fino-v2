@@ -496,9 +496,10 @@
                                         <%= fino.id %>
                                     </td>
                                     <td>
-                                        <% const operadoraId = fino.id_operadora; %>
-                                        <% const operadoraEncontrada = operadoras.find(operadora => operadoraId === operadora.id); %>
-                                        <%= operadoraEncontrada ? operadoraEncontrada.nomefantasia : '' %>
+                                        <% const operadoraId=fino.id_operadora; %>
+                                            <% const operadoraEncontrada=operadoras.find(operadora=> operadoraId ===
+                                                operadora.id); %>
+                                                <%= operadoraEncontrada ? operadoraEncontrada.nomefantasia : '' %>
                                     </td>
                                     <td>
                                         <%= fino.administradora %>
@@ -510,22 +511,482 @@
                                             document.write(dataAtualizacao);
                                         </script>
                                     </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary editar-btn"
-                                                data-bs-toggle="collapse" data-bs-target="#editar<%= fino.id %>"
-                                                aria-expanded="false" aria-controls="editar<%= fino.id %>">
-                                                Editar
-                                            </button>
-                                            <button type="button"
-                                                class="btn btn-secondary cancelar-btn d-none">Cancelar</button>
-                                            <button type="button"
-                                                class="btn btn-secondary visualizar">Visualizar</button>
-                                        </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary editar-btn"
+                                            data-bs-toggle="collapse" data-bs-target="#editar<%= fino.id %>"
+                                            aria-expanded="false" aria-controls="editar<%= fino.id %>">
+                                            Editar
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-secondary cancelar-btn d-none">Cancelar</button>
+                                        
+                                        <a href="/fino/<%= fino.id %>" target="_blank"><button type="button" class="btn btn-secondary visualizar">Visualizar</button></a>
+                                    </td>
                                 </tr>
                                 <tr class="collapse editar-form-container" id="editar<%= fino.id %>"
                                     data-id="<%= fino.id %>">
-                                    <td>
+                                    <td colspan="4">
                                         <h4>Dados do Fino</h4>
+                                        <form class="editar-form" data-id="<%= fino.id %>">
+                                            <div class="row">
+                                                <div class="row">
+                                                    <input type="hidden" class="form-control" id="administradora-value"
+                                                        name="administradora-value" value="<%= fino.administradora %>">
+                                                    <label for="administradora"
+                                                        class="form-label">Administradora</label>
+                                                    <select name="administradora" id="administradora"
+                                                        class="form-control" required>
+                                                        <option value="" disabled selected>Selecionar</option>
+                                                        <option value="Mount Hermon" REQUIRED>Mount Hermon</option>
+                                                        <option value="Classe Administradora">Classe Administradora
+                                                        </option>
+                                                        <option value="Compar">Compar</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="hidden" class="form-control" id="modalidade-value"
+                                                        name="modalidade-value" value="<%= fino.modalidade %>">
+                                                    <label for="modalidade" class="form-label">Modalidade</label>
+                                                    <select name="modalidade" id="modalidade" class="form-control">
+
+                                                        <option value="" disabled selected>Selecionar</option>
+                                                        <option value="Estipulante">Estipulante</option>
+                                                        <option value="Subestipulante">Subestipulante</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="hidden" class="form-control" id="operadora-value"
+                                                        name="operadora-value" value="<%= fino.id_operadora %>">
+                                                    <label for="operadora" class="form-label">Operadora</label>
+                                                    <select name="operadora" id="operadora" class="form-control">
+                                                        <option value="" disabled selected>Selecionar</option>
+                                                        <% operadoras.forEach(function(operadora) { %>
+                                                            <option value="<%= operadora.id %>">
+                                                                <%= operadora.nomefantasia %>
+                                                            </option>
+                                                            <% }); %>
+                                                    </select>
+                                                </div>
+
+                                                <div class="row">
+                                                    <label for="" class="form-label">Selecione as entidades
+                                                        aprovadas</label>
+                                                    <div class="entidades">
+                                                        <% var entidadesAssociadas=[];
+                                                            entidadesform.forEach(function(entidadeform) { if
+                                                            (entidadeform.formulario_id===fino.id) {
+                                                            entidadesAssociadas.push(entidadeform.entidade_id); } }); %>
+                                                            <% entidades.forEach(function(entidade) { %>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        id="entidade_<%= entidade.id %>"
+                                                                        value="<%= entidade.id %>" <% if
+                                                                        (entidadesAssociadas.includes(entidade.id)) { %>
+                                                                    checked <% } %>>
+                                                                        <label class="form-check-label"
+                                                                            for="entidade_<%= entidade.id %>"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-placement="top"
+                                                                            title="<%= entidade.descricao %>">
+                                                                            <%= entidade.nome %>
+                                                                        </label>
+                                                                </div>
+                                                                <% }); %>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <h3>Condições Comerciais</h3>
+                                                    <div class="mb-3 row">
+                                                        <input type="hidden" class="form-control" id="negcomissao-value"
+                                                            name="negcomissao-value" value="<%= fino.negcomissao %>">
+                                                        <div class="col-sm-3">
+                                                            <label for="">Comissão</label>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="negcomissao" id="opcaoSim" value="Sim">
+                                                                <label class="form-check-label" for="opcaoSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="negcomissao" id="opcaoNao" value="Não">
+                                                                <label class="form-check-label" for="opcaoNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">%</span>
+                                                                <input type="number" name="comissaovalor"
+                                                                    id="comissaovalor" class="form-control"
+                                                                    value="<%= fino.comissaovalor %>">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 row">
+                                                        <input type="hidden" class="form-control"
+                                                            id="negagenciamento-value" name="negagenciamento-value"
+                                                            value="<%= fino.negagenciamento %>">
+                                                        <div class="col-sm-3">
+                                                            <label for="">Agenciamento</label>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="negagenciamento" id="negagenciamentoSim"
+                                                                    value="Sim">
+                                                                <label class="form-check-label"
+                                                                    for="negagenciamentoSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="negagenciamento" id="negagenciamentoNao"
+                                                                    value="Não">
+                                                                <label class="form-check-label"
+                                                                    for="negagenciamentoNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">%</span>
+                                                                <input type="number" name="agenciamentovalor"
+                                                                    id="agenciamentovalor" class="form-control"
+                                                                    value="<%= fino.agenciamentovalor %>">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 row">
+                                                        <label for="fxetaria1"
+                                                            class="col-sm-3 col-form-label">Observações
+                                                            Negociações</label>
+                                                        <div class="col-sm-6 d-flex align-items-start">
+                                                            <textarea name="negobs" id="negobs" class="form-control"
+                                                                rows="3"><%= fino.negobs %></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <h3>Vigências</h3>
+                                                    <div class="mb-3 row">
+                                                        <label for="aniversariocontrato" class="form-label"> Aniversário
+                                                            Contrato </label>
+                                                        <input type="date" class="form-control"
+                                                            name="aniversariocontrato" id="aniversariocontrato"
+                                                            value="<%= fino.aniversariocontrato %>">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <h5> Vigência </h5>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <h5> Movimentação </h5>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <h5> Fechamento </h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row vigencias">
+                                                        <% for (let i=0; i < vigencias.length; i++) { const
+                                                            vigencia=vigencias[i]; if (vigencia.id_fino===fino.id) { %>
+                                                            <div class="row vigencia" id="<% vigencia.id %>">
+                                                                <div class="col-sm-3">
+                                                                    <select name="diaVigencia" id="diaVigencia"
+                                                                        class="form-control" required>
+                                                                        <% const dias=['1', '2' , '3' , '4' , '5' , '6'
+                                                                            , '7' , '8' , '9' , '10' , '11' , '12'
+                                                                            , '13' , '14' , '15' , '16' , '17' , '18'
+                                                                            , '19' , '20' , '21' , '22' , '23' , '24'
+                                                                            , '25' , '26' , '27' , '28' , '29' , '30'
+                                                                            , '31' ]; %>
+
+                                                                            <% dias.forEach(dia=> { %>
+                                                                                <option value="<%= dia %>"
+                                                                                    <%=dia===vigencia.iniciodavigencia
+                                                                                    ? 'selected' : '' %>><%= dia %>
+                                                                                </option>
+                                                                                <% }); %>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <select name="diaMovimentacao" id="diaMovimentacao"
+                                                                        class="form-control" required>
+                                                                        <% dias.forEach(dia=> { %>
+                                                                            <option value="<%= dia %>"
+                                                                                <%=dia===vigencia.movimentacao
+                                                                                ? 'selected' : '' %>><%= dia %>
+                                                                            </option>
+                                                                            <% }); %>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <select name="diaFechamento" id="diaFechamento"
+                                                                        class="form-control" required>
+                                                                        <% dias.forEach(dia=> { %>
+                                                                            <option value="<%= dia %>"
+                                                                                <%=dia===vigencia.datafaturamento
+                                                                                ? 'selected' : '' %>><%= dia %>
+                                                                            </option>
+                                                                            <% }); %>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <button type="button"
+                                                                        class="btn btn-danger excluir-vigencia"><i
+                                                                            class="bi bi-trash-fill"></i></button>
+                                                                </div>
+                                                            </div>
+                                                            <% }} %>
+                                                                <button type="button"
+                                                                    class="btn btn-primary adicionar-vigencia"><i
+                                                                        class="bi bi-plus-circle"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="row documentacao">
+                                                    <input type="hidden" class="form-control" id="docoperadora-value"
+                                                        name="docoperadora-value" value="<%= fino.docoperadora %>">
+                                                    <h3>Documentação</h3>
+                                                    <div class="col-sm-6">
+                                                        <label for="">A operadora requisitou a documentação para análise
+                                                            de propostas?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="docoperadora" id="docoperadoraSim"
+                                                                    value="Sim">
+                                                                <label class="form-check-label" for="docoperadoraSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="docoperadora" id="docoperadoraNao"
+                                                                    value="Não">
+                                                                <label class="form-check-label" for="docoperadoraNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="assOperadora-value" name="assOperadora-value"
+                                                            value="<%= fino.assOperadora %>">
+                                                        <label for="">O contrato já foi assinado pela Operadora?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="assOperadora" id="assOperadoraSim"
+                                                                    value="Sim">
+                                                                <label class="form-check-label" for="assOperadoraSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="assOperadora" id="assOperadoraNao"
+                                                                    value="Não">
+                                                                <label class="form-check-label" for="assOperadoraNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="assAdministradora-value" name="assAdministradora-value"
+                                                            value="<%= fino.assAdministradora %>">
+                                                        <label for="">O contrato já foi assinado pela
+                                                            Administradora?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="assAdm" id="assAdmSim" value="Sim">
+                                                                <label class="form-check-label" for="assAdmSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="assAdm" id="assAdmNao" value="Não">
+                                                                <label class="form-check-label" for="assAdmNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row layouts">
+                                                    <h3>Propostas</h3>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="enviopropostas-value" name="enviopropostas-value"
+                                                            value="<%= fino.enviopropostas %>">
+                                                        <label for="">Forma de envio das propostas:</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="enviopropostas" id="enviopropostas1"
+                                                                    value="Preenchimento direto no portal da operadora">
+                                                                <label class="form-check-label" for="enviopropostas1">
+                                                                    Preenchimento direto no portal da operadora
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="enviopropostas" id="enviopropostas2"
+                                                                    value="Envio por e-mail">
+                                                                <label class="form-check-label" for="enviopropostas2">
+                                                                    Envio por e-mail
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="layoutpropostas-value" name="layoutpropostas-value"
+                                                            value="<%= fino.layoutpropostas %>">
+                                                        <label for="">Layout das propostas:</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="layoutpropostas" id="layoutpropostas1"
+                                                                    value="Padrão da Operadora">
+                                                                <label class="form-check-label" for="layoutpropostas1">
+                                                                    Padrão da Operadora
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="layoutpropostas" id="layoutpropostas2"
+                                                                    value="Sugerido pela Administradora">
+                                                                <label class="form-check-label" for="layoutpropostas2">
+                                                                    Sugerido pela Administradora
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row outros">
+                                                    <h3>Outros</h3>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="logoOperadora-value" name="logoOperadora-value"
+                                                            value="<%= fino.logoOperadora %>">
+                                                        <label for="">O logo da operadora foi enviado ao
+                                                            marketing?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="logoOperadora" id="logoOperadoraSim"
+                                                                    value="Sim">
+                                                                <label class="form-check-label" for="logoOperadoraSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="logoOperadora" id="logoOperadoraNao"
+                                                                    value="Não">
+                                                                <label class="form-check-label" for="logoOperadoraNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control" id="manualmarca-value"
+                                                            name="manualmarca-value" value="<%= fino.manualmarca %>">
+                                                        <label for="">O manual da marca foi enviado ao
+                                                            marketing?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="manualmarca" id="manualmarcaSim" value="Sim">
+                                                                <label class="form-check-label" for="manualmarcaSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="manualmarca" id="manualmarcaNao" value="Não">
+                                                                <label class="form-check-label" for="manualmarcaNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="hidden" class="form-control"
+                                                            id="modelodeclaracao-value" name="modelodeclaracao-value"
+                                                            value="<%= fino.modelodeclaracao %>">
+                                                        <label for="">Possui modelo de declaração de saúde?</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="checkboxes">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="modelodeclaracao" id="modelodeclaracaoSim"
+                                                                    value="Sim">
+                                                                <label class="form-check-label"
+                                                                    for="modelodeclaracaoSim">
+                                                                    Sim
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="modelodeclaracao" id="modelodeclaracaoNao"
+                                                                    value="Não">
+                                                                <label class="form-check-label"
+                                                                    for="modelodeclaracaoNao">
+                                                                    Não
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <h3>Observações sobre o FINO</h3>
+                                                    <div class="form-group">
+                                                        <label for="obsFino">Datas previstas para assinatura de contrato
+                                                            se for o caso, envio das
+                                                            informações para os demais departamentos. etc...</label>
+                                                        <textarea id="obsFino" class="form-control" type="text"
+                                                            name="obsFino" rows="5"><%= fino.obsFino %></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-4">
+                                                    <div class="row acoes-produto">
+                                                        <button type="submit" class="btn btn-success salvar-btn">Salvar
+                                                            Alterações</button>
+                                                        <button type="button" class="btn btn-danger excluir-btn"
+                                                            data-id="<%= fino.id %>">Excluir Fino</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </form>
                                     </td>
                                 </tr>
                                 <% }); %>

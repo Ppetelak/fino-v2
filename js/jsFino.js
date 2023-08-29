@@ -1,4 +1,89 @@
 let numVigencias = 0;
+let formularioAberto = false;
+
+$(document).ready(function () {
+    //mascaras();
+    $('.editar-form').each(function () {
+        const administradoraSelected = $(this).find('[name="administradora-value"]').val();
+        $(this).find('#administradora option').each(function () {
+            if ($(this).val() === administradoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const modalidadeSelected = $(this).find('[name="modalidade-value"]').val();
+        $(this).find('#modalidade option').each(function () {
+            if ($(this).val() === modalidadeSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const operadoraSelected = $(this).find('[name="operadora-value"]').val();
+        $(this).find('#operadora option').each(function () {
+            if ($(this).val() === operadoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        const negcomissaoSelected = $(this).find('[name="negcomissao-value"]').val();
+        if (negcomissaoSelected === 'Sim') {
+            $(this).find('#opcaoSim').prop('checked', true);
+        } else if (negcomissaoSelected === 'Não') {
+            $(this).find('#opcaoNao').prop('checked', true);
+        }
+        const negagenciamentoSelected = $(this).find('[name="negagenciamento-value"]').val();
+        if (negagenciamentoSelected === 'Sim') {
+            $(this).find('#negagenciamentoSim').prop('checked', true);
+        } else if (negagenciamentoSelected === 'Não') {
+            $(this).find('#negagenciamentoNao').prop('checked', true);
+        }
+        const docoperadoraSelected = $(this).find('[name="docoperadora-value"]').val();
+        if (docoperadoraSelected === 'Sim') {
+            $(this).find('#docoperadoraSim').prop('checked', true);
+        } else if (negagenciamentoSelected === 'Não') {
+            $(this).find('#docoperadoraNao').prop('checked', true);
+        }
+        const assOperadoraSelected = $(this).find('[name="assOperadora-value"]').val();
+        if (assOperadoraSelected === 'Sim') {
+            $(this).find('#assOperadoraSim').prop('checked', true);
+        } else if (negagenciamentoSelected === 'Não') {
+            $(this).find('#assOperadoraNao').prop('checked', true);
+        }
+        const assAdministradoraSelected = $(this).find('[name="assAdministradora-value"]').val();
+        if (assAdministradoraSelected === 'Sim') {
+            $(this).find('#assAdmSim').prop('checked', true);
+        } else if (negagenciamentoSelected === 'Não') {
+            $(this).find('#assAdmNao').prop('checked', true);
+        }
+        const enviopropostasSelected = $(this).find('[name="enviopropostas-value"]').val();
+        if (enviopropostasSelected === 'Preenchimento direto no portal da operadora') {
+            $(this).find('#enviopropostas1').prop('checked', true);
+        } else if (enviopropostasSelected === 'Envio por e-mail') {
+            $(this).find('#enviopropostas2').prop('checked', true);
+        }
+        const layoutpropostasSelected = $(this).find('[name="layoutpropostas-value"]').val();
+        if (layoutpropostasSelected === 'Padrão da Operadora') {
+            $(this).find('#layoutpropostas1').prop('checked', true);
+        } else if (layoutpropostasSelected === 'Sugerido pela Administradora') {
+            $(this).find('#layoutpropostas2').prop('checked', true);
+        }
+        const logoOperadoraSelected = $(this).find('[name="logoOperadora-value"]').val();
+        if (logoOperadoraSelected === 'Sim') {
+            $(this).find('#logoOperadoraSim').prop('checked', true);
+        } else if (logoOperadoraSelected === 'Não') {
+            $(this).find('#logoOperadoraNao').prop('checked', true);
+        }
+        const manualmarcaSelected = $(this).find('[name="manualmarca-value"]').val();
+        if (manualmarcaSelected === 'Sim') {
+            $(this).find('#manualmarcaSim').prop('checked', true);
+        } else if (logoOperadoraSelected === 'Não') {
+            $(this).find('#manualmarcaNao').prop('checked', true);
+        }
+        const modelodeclaracaoSelected = $(this).find('[name="modelodeclaracao-value"]').val();
+        if (modelodeclaracaoSelected === 'Sim') {
+            $(this).find('#modelodeclaracaoSim').prop('checked', true);
+        } else if (logoOperadoraSelected === 'Não') {
+            $(this).find('#modelodeclaracaoNao').prop('checked', true);
+        }
+    });
+});
 
 function getCookieValue(name) {
     const cookieName = `${name}=`;
@@ -230,7 +315,7 @@ $('.cadastrar').click(function (e) {
         contentType: 'application/json',
         success: function (response) {
             console.log('Resposta BackEnd', response);
-            //location.reload();
+            location.reload();
         },
         error: function (response) {
             showMessageError(response.message)
@@ -238,3 +323,121 @@ $('.cadastrar').click(function (e) {
         },
     })
 }) 
+
+$('.editar-btn').click(function () {
+    
+    const tr = $(this).closest('tr');
+    const formContainer = tr.next('.editar-form-container');
+    const form = formContainer.find('.editar-form');
+    //mascaras();
+
+    if (!formularioAberto) {
+        // Abrir o formulário para edição
+        form.find('.form-control').prop('disabled', false);
+        formContainer.show();
+        $(this).text("Cancelar");
+    } else {
+        // Fechar o formulário e desabilitar os campos
+        form.find('.form-control').prop('disabled', true);
+        formContainer.hide();
+        $(this).text("Editar");
+    }
+
+    formularioAberto = !formularioAberto;
+});
+
+$('.editar-form').submit(function (e) {
+    e.preventDefault();
+    const form = $(this);
+    const idFino = form.data('id')
+
+    const formData = {
+        administradora: form.find('#administradora').val(),
+        operadora: form.find('#operadora').val(),
+        modalidade: form.find('#modalidade').val(),
+        negcomissao: form.find("input[name='negcomissao']:checked").val(),
+        comissaovalor: form.find('#comissaovalor').val(),
+        negagenciamento: form.find("input[name='negagenciamento']:checked").val(),
+        agenciamentovalor: form.find('#agenciamentovalor').val(),
+        negobs: form.find('#negobs').val(),
+        aniversariocontrato: form.find('#aniversariocontrato').val(),
+        docoperadora: form.find("input[name='docoperadora']:checked").val(),
+        assOperadora: form.find("input[name='assOperadora']:checked").val(),
+        assAdm: form.find("input[name='assAdm']:checked").val(),
+        enviopropostas: form.find("input[name='enviopropostas']:checked").val(),
+        layoutpropostas: form.find("input[name='layoutpropostas']:checked").val(),
+        logoOperadora: form.find("input[name='logoOperadora']:checked").val(),
+        manualmarca: form.find("input[name='manualmarca']:checked").val(),
+        modelodeclaracao: form.find("input[name='modelodeclaracao']:checked").val(),
+        obsFino: form.find('#obsFino').val(),
+        dataAtual: new Date().toLocaleDateString('pt-BR')
+    }
+
+    let selectedEntidades = []; 
+
+    form.find('.entidades input[type="checkbox"]:checked').each(function() {
+        const formEntidades = {
+            idEntidade: $(this).val()
+        }
+        selectedEntidades.push(formEntidades);
+    });
+
+    let vigencias = [];
+
+    form.find('.vigencia').each(function () {
+        const formVigencia = {
+            iniciodavigencia: $(this).find('[name="diaVigencia"]').val(),
+            movimentacao: $(this).find('[name="diaMovimentacao"]').val(),
+            datafaturamento: $(this).find('[name="diaFechamento"]').val(),
+        }
+        vigencias.push(formVigencia);
+    });
+
+    console.log(formData)
+    console.log(vigencias)
+    console.log(selectedEntidades)
+
+    const actionUrl = `/editar-fino/${idFino}`
+
+    $.ajax({
+        type: 'POST',
+        url: actionUrl,
+        data: ({ formData: formData, entidades: selectedEntidades, vigencias:vigencias }),
+        success: function (response) {
+            console.log('Sucesso', response)
+            //location.reload();
+        },
+        error: function (err) {
+            showMessageError('Erro ao enviar os dados:', err);
+            console.error('Erro ao enviar os dados:', err);
+        },
+    });
+
+    
+})
+
+$('.excluir-btn').click(function () {
+    const form = $(this);
+    const idFino = form.data('id');
+
+    // Exibir um alerta de confirmação
+    const confirmDelete = window.confirm("Tem certeza que deseja excluir este Fino?");
+
+    // Verificar se o usuário clicou em "Sim"
+    if (confirmDelete) {
+        // Envie a ação de excluir para a rota do servidor responsável por realizar a exclusão
+        $.ajax({
+            type: 'DELETE',
+            url: `/excluir-fino/${idFino}`,
+            success: function (response) {
+                console.log('Sucesso', response);
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                const response = JSON.parse(xhr.responseText);
+                showMessageError(response.message);
+                console.error('Erro ao excluir a operadora:', error);
+            },
+        });
+    }
+});
