@@ -258,3 +258,13 @@ span{
 .vigencias{
     gap: 12px;
 }
+
+.cabecalho{
+    background: var(--primaryColor);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}

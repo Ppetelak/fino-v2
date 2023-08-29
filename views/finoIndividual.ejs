@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fino <%= fino.id %></title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@200;300;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+        crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style-visualizacao.css">
+</head>
+<body>
+    <main>
+        <div class="content">
+            <div class="row cabecalho">
+                <h2>Formulário de Implantação de novas Operadoras - Linha Master </h2>
+                <div class="col-md-3">
+                    <label>Fino de numero:</label>
+                    <p><%= fino.id %></p>
+                </div>
+                <div class="col-md-3">
+                    <label>Operadora: </label>
+                    <p><%= operadora.nomefantasia %></p>
+                </div>
+                <div class="col-md-3">
+                    <label>Administradora: </label>
+                    <p><%= fino.administradora %></p>
+                </div>
+                <div class="col-md-3">
+                    <label>Modalidade: </label>
+                    <p><%= fino.modalidade %></p>
+                </div>
+                <div class="col-md-6">
+                    <label>Data Criação: </label>
+                    <script>
+                        const optionsDC = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                        const dataAtualizacaoDC = new Date('<%= fino.datacriacao %>').toLocaleDateString('pt-BR', optionsDC);
+                        document.write(dataAtualizacaoDC);
+                    </script>
+                </div>
+                <div class="col-md-6">
+                    <label>Data Atualização: </label>
+                    <script>
+                        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                        const dataAtualizacao = new Date('<%= fino.dataatualizacao %>').toLocaleDateString('pt-BR', options);
+                        document.write(dataAtualizacao);
+                    </script>
+                </div>
+            </div>
+            <div class="row dadosOperadora">
+                <h3> Dados da Operadora</h3>
+                <div class="tm-50">
+                    <p><strong>Razão Social: </strong> <span> <%= operadora.razaosocial %> </span> <button class="copy-button"><i class="bi bi-back"></i></button></p>
+                    <p><strong> CNPJ: </strong> <span> <%= operadora.cnpj %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>ANS Operadora: </strong> <span> <%= operadora.codans %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Website:</strong> <span> <%= operadora.website %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Endereço:</strong><span> <%= operadora.endereco %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Cidade: </strong> <span> <%= operadora.cidade %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                </div>
+                <div class="tm-50">
+                    <p><strong>Complemento: </strong> <span> <%= operadora.complemento %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Número:</strong> <span> <%= operadora.numeroendereco %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Cep: </strong> <span> <%= operadora.cep %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>UF: </strong> <span> <%= operadora.uf %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Telefone Atendimento:</strong><span>  <%= operadora.telatendimento %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    <p><strong>Telefone Ouvidoria:</strong> <span> <%= operadora.telouvidoria %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                </div>
+                <div class="row">
+                    <h4> Contatos Operadora </h4>
+                </div>
+            </div>
+            <div class="row produtos">
+                <h3> Produtos </h3>
+                <% produtos.forEach(function (produto) { %>
+                <div class="row produto" data-id="<%= produto.id %>">
+                    <h4>Dados do Plano</h4>
+                    <div class="row">
+                        <div class="tm-33">
+                            <p><strong>Nome do Plano: </strong> <span> <%= produto.nomedoplano %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                        <div class="tm-33">
+                            <p><strong>ANS: </strong> <span> <%= produto.ans %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                        <div class="tm-33">
+                            <p><strong>Contratação: </strong> <span> <%= produto.contratacao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="tm-33">
+                            <p><strong>Cobertura: </strong> <span> <%= produto.cobertura %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                        <div class="tm-33">
+                            <p><strong>Abrangência: </strong> <span> <%= produto.abrangencia %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                        <div class="tm-33">
+                            <p><strong>Cooparticipação: </strong> <span> <%= produto.cooparticipacao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="tm-100">
+                            <p><strong>Área de abrangência: </strong><p>
+                            <p> <span> <%= produto.cooparticipacao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h4>Procedimentos</h4>
+                        <div class="row procedimentos">
+                            <% if (produto.id in procedimentos) { %>
+                                <% procedimentos[produto.id].forEach(function(procedimento) { %>
+                                    <div class="row procedimento">
+                                        <div class="tm-50">
+                                            <strong>Descrição</strong>
+                                            <p> <span><%= procedimento.descricao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                                        </div>
+                                        <div class="tm-50">
+                                            <strong>Cooparticipação </strong>
+                                            <table class="table">
+                                                <thead>
+                                                    <th>Valor</th>
+                                                    <th>Limite</th>
+                                                    <th>Franquia</th>
+                                                    <th>Carência (dias)</th>
+                                                </thead>
+                                                <tr>
+                                                    <td>R$ <%= procedimento.valorcop %></td>
+                                                    <td>R$ <%= procedimento.limitecop %></td>
+                                                    <td><%= procedimento.franquiacop %></td>
+                                                    <td><%= procedimento.limitecarenciadias %></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="tm-50">
+                                            <label> Condições de redução de carência </label>
+                                            <p><span> <%= procedimento.condicoesreducaocarencia %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                                        </div>
+                                        <div class="tm-50">
+                                            <label> Condições congêneres </label>
+                                            <p><span><%= procedimento.condicoescongeneres %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p>Sem procedimentos vinculados ao produto</p>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="row dependentes">
+                        <h4>Dependentes </h4>
+                        <div class="row title mb-3">
+                            <div class="tm-20">
+                                <strong> Parentesco </strong>
+                            </div>
+                            <div class="tm-40">
+                                <strong> Condições </strong>
+                            </div>
+                            <div class="tm-40">
+                                <strong> Documentações </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tm-20">
+                                <strong>Conjugês</strong>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.condicoesconjuges %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.documentosconjuges %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tm-20">
+                                <strong>Filhos</strong>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.condicoesfilhos %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.documentosfilhos%></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tm-20">
+                                <strong>Netos</strong>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.condicoesnetos %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.documentosnetos %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tm-20">
+                                <strong>Pais</strong>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.condicoespais %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.documentospais %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tm-20">
+                                <strong>Outros</strong>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.condicoesoutros %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                            <div class="tm-40">
+                                <p> <span> <%= produto.documentosoutros %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row tabelaValores">
+                        <h4>Tabela de Valores</h4>
+                        <table class="table">
+                            <thead>
+                                <th>Faixa Etária</th>
+                                <th>Valor</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0 a 18 anos</td>
+                                    <td>R$ <%= produto.fx1comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>19 a 23 anos</td>
+                                    <td>R$ <%= produto.fx2comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>24 a 28 anos</td>
+                                    <td>R$ <%= produto.fx3comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>29 a 33 anos</td>
+                                    <td>R$ <%= produto.fx4comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>34 a 38 anos</td>
+                                    <td>R$ <%= produto.fx5comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>39 a 43 anos</td>
+                                    <td>R$ <%= produto.fx6comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>44 a 48 anos</td>
+                                    <td>R$ <%= produto.fx7comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>49 a 53 anos</td>
+                                    <td>R$ <%= produto.fx8comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>54 a 58 anos</td>
+                                    <td>R$ <%= produto.fx9comercial %></td>
+                                </tr>
+                                <tr>
+                                    <td>59+</td>
+                                    <td>R$ <%= produto.fx10comercial %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+
+                    </div>
+                    <div class="row">
+                        <strong> Observações do plano </strong>
+                        <p> <%= produto.observacoes %> </p>
+                    </div>
+                    
+                </div>             
+                <% })%>
+            </div>
+            <div class="row entidades"> 
+                <h3> Entidades Aprovadas </h3>
+                <table class="table">
+                    <% if(entidades.length > 0) { %>
+                    <thead>
+                        <th> Nome </th>
+                        <th> Descrição </th>
+                        <th> Público </th>
+                        <th> Documentos </th>
+                        <th> Taxa </th>
+                    </thead>
+                    <tbody>
+                        
+                            <% entidades.forEach(function(entidade){ %>
+                        <tr>
+                            <td>
+                                <%= entidade.nome %>
+                            </td>
+                            <td>
+                                <%= entidade.descricao %>
+                            </td>
+                            <td>
+                                <%= entidade.publico %>
+                            </td>
+                            <td>
+                                <%= entidade.documentos %>
+                            </td>
+                            <td>
+                                <%= entidade.taxa %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        <% } else { %>
+                            <p> Sem entidades aprovadas </p>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row vigencias">
+                <h3> Vigências </h3>
+
+            </div>
+            <div class="row documentacao">
+                <h3> Documentação e Contrato </h3>
+            </div>
+            <div class="row outros">
+                <h3> Outros </h3>
+            </div>
+        </div>
+        
+    </main>
+    <script src="/js/jsVisualizacao.js" defer type="module"></script>
+
+        
+</body>
+</html>

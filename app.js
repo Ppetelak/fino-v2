@@ -703,6 +703,7 @@ const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
 const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
 const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
 const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
+const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
 
 const queryPromise = util.promisify(db.query).bind(db);
 
@@ -718,6 +719,16 @@ try {
   const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
   const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
   const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
+  
+
+  const produtoIds = produtosResult.map(produto => produto.id);
+
+  const procedimentosPorProduto = {};
+
+  for (const produtoId of produtoIds) {
+    const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
+    procedimentosPorProduto[produtoId] = procedimentosProduto;
+  }
 
   res.render('finoIndividual', 
     { 
@@ -725,6 +736,7 @@ try {
       vigencias: vigenciasResult,
       operadora: operadoraResult,
       produtos: produtosResult,
+      procedimentos: procedimentosPorProduto,
       contatos: contatosResult,
       entidades: entidadesResult 
     })
@@ -733,6 +745,56 @@ try {
   res.status(500).json({ message: 'Erro interno do servidor' });
 }
 });
+
+app.get('/finojson/:id', async (req, res) =>{
+  const idFino = req.params.id;
+  
+  const sqlFino = 'SELECT * FROM formularios WHERE id=?';
+  const sqlVigencias = 'SELECT * FROM vigencias WHERE id_fino=?';
+  const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
+  const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
+  const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
+  const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const queryPromise = util.promisify(db.query).bind(db);
+  
+  try {
+    const [finoResult] = await queryPromise(sqlFino, [idFino]);
+  
+    if (!finoResult) {
+      return res.status(404).json({ message: 'Fino não encontrado' });
+    }
+  
+    const [vigenciasResult] = await queryPromise(sqlVigencias, [idFino]);
+    const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
+    const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
+    const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
+    const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
+
+    const produtoIds = produtosResult.map(produto => produto.id);
+
+    const procedimentosPorProduto = {};
+
+    for (const produtoId of produtoIds) {
+      const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
+      procedimentosPorProduto[produtoId] = procedimentosProduto;
+    }
+  
+    res.send( 
+      { 
+        fino: finoResult,
+        vigencias: vigenciasResult,
+        operadora: operadoraResult,
+        produtos: produtosResult,
+        procedimentos: procedimentosPorProduto,
+        contatos: contatosResult,
+        entidades: entidadesResult 
+      })
+  } catch (error) {
+    console.error('Erro ao buscar informações:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+  });
 
 app.post('/editar-fino/:id', async (req, res) => {
   const idFino = req.params.id;
