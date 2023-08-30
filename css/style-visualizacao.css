@@ -12,7 +12,7 @@
 
 main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background: #fff;
     width: 100%;
     align-items: center;
@@ -168,4 +168,92 @@ span{
     font-size: 15px;
     align-items: center;
     margin: auto;
+}
+
+.footer{
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+    padding: 5rem 5rem;
+    border: solid 1px var(--primaryColor);
+    margin-bottom: 5rem;
+    margin-top: 5rem;
+    gap: 20px;
+}
+
+.navbar{
+    display: flex;
+    gap: 5px;
+    text-align: center;
+    width: 100%;
+    height: 3rem;
+    flex-direction: row;
+    position: fixed;
+    font-size: 18px;
+    background: var(--primaryColor);
+    justify-content: space-evenly;
+    z-index: 9999;
+}
+
+.navbar a{
+    text-decoration: none;
+    color: #fff;
+}
+
+.imprimir {
+    margin-top: 3rem;
+}
+
+.btn-primary {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    background: var(--primaryColor);
+    border-color: var(--primaryColor);
+    align-items: center;
+}
+
+.btn-primary i{
+    text-align: center;
+    font-size: 22px;
+}
+
+.btn-primary:hover {
+    background: var(--secondColor);
+    border-color: var(--secondColor);
+}
+
+@media print {
+    body {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    main{
+        margin: 0;
+        padding: 0;
+    }
+    .content {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ocultar {
+        display: none;
+    }
+    .copy-button{
+        display: none;
+    }
+}
+
+@page {
+    size: A4;
+    margin: 0;
 }

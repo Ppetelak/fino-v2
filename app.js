@@ -179,7 +179,7 @@ app.get('/criarpdf', async (request, response) => {
   return response.send(pdf)
 })
 
-app.get('/operadoras', verificaAutenticacao,   (req, res) => {
+app.get('/operadoras', verificaAutenticacao, (req, res) => {
   let operadoras, contatos;
 
   const fetchOperadoras = new Promise((resolve, reject) => {
@@ -214,7 +214,7 @@ app.get('/operadoras', verificaAutenticacao,   (req, res) => {
     });
 });
 
-app.post('/cadastrar-operadora', verificaAutenticacao,   (req, res) => {
+app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
   const { contatos } = req.body;
 
@@ -246,7 +246,7 @@ app.post('/cadastrar-operadora', verificaAutenticacao,   (req, res) => {
   });
 });
 
-app.post('/dados-recebidos', verificaAutenticacao,   (req, res) => {
+app.post('/dados-recebidos', verificaAutenticacao, (req, res) => {
   const { formData, contatos } = req.body;
 
   console.log(formData, contatos)
@@ -254,7 +254,7 @@ app.post('/dados-recebidos', verificaAutenticacao,   (req, res) => {
   res.send('Dados recebidos com sucesso');
 });
 
-app.post('/editar-operadora/:id', verificaAutenticacao,  async (req, res) => {
+app.post('/editar-operadora/:id', verificaAutenticacao, async (req, res) => {
   const idOperadora = req.params.id;
   const formData = req.body.formData;
   const contatos = req.body.contatos;
@@ -320,7 +320,7 @@ app.post('/editar-operadora/:id', verificaAutenticacao,  async (req, res) => {
   }
 });
 
-app.delete('/excluir-operadora/:id', verificaAutenticacao,  (req, res) => {
+app.delete('/excluir-operadora/:id', verificaAutenticacao, (req, res) => {
   const idOperadora = req.params.id;
 
   // Verifique se a operadora está associada a produtos
@@ -388,14 +388,14 @@ app.delete('/excluir-operadora/:id', verificaAutenticacao,  (req, res) => {
   });
 });
 
-app.get('/entidades', verificaAutenticacao,  (req, res) => {
+app.get('/entidades', verificaAutenticacao, (req, res) => {
   db.query('SELECT * FROM entidades', (error, results) => {
     if (error) throw error;
     res.render('entidades', { entidades: results });
   })
 })
 
-app.post('/cadastrar-entidade', verificaAutenticacao,  (req, res) => {
+app.post('/cadastrar-entidade', verificaAutenticacao, (req, res) => {
   const { nome, descricao, publico, documentos, taxa } = req.body;
   const sql = 'INSERT INTO entidades (nome, descricao, publico, documentos, taxa) VALUES (?, ?, ?, ?, ?)'
   db.query(sql, [nome, descricao, publico, documentos, taxa], (error, result) => {
@@ -409,7 +409,7 @@ app.post('/cadastrar-entidade', verificaAutenticacao,  (req, res) => {
   })
 });
 
-app.post('/editar-entidade/:id', verificaAutenticacao,  (req, res) => {
+app.post('/editar-entidade/:id', verificaAutenticacao, (req, res) => {
   const idEntidade = req.params.id;
   const {
     nome,
@@ -447,7 +447,7 @@ app.post('/editar-entidade/:id', verificaAutenticacao,  (req, res) => {
   );
 });
 
-app.delete('/excluir-entidade/:id', verificaAutenticacao,  (req, res) => {
+app.delete('/excluir-entidade/:id', verificaAutenticacao, (req, res) => {
   const idEntidade = req.params.id;
 
   // Verifique se existem registros na tabela "formularios_entidades" vinculados a esta entidade
@@ -481,7 +481,7 @@ app.delete('/excluir-entidade/:id', verificaAutenticacao,  (req, res) => {
   });
 });
 
-app.get('/produtos', verificaAutenticacao,  (req, res) => {
+app.get('/produtos', verificaAutenticacao, (req, res) => {
   let operadoras;
 
   const fetchOperadoras = new Promise((resolve, reject) => {
@@ -505,7 +505,7 @@ app.get('/produtos', verificaAutenticacao,  (req, res) => {
     })
 })
 
-app.post('/cadastrar-produto', verificaAutenticacao,  (req, res) => {
+app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
   const { procedimentos } = req.body;
 
@@ -536,7 +536,7 @@ app.post('/cadastrar-produto', verificaAutenticacao,  (req, res) => {
   });
 });
 
-app.get('/produtos/:id', verificaAutenticacao,  async (req, res) => {
+app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
   const idOperadora = req.params.id;
 
   try {
@@ -555,7 +555,7 @@ app.get('/produtos/:id', verificaAutenticacao,  async (req, res) => {
   }
 });
 
-app.post('/editar-produto/:id', verificaAutenticacao,  async (req, res) => {
+app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const idProduto = req.params.id;
   const formData = req.body.formData;
   const procedimentos = req.body.procedimentos;
@@ -604,7 +604,7 @@ app.post('/editar-produto/:id', verificaAutenticacao,  async (req, res) => {
   }
 });
 
-app.delete('/excluir-produto/:id', verificaAutenticacao,  (req, res) => {
+app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id;
 
   // Verifique se o produto está associado a procedimentos
@@ -650,7 +650,7 @@ app.delete('/excluir-produto/:id', verificaAutenticacao,  (req, res) => {
   });
 });
 
-app.get('/finos', verificaAutenticacao, (req,res) => {
+app.get('/finos', verificaAutenticacao, (req, res) => {
   const sqlFinos = 'SELECT *FROM formularios';
   const sqlOperadora = 'SELECT *FROM operadora';
   const sqlVigencias = 'SELECT *FROM vigencias'
@@ -661,94 +661,94 @@ app.get('/finos', verificaAutenticacao, (req,res) => {
   let operadoras = [];
   let vigencias = [];
   let entidades = [];
-  db.query(sqlFinos,(err ,BDfinos)=>{
-    if(err){
+  db.query(sqlFinos, (err, BDfinos) => {
+    if (err) {
       console.error('Erro na busca dos formulários no BD', err)
     }
     finos = BDfinos;
     db.query(sqlOperadora, (err, BDoperadoras) => {
-      if(err){
+      if (err) {
         console.error('Erro na busca das Operadoras no BD', err)
       }
       operadoras = BDoperadoras;
       db.query(sqlVigencias, (err, BDvigencias) => {
-        if(err){
+        if (err) {
           console.error('Erro na busca das vigências no BD', err)
         }
         vigencias = BDvigencias;
-        db.query(sqlEntidades, (err, BDentidades) =>{
-          if(err){
+        db.query(sqlEntidades, (err, BDentidades) => {
+          if (err) {
             console.error("Erro na busca das Entidades", err)
           }
           entidades = BDentidades
-          db.query(sqlEntidades_formularios, (err, BDentidades_formularios) =>{
-            if(err){
+          db.query(sqlEntidades_formularios, (err, BDentidades_formularios) => {
+            if (err) {
               console.error("Erro ao buscar a relação de entidades e formularios", err)
             }
             entidades_formularios = BDentidades_formularios;
-            res.render('finos', { finos:finos, operadoras:operadoras, vigencias:vigencias, entidades:entidades, entidadesform:entidades_formularios })
+            res.render('finos', { finos: finos, operadoras: operadoras, vigencias: vigencias, entidades: entidades, entidadesform: entidades_formularios })
           })
-       })
+        })
       })
     })
   })
-}); 
-
-app.get('/fino/:id', async (req, res) =>{
-const idFino = req.params.id;
-
-const sqlFino = 'SELECT * FROM formularios WHERE id=?';
-const sqlVigencias = 'SELECT * FROM vigencias WHERE id_fino=?';
-const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
-const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
-const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
-const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
-const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
-
-const queryPromise = util.promisify(db.query).bind(db);
-
-try {
-  const [finoResult] = await queryPromise(sqlFino, [idFino]);
-
-  if (!finoResult) {
-    return res.status(404).json({ message: 'Fino não encontrado' });
-  }
-
-  const [vigenciasResult] = await queryPromise(sqlVigencias, [idFino]);
-  const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
-  const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
-  const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
-  const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
-  
-
-  const produtoIds = produtosResult.map(produto => produto.id);
-
-  const procedimentosPorProduto = {};
-
-  for (const produtoId of produtoIds) {
-    const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
-    procedimentosPorProduto[produtoId] = procedimentosProduto;
-  }
-
-  res.render('finoIndividual', 
-    { 
-      fino: finoResult,
-      vigencias: vigenciasResult,
-      operadora: operadoraResult,
-      produtos: produtosResult,
-      procedimentos: procedimentosPorProduto,
-      contatos: contatosResult,
-      entidades: entidadesResult 
-    })
-} catch (error) {
-  console.error('Erro ao buscar informações:', error);
-  res.status(500).json({ message: 'Erro interno do servidor' });
-}
 });
 
-app.get('/finojson/:id', async (req, res) =>{
+app.get('/fino/:id', async (req, res) => {
   const idFino = req.params.id;
-  
+
+  const sqlFino = 'SELECT * FROM formularios WHERE id=?';
+  const sqlVigencias = 'SELECT * FROM vigencias WHERE id_fino=?';
+  const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
+  const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
+  const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
+  const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+
+  const queryPromise = util.promisify(db.query).bind(db);
+
+  try {
+    const [finoResult] = await queryPromise(sqlFino, [idFino]);
+
+    if (!finoResult) {
+      return res.status(404).json({ message: 'Fino não encontrado' });
+    }
+
+    const vigenciasResult = await queryPromise(sqlVigencias, [idFino]);
+    const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
+    const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
+    const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
+    const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
+
+
+    const produtoIds = produtosResult.map(produto => produto.id);
+
+    const procedimentosPorProduto = {};
+
+    for (const produtoId of produtoIds) {
+      const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
+      procedimentosPorProduto[produtoId] = procedimentosProduto;
+    }
+
+    res.render('finoIndividual',
+      {
+        fino: finoResult,
+        vigencias: vigenciasResult,
+        operadora: operadoraResult,
+        produtos: produtosResult,
+        procedimentos: procedimentosPorProduto,
+        contatos: contatosResult,
+        entidades: entidadesResult
+      })
+  } catch (error) {
+    console.error('Erro ao buscar informações:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+app.get('/finojson/:id', async (req, res) => {
+  const idFino = req.params.id;
+
   const sqlFino = 'SELECT * FROM formularios WHERE id=?';
   const sqlVigencias = 'SELECT * FROM vigencias WHERE id_fino=?';
   const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
@@ -757,15 +757,15 @@ app.get('/finojson/:id', async (req, res) =>{
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
   const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
   const queryPromise = util.promisify(db.query).bind(db);
-  
+
   try {
     const [finoResult] = await queryPromise(sqlFino, [idFino]);
-  
+
     if (!finoResult) {
       return res.status(404).json({ message: 'Fino não encontrado' });
     }
-  
-    const [vigenciasResult] = await queryPromise(sqlVigencias, [idFino]);
+
+    const vigenciasResult = await queryPromise(sqlVigencias, [idFino]);
     const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
     const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
     const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
@@ -779,22 +779,22 @@ app.get('/finojson/:id', async (req, res) =>{
       const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
       procedimentosPorProduto[produtoId] = procedimentosProduto;
     }
-  
-    res.send( 
-      { 
+
+    res.send(
+      {
         fino: finoResult,
         vigencias: vigenciasResult,
         operadora: operadoraResult,
         produtos: produtosResult,
         procedimentos: procedimentosPorProduto,
         contatos: contatosResult,
-        entidades: entidadesResult 
+        entidades: entidadesResult
       })
   } catch (error) {
     console.error('Erro ao buscar informações:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
-  });
+});
 
 app.post('/editar-fino/:id', async (req, res) => {
   const idFino = req.params.id;
@@ -825,16 +825,16 @@ app.post('/editar-fino/:id', async (req, res) => {
     await queryPromisse(sqlDeleteVigencias, [idFino]);
 
     await queryPromisse(
-      sqlFinoUpdate, 
-        [
-          formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino, formData.modalidade, idFino
-        ]
-      );
+      sqlFinoUpdate,
+      [
+        formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino, formData.modalidade, idFino
+      ]
+    );
 
-    if(Array.isArray(vigencias)) {
-      for (const vigencia of vigencias){
+    if (Array.isArray(vigencias)) {
+      for (const vigencia of vigencias) {
         await queryPromisse(
-          sqlVigenciasInsert, 
+          sqlVigenciasInsert,
           [
             idFino,
             vigencia.iniciodavigencia,
@@ -845,8 +845,8 @@ app.post('/editar-fino/:id', async (req, res) => {
       }
     }
 
-    if(Array.isArray(entidades)) {
-      for (const entidade of entidades){
+    if (Array.isArray(entidades)) {
+      for (const entidade of entidades) {
         await queryPromisse(
           sqlEntidadesInsert,
           [
@@ -857,8 +857,8 @@ app.post('/editar-fino/:id', async (req, res) => {
       }
     }
 
-    res.cookie('alertSucess', 'Fino atualizado com sucesso', {maxAge: 3000});
-    res.status(200).json({ message: 'Fino atualizado com sucesso'});
+    res.cookie('alertSucess', 'Fino atualizado com sucesso', { maxAge: 3000 });
+    res.status(200).json({ message: 'Fino atualizado com sucesso' });
   } catch (error) {
     console.error('Erro ao atualizar fino:', error);
     res.cookie('alertError', 'Erro ao atualizar fino, verifique e tente novamente', { maxAge: 3000 });
@@ -874,17 +874,17 @@ app.delete('/excluir-fino/:id', (req, res) => {
   const sqlDeleteVigencias = 'DELETE FROM vigencias WHERE id_fino=?'
 
   db.query(sqlDeleteVigencias, [idFino], (erro, result) => {
-    if(erro){
+    if (erro) {
       console.error('Erro ao deletar vigências ateladas ao formulário', erro)
     }
-    db.query(sqlDeleteEntidadesRelacionadas, [idFino], (erro, result) =>{
-      if(erro){
+    db.query(sqlDeleteEntidadesRelacionadas, [idFino], (erro, result) => {
+      if (erro) {
         console.error('Erro ao excluir o relacionamento com as entidades', erro)
       }
       db.query(sqlDeleteFino, [idFino], (erro, result) => {
-        if(erro){
+        if (erro) {
           console.error('Erro ao excluir formulário', erro)
-          res.status(500).json({ message: 'Erro ao excluir formulário'});
+          res.status(500).json({ message: 'Erro ao excluir formulário' });
         } else {
           res.cookie('alertSuccess', 'Fino excluído com sucesso', { maxAge: 3000 })
           res.status(200).json({ message: 'Fino excluído com sucesso' });
@@ -909,36 +909,36 @@ app.post('/cadastrar-fino', (req, res) => {
   const sqlEntidades = 'INSERT INTO formularios_entidades (formulario_id, entidade_id) VALUES (?, ?)'
 
 
-  db.query(sqlFino, [formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino ], (error, result) => {
-    if(error) {
+  db.query(sqlFino, [formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino], (error, result) => {
+    if (error) {
       console.error(`Error ao cadastrar o Fino`, error);
-      res.cookie('alertError', 'Erro ao cadastrar Fino, verifique e tente novamente', { maxage: 3000});
-      res.status(500).json({ message: 'Erro interno do servidor'});
+      res.cookie('alertError', 'Erro ao cadastrar Fino, verifique e tente novamente', { maxage: 3000 });
+      res.status(500).json({ message: 'Erro interno do servidor' });
     }
 
     const idFino = result.insertId;
 
-      if(Array.isArray(vigencias)) {
-        vigencias.forEach((vigencia) => {
-          db.query(sqlVigencia, [idFino, vigencia.iniciodavigencia, vigencia.movimentacao, vigencia.datafaturamento], (error, result) => {
-            if(error) {
-              console.error('Erro ao cadastrar vigencias', error);
-            }
-            if(Array.isArray(entidades)) {
-              entidades.forEach((entidade) => {
-                db.query(sqlEntidades, [idFino, entidade.idEntidade ], (error, result) =>{
-                  if(error){
-                    console.error('Erro ao relacionar entidades', error);
-                  }
-                })
-             })
-            }
-          });
-        })
-      }
-    });
-  res.cookie('alertSuccess', 'Fino cadastrado com Sucesso', { maxAge: 3000});
-  res.status(200).json({ message: 'Novo Fino criado com sucesso'})
+    if (Array.isArray(vigencias)) {
+      vigencias.forEach((vigencia) => {
+        db.query(sqlVigencia, [idFino, vigencia.iniciodavigencia, vigencia.movimentacao, vigencia.datafaturamento], (error, result) => {
+          if (error) {
+            console.error('Erro ao cadastrar vigencias', error);
+          }
+          if (Array.isArray(entidades)) {
+            entidades.forEach((entidade) => {
+              db.query(sqlEntidades, [idFino, entidade.idEntidade], (error, result) => {
+                if (error) {
+                  console.error('Erro ao relacionar entidades', error);
+                }
+              })
+            })
+          }
+        });
+      })
+    }
+  });
+  res.cookie('alertSuccess', 'Fino cadastrado com Sucesso', { maxAge: 3000 });
+  res.status(200).json({ message: 'Novo Fino criado com sucesso' })
 });
 
 app.get('/gerar', (req, res) => {

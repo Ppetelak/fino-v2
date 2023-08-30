@@ -24,7 +24,17 @@
 </head>
 <body>
     <main>
-        <div class="content">
+        <div class="navbar ocultar">
+            <a href="#">Topo</a>
+            <a href="#dadosOperadora">Dados Operadora</a>
+            <a href="#produtos">Produtos</a>
+            <a href="#entidades">Entidades</a>
+            <a href="#vigencias">Vigências</a>
+            <a href="#documentacao">Documentação</a>
+            <a href="#marketing">Marketing</a>
+            <a href="#acoes">Ações</a>
+        </div>
+        <div class="content imprimir">
             <div class="row cabecalho">
                 <h2>Formulário de Implantação de novas Operadoras - Linha Master </h2>
                 <div class="col-md-3">
@@ -60,7 +70,7 @@
                     </script>
                 </div>
             </div>
-            <div class="row dadosOperadora">
+            <div class="row dadosOperadora" id="dadosOperadora">
                 <h3> Dados da Operadora</h3>
                 <div class="tm-50">
                     <p><strong>Razão Social: </strong> <span> <%= operadora.razaosocial %> </span> <button class="copy-button"><i class="bi bi-back"></i></button></p>
@@ -80,9 +90,31 @@
                 </div>
                 <div class="row">
                     <h4> Contatos Operadora </h4>
+                    <table class="table">
+                        <% if(contatos.length > 0){ %>
+                        <thead>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Cargo</th>
+                        </thead>
+                        <tbody>
+                        <%    contatos.forEach(function (contato){ %>
+                            <tr>
+                                <td> <%= contato.nome %> </td>
+                                <td> <%= contato.email %> </td>
+                                <td> <%= contato.telefone %> </td>
+                                <td> <%= contato.cargo %> </td>
+                            </tr>
+                       <% }) %>
+                        </tbody>
+                    <% } else{ %>
+                        <p> Sem contatos vinculados a Operadora </p>
+                    <% } %>
+                    </table>
                 </div>
             </div>
-            <div class="row produtos">
+            <div class="row produtos" id="produtos">
                 <h3> Produtos </h3>
                 <% produtos.forEach(function (produto) { %>
                 <div class="row produto" data-id="<%= produto.id %>">
@@ -287,7 +319,7 @@
                 </div>             
                 <% })%>
             </div>
-            <div class="row entidades"> 
+            <div class="row entidades" id="entidades"> 
                 <h3> Entidades Aprovadas </h3>
                 <table class="table">
                     <% if(entidades.length > 0) { %>
@@ -325,16 +357,116 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row vigencias">
+            <div class="row vigencias" id="vigencias">
                 <h3> Vigências </h3>
+                <div class="row">
+                    <p><strong>Aniversário de Contrato: </strong> <span> <%= fino.aniversariocontrato %> </span> <button class="copy-button"><i class="bi bi-back"></i></button></p>
+                </div>
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <th> Início </th>
+                            <th> Movimentação </th>
+                            <th> Faturamento </th>
+                        </thead>
+                        <tbody>
+                            <% vigencias.forEach(function (vigencia){ %> 
+                                <tr>
+                                    <td> <%= vigencia.iniciodavigencia %> </td>
+                                    <td> <%= vigencia.movimentacao %> </td>
+                                    <td> <%= vigencia.datafaturamento %> </td>
+                                </tr>
+                           <% }); %>
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
-            <div class="row documentacao">
-                <h3> Documentação e Contrato </h3>
+            <div class="row documentacao" id="documentacao">
+                <h3> Documentação - Contrato - Propostas </h3>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> A operadora requisitou a documentação para análise de propostas? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.docoperadora %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> O contrato foi assinado pela Operadora? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.assOperadora %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> O contrato foi assinado pela Administradora? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.assAdministradora %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> Forma de envio das propostas: </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.enviopropostas %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> Layout das propostas: </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.layoutpropostas %>
+                    </div>
+                </div>
             </div>
-            <div class="row outros">
-                <h3> Outros </h3>
+            <div class="row marketing" id="marketing">
+                <h3> Marketing </h3>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> O logo da operadora foi enviado ao marketing? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.logoOperadora %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> O manual da marca foi enviado ao marketing? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.manualmarca %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="tm-40">
+                        <strong> Possui modelo de declaração de saúde? </strong>
+                    </div>
+                    <div class="tm-20">
+                        <%= fino.modelodeclaracao %>
+                    </div>
+                </div>
             </div>
+            <div class="row observacoes">
+                <h3> Observações gerais </h3>
+                <div class="row">
+                    <div class="tm-100">
+                        <strong> Observações gerais sobre a implantação, informações de contrato, marketing, negociações etc ..</strong>
+                        <p> <%= fino.obsFino %> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content footer ocultar" id="acoes">
+            <button class="btn btn-primary" type="button" id="pdfImprimir"><i class="bi bi-filetype-pdf"></i> </i> GERAR PDF/IMPRIMIR </button>
+            <input type="hidden" id="idFino" value="<%= fino.id %>">
+            <button class="btn btn-primary" type="button" id="baixarJson">   <i class="bi bi-filetype-json"></i> GERAR JSON </button>
+            <button class="btn btn-primary" type="button" id="copiarLink"> <i class="bi bi-share-fill"> </i>COPIAR LINK </button>
         </div>
         
     </main>
