@@ -506,8 +506,8 @@
                                     </td>
                                     <td>
                                         <script>
-                                            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                                            const dataAtualizacao = new Date('<%= fino.dataatualizacao %>').toLocaleDateString('pt-BR', options);
+                                            var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                                            var dataAtualizacao = new Date('<%= fino.dataatualizacao %>').toLocaleDateString('pt-BR', options);
                                             document.write(dataAtualizacao);
                                         </script>
                                     </td>

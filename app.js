@@ -53,6 +53,14 @@ const db = mysql.createConnection({
   port: '3306'
 });
 
+/* const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'finoUser',
+  password: 'Kl6zu075*',
+  database: 'fino',
+  port: '3306'
+}); */
+
 
 db.connect((error) => {
   if (error) {
@@ -108,16 +116,12 @@ app.post('/login-verifica', (req, res) => {
     // Autenticação bem-sucedida, enviar uma resposta de sucesso
     req.session.usuario = user;
     //res.status(200).json({ message: 'Autenticação bem-sucedida' });
-    res.redirect('/inicio')
+    res.redirect('/operadoras')
   });
 });
 
 app.get('/', (req, res) => {
   res.render('login');
-})
-
-app.get('/inicio', (req, res) => {
-  res.render('formulario');
 })
 
 app.get('/logout', (req, res) => {
@@ -802,10 +806,6 @@ app.post('/editar-fino/:id', async (req, res) => {
   const entidades = req.body.entidades;
   const vigencias = req.body.vigencias;
 
-  console.log(formData)
-  console.log(entidades)
-  console.log(vigencias)
-
   const partesData = formData.dataAtual.split('/');
   const dataFormatada = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
 
@@ -857,7 +857,7 @@ app.post('/editar-fino/:id', async (req, res) => {
       }
     }
 
-    res.cookie('alertSucess', 'Fino atualizado com sucesso', { maxAge: 3000 });
+    res.cookie('alertSuccess', 'Fino atualizado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Fino atualizado com sucesso' });
   } catch (error) {
     console.error('Erro ao atualizar fino:', error);

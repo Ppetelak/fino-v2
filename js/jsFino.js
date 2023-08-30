@@ -405,7 +405,7 @@ $('.editar-form').submit(function (e) {
         data: ({ formData: formData, entidades: selectedEntidades, vigencias:vigencias }),
         success: function (response) {
             console.log('Sucesso', response)
-            //location.reload();
+            location.reload();
         },
         error: function (err) {
             showMessageError('Erro ao enviar os dados:', err);
