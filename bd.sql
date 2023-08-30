@@ -40,6 +40,7 @@ CREATE TABLE produtos (
     fx10comercial DECIMAL(10, 2) NOT NULL,
     observacoes VARCHAR(500),
     id_operadora INT,
+    valorSpread
     FOREIGN KEY (id_operadora) REFERENCES operadora(id)
 )
 
@@ -88,20 +89,6 @@ CREATE TABLE procedimentos (
 CREATE TABLE formularios(
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_operadora INT, 
-    datacriacao DATE, 
-    dataatualizacao DATE,
-    administradora ENUM('Classe Administradora', 'Compar', 'Mount Hermon'),
-    origem ENUM('Estipulante', 'Subestipulante'),
-    enviopropostas ENUM('Preenchimento direto no portal da operadora', 'Envio por e-mail'),
-    layoutpropostas ENUM('Padrão da Operadora', 'Sugerido pela Administradora'),
-    analisedoc ENUM('Sim', 'Não'),
-    aniversariocontrato VARCHAR(10)
-
-)
-
-CREATE TABLE formularios(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_operadora INT, 
     numero_fino INT,
     modalidade ENUM('Estipulante', 'Subestipulante'),
     datacriacao DATE, 
@@ -114,7 +101,7 @@ CREATE TABLE formularios(
     negobs VARCHAR (1300),
     docoperadora ENUM('Sim', 'Não'),
     assOperadora ENUM('Sim', 'Não'),
-    assAdministradora ENUM ('Sim','Não')
+    assAdministradora ENUM ('Sim','Não'),
     aniversariocontrato DATE,
     enviopropostas ENUM('Preenchimento direto no portal da operadora', 'Envio por e-mail'),
     layoutpropostas ENUM('Padrão da Operadora', 'Sugerido pela Administradora'),
@@ -141,4 +128,15 @@ CREATE TABLE entidades (
     publico VARCHAR(60),
     documentos VARCHAR (100),
     taxa DECIMAL(10, 2) NOT NULL,
+)
+
+CREATE TABLE `formularios_entidades` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `formulario_id` int NOT NULL,
+  `entidade_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `formulario_id` (`formulario_id`),
+  KEY `entidade_id` (`entidade_id`),
+  CONSTRAINT `formularios_entidades_ibfk_1` FOREIGN KEY (`formulario_id`) REFERENCES `formularios` (`id`),
+  CONSTRAINT `formularios_entidades_ibfk_2` FOREIGN KEY (`entidade_id`) REFERENCES `entidades` (`id`)
 )

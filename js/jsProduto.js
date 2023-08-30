@@ -55,10 +55,10 @@ function getCookieValue(name) {
     return '';
 }
 
-if (document.cookie.includes('alertSucess')) {
-    const alertSucess = getCookieValue('alertSucess');
+if (document.cookie.includes('alertSuccess')) {
+    const alertSucess = getCookieValue('alertSuccess');
     showMessage(alertSucess);
-    document.cookie = 'alertSucess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'alertSuccess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 }
 
 if (document.cookie.includes('alertError')) {
@@ -223,8 +223,10 @@ function calcularTabelaComercial($container) {
                 const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
                 if (terceiraCasaDecimal > 0) {
                     $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
+                    $fxComercialInput.attr('value', (valorArredondado + 0.01).toFixed(2));
                 } else {
                     $fxComercialInput.val(valorArredondado.toFixed(2));
+                    $fxComercialInput.attr('value', valorArredondado.toFixed(2));
                 }
             }
             else {
@@ -235,6 +237,7 @@ function calcularTabelaComercial($container) {
         alert('Insira um valor numérico válido no campo Valor de Spread.');
     }
 }
+
 
 $('#cadastrar-produto').click(function (e) {
     e.preventDefault();
