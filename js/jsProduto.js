@@ -34,6 +34,17 @@ $(document).ready(function () {
                 $(this).prop('selected', true);
             }
         });
+        $('.cooparticipacao').each(function () {
+            const tipoFranquiaSelected = $(this).find('[name="tipofranquiaValue"]').val();
+            const tipofranquiaSelect = $(this).find('.tipofranquia-select');
+            
+            tipofranquiaSelect.find('option').each(function () {
+                if ($(this).val() === tipoFranquiaSelected) {
+                    $(this).prop('selected', true);
+                }
+            });
+        });
+        
     });
 });
 
@@ -115,32 +126,42 @@ $('.adicionar-procedimento').click(function () {
         <textarea name="procedimentodescricao" id="procedimentodescricao" required class="form-control" rows="1"></textarea>
     </div>
     <div class="mb-3 row cooparticipacao">
-        <h4> Coparticipação e Carências</h4>
-        <div class="col-sm-3">
-            <label for="procedimentocopay" class="form-label">Valor Coparticipação <span>(%)</span></label>
-            <input type="number" name="procedimentocopay" id="procedimentocopay" placeholder="Valor (%)"
-                required class="form-control">
+    <h4> Coparticipação e Carências</h4>
+    <div class="col-sm-3">
+        <label for="procedimentocopay" class="form-label">Valor Coparticipação
+            <span>(%)</span></label>
+        <input type="number" name="procedimentocopay" id="procedimentocopay"
+            placeholder="Valor (%)" class="form-control">
+    </div>
+    <div class="col-sm-3">
+        <label for="procedimentolimitecopay" class="form-label">Limite</label>
+        <div class="input-group">
+            <span class="input-group-text">R$</span>
+            <input type="number" name="procedimentolimitecopay" id="procedimentolimitecopay"
+                placeholder="Limite (R$)" class="form-control">
         </div>
-        <div class="col-sm-3">
-            <label for="procedimentolimitecopay" class="form-label">Limite</label>
-            <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="number" name="procedimentolimitecopay" id="procedimentolimitecopay"
-                    placeholder="Limite (R$)" required class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <label for="procedimentofranquiacopay" class="form-label">Franquia</label>
-            <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay" required class="form-control" placeholder="Franquia (R$)">
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <label for="procedimentolimitecarencia" class="form-label">Limite Carência <span>(dias)</span></label>
-            <input type="number" name="procedimentolimitecarencia" id="procedimentolimitecarencia"
-                required class="form-control">
-        </div>
+    </div>
+    <div class="col-sm-1">
+        <label for="tipofranquia" class="form-label">Franquia</label>
+        <select name="tipofranquia" id="tipofranquia"
+        class="form-control">
+            <option value="" disabled selected>Selecionar</option>
+            <option value="%">%</option>
+            <option value="R$">R$
+            </option>
+    </select>
+    </div>
+    <div class="col-sm-2">
+        <label for="procedimentofranquiacopay" class="form-label">Franquia</label>
+        <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay"
+                class="form-control" placeholder="(R$ ou %)">
+    </div>
+    <div class="col-sm-3">
+        <label for="procedimentolimitecarencia" class="form-label">Limite Carência
+            <span>(dias)</span></label>
+        <input type="number" name="procedimentolimitecarencia" id="procedimentolimitecarencia"
+            class="form-control">
+    </div>
     </div>
     <div class=" row mb-3">
         <div class="col-sm-6">
@@ -250,6 +271,7 @@ $('#cadastrar-produto').click(function (e) {
             descricao: $(this).find('[name="procedimentodescricao"]').val(),
             copay: $(this).find('[name="procedimentocopay"]').val(),
             limitecopay: $(this).find('[name="procedimentolimitecopay"]').val(),
+            tipofranquia: $(this).find('[name="tipofranquia"]').val(),
             franquiacopay: $(this).find('[name="procedimentofranquiacopay"]').val(),
             limitecarencia: $(this).find('[name="procedimentolimitecarencia"]').val(),
             reducaocarencia: $(this).find('[name="procedimentoreducaocarencia"]').val(),
@@ -379,6 +401,7 @@ $('.editar-form').submit(function (e) {
             descricao: procedimento.find('[name="procedimentodescricao"]').val(),
             copay: procedimento.find('[name="procedimentocopay"]').val(),
             limitecopay: procedimento.find('[name="procedimentolimitecopay"]').val(),
+            tipofranquia: procedimento.find('[name="tipofranquia"]').val(),
             franquiacopay: procedimento.find('[name="procedimentofranquiacopay"]').val(),
             limitecarencia: procedimento.find('[name="procedimentolimitecarencia"]').val(),
             reducaocarencia: procedimento.find('[name="procedimentoreducaocarencia"]').val(),

@@ -45,21 +45,21 @@ app.use(session({
 
 /*CONEXÃO COM BANCO DE DADOS */
 
-/* const db = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'pmp078917',
   database: 'fino',
   port: '3306'
-}); */
+});
 
-const db = mysql.createConnection({
+/* const db = mysql.createConnection({
   host: 'localhost',
   user: 'finoUser',
   password: 'Kl6zu075*',
   database: 'fino',
   port: '3306'
-});
+}); */
 
 
 db.connect((error) => {
@@ -514,7 +514,7 @@ app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
   const { procedimentos } = req.body;
 
   const sqlProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?)';
-  const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres) VALUES (?,?,?,?,?,?,?,?)';
+  const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres, tipofranquia) VALUES (?,?,?,?,?,?,?,?,?)';
 
   db.query(sqlProduto, [formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.valorSpread, formData.idOperadora], (error, result) => {
     if (error) {
@@ -527,7 +527,7 @@ app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
 
     if (Array.isArray(procedimentos)) {
       procedimentos.forEach((procedimento) => {
-        db.query(sqlProcedimento, [idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere], (error, result) => {
+        db.query(sqlProcedimento, [idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere, procedimento.tipofranquia], (error, result) => {
           if (error) {
             console.error('Erro ao cadastrar procedimento', error);
           }
@@ -568,7 +568,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
     'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, observacoes=? WHERE id=? AND id_operadora=?';
 
   const sqlProcedimentoInsert =
-    `INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres) VALUES (?,?,?,?,?,?,?,?)`;
+    `INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres, tipofranquia) VALUES (?,?,?,?,?,?,?,?,?)`;
 
   const sqlProcedimentoDelete =
     'DELETE FROM procedimentos WHERE id_produto=?';
@@ -593,7 +593,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
         await queryPromise(
           sqlProcedimentoInsert,
           [
-            idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere
+            idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere, procedimento.tipofranquia
           ]
         );
       }

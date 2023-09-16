@@ -63,10 +63,9 @@
                     <div class="mb-3">
                         <label for="contratoplano" class="form-label">Contratação:</label>
                         <select name="contratoplano" id="contratoplano" class="form-control" required>
-                            <option value="" disabled selected hidden>Selecionar</option>
                             <option value="Individual ou Familiar">Individual ou familiar</option>
                             <option value="Coletivo empresarial">Coletivo empresarial</option>
-                            <option value="Coletivo por Adesão">Coletivo por adesão</option>
+                            <option value="Coletivo por Adesão" selected>Coletivo por adesão</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -86,8 +85,10 @@
                         <label for="cooparticipacao" class="form-label">Cooparticipação</label>
                         <select name="cooparticipacao" id="cooparticipacao" class="form-control" required>
                             <option value="" disabled selected hidden>Selecionar</option>
-                            <option value="Com Cooparticipação">Com Cooparticipação</option>
-                            <option value="Sem cooparticipação">Sem Cooparticipação</option>
+                            <option value="Com Coparticipação">Com Coparticipação</option>
+                            <option value="Sem coparticipação">Sem Coparticipação</option>
+                            <option value="Franquia">Franquia</option>
+                            <option value="Coparticipação + Franquia">Coparticipação + Franquia</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -132,7 +133,18 @@
                 <div class="row">
                     <h3> Condições de dependentes conforme o parentesco</h3>
                     <div class="mb-3 row">
-                        <label for="conjuges" class="col-sm-3 col-form-label">Conjugês</label>
+                        <div class="col-sm-4">
+                            <h5> Parentesco </h5>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5> Condições </h5>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5> Documentos </h5>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="conjuges" class="col-sm-3 col-form-label">Conjugê/Companheiro(a)</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_conjuge" id="condicoesdependentes_conjuge"
                                 placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
@@ -176,7 +188,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
+                        <label for="filhos" class="col-sm-3 col-form-label">Outros</label>
                         <div class="col-sm-4">
                             <input type="text" name="condicoesdependentes_outros" id="condicoesdependentes_outros"
                                 placeholder="Condições" title="Caso não haja, deixe em branco." class="form-control">
@@ -369,7 +381,8 @@
                         <div class="col-sm-4">
                             <div class="input-group">
                                 <span class="input-group-text">(%)</span>
-                                <input type="number" name="valorSpread" id="valorSpread" class="form-control valorSpread">
+                                <input type="number" name="valorSpread" id="valorSpread"
+                                    class="form-control valorSpread">
                             </div>
                         </div>
                         <div class="col-sm-4">
@@ -399,29 +412,36 @@
                                 <label for="procedimentocopay" class="form-label">Valor Coparticipação
                                     <span>(%)</span></label>
                                 <input type="number" name="procedimentocopay" id="procedimentocopay"
-                                    placeholder="Valor (%)" required class="form-control">
+                                    placeholder="Valor (%)" class="form-control">
                             </div>
                             <div class="col-sm-3">
                                 <label for="procedimentolimitecopay" class="form-label">Limite</label>
                                 <div class="input-group">
                                     <span class="input-group-text">R$</span>
                                     <input type="number" name="procedimentolimitecopay" id="procedimentolimitecopay"
-                                        placeholder="Limite (R$)" required class="form-control">
+                                        placeholder="Limite (R$)" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-1">
+                                <label for="tipofranquia" class="form-label">Franquia</label>
+                                <select name="tipofranquia" id="tipofranquia"
+                                class="form-control">
+                                    <option value="" disabled selected>Selecionar</option>
+                                    <option value="%">%</option>
+                                    <option value="R$">R$
+                                    </option>
+                            </select>
+                            </div>
+                            <div class="col-sm-2">
                                 <label for="procedimentofranquiacopay" class="form-label">Franquia</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">R$</span>
-                                    <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay"
-                                        required class="form-control" placeholder="Franquia (R$)">
-                                </div>
+                                <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay"
+                                        class="form-control" placeholder="(R$ ou %)">
                             </div>
                             <div class="col-sm-3">
                                 <label for="procedimentolimitecarencia" class="form-label">Limite Carência
                                     <span>(dias)</span></label>
                                 <input type="number" name="procedimentolimitecarencia" id="procedimentolimitecarencia"
-                                    required class="form-control">
+                                    class="form-control">
                             </div>
                         </div>
                         <div class=" row mb-3">
@@ -518,7 +538,7 @@
                                                     <option value="Individual ou Familiar">Individual ou familiar
                                                     </option>
                                                     <option value="Coletivo empresarial">Coletivo empresarial</option>
-                                                    <option value="Coletivo por Adesão">Coletivo por adesão</option>
+                                                    <option value="Coletivo por adesão">Coletivo por adesão</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -531,7 +551,7 @@
                                                     <option value="Nacional">Nacional</option>
                                                     <option value="Grupo de estados">Grupo de estados</option>
                                                     <option value="Estadual">Estadual</option>
-                                                    <option value="Grupo de municípios">Grupo de municípios</option>
+                                                    <option value="Grupo de Municípios">Grupo de municípios</option>
                                                     <option value="Municipal">Municipal</option>
                                                 </select>
                                             </div>
@@ -544,8 +564,11 @@
                                                 <select name="cooparticipacao" id="cooparticipacao" class="form-control"
                                                     required>
                                                     <option value="" disabled selected hidden>Selecionar</option>
-                                                    <option value="Com Cooparticipação">Com Cooparticipação</option>
-                                                    <option value="Sem Cooparticipação">Sem Cooparticipação</option>
+                                                    <option value="Com Coparticipação">Com Coparticipação</option>
+                                                    <option value="Sem coparticipação">Sem Coparticipação</option>
+                                                    <option value="Franquia">Franquia</option>
+                                                    <option value="Coparticipação + Franquia">Coparticipação + Franquia
+                                                    </option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -609,7 +632,19 @@
                                         <div class="row">
                                             <h3> Condições de dependentes conforme o parentesco</h3>
                                             <div class="mb-3 row">
-                                                <label for="conjuges" class="col-sm-3 col-form-label">Conjugês</label>
+                                                <div class="col-sm-4">
+                                                    <h5> Parentesco </h5>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <h5> Condições </h5>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <h5> Documentos </h5>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="conjuges"
+                                                    class="col-sm-3 col-form-label">Conjugê/Companheiro(a)</label>
                                                 <div class="col-sm-4">
                                                     <input type="text" name="condicoesdependentes_conjuge"
                                                         id="condicoesdependentes_conjuge" placeholder="Condições"
@@ -669,7 +704,7 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
-                                                <label for="filhos" class="col-sm-3 col-form-label">Pais</label>
+                                                <label for="filhos" class="col-sm-3 col-form-label">Outros</label>
                                                 <div class="col-sm-4">
                                                     <input type="text" name="condicoesdependentes_outros"
                                                         id="condicoesdependentes_outros" placeholder="Condições"
@@ -799,7 +834,8 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria6" id="fxetaria6"
-                                                            class="form-control fxetaria" value="<%= produto.fx6 %>" disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx6 %>"
+                                                            disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -818,7 +854,8 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria7" id="fxetaria7"
-                                                            class="form-control fxetaria" value="<%= produto.fx7 %>" disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx7 %>"
+                                                            disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -837,7 +874,8 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria8" id="fxetaria8"
-                                                            class="form-control fxetaria" value="<%= produto.fx8 %>" disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx8 %>"
+                                                            disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -856,7 +894,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria9" id="fxetaria9"
-                                                            class="form-control fxetaria" value="<%= produto.fx9 %>" >
+                                                            class="form-control fxetaria" value="<%= produto.fx9 %>">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -896,7 +934,8 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">(%)</span>
                                                         <input type="number" name="valorSpread" id="valorSpread"
-                                                            class="form-control valorSpread" value="<%= produto.valorSpread %>">
+                                                            class="form-control valorSpread"
+                                                            value="<%= produto.valorSpread %>">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -934,7 +973,7 @@
                                                             <label for="procedimentocopay" class="form-label">Valor
                                                                 Coparticipação <span>(%)</span></label>
                                                             <input type="number" name="procedimentocopay"
-                                                                id="procedimentocopay" placeholder="Valor (%)" required
+                                                                id="procedimentocopay" placeholder="Valor (%)"
                                                                 class="form-control"
                                                                 value="<%= procedimento.valorcop %>">
                                                         </div>
@@ -945,28 +984,35 @@
                                                                 <span class="input-group-text">R$</span>
                                                                 <input type="number" name="procedimentolimitecopay"
                                                                     id="procedimentolimitecopay"
-                                                                    placeholder="Limite (R$)" required
+                                                                    placeholder="Limite (R$)"
                                                                     class="form-control"
                                                                     value="<%= procedimento.limitecop %>">
                                                             </div>
                                                         </div>
-                                                        <div class="col-sm-3">
+                                                        <div class="col-sm-1">
+                                                            <input type="hidden" name="tipofranquiaValue" value="<%= procedimento.tipofranquia %>">
+                                                            <label for="tipofranquia" class="form-label">Franquia</label>
+                                                            <select name="tipofranquia" class="form-control tipofranquia-select">
+                                                                <option value="" disabled selected>Selecionar</option>
+                                                                <option value="%">%</option>
+                                                                <option value="R$">R$
+                                                                </option>
+                                                        </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
                                                             <label for="procedimentofranquiacopay"
                                                                 class="form-label">Franquia</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text">R$</span>
                                                                 <input type="text" name="procedimentofranquiacopay"
-                                                                    id="procedimentofranquiacopay" required
-                                                                    class="form-control" placeholder="Franquia (R$)"
+                                                                    id="procedimentofranquiacopay"
+                                                                    class="form-control" placeholder="(% ou R$)"
                                                                     value="<%= procedimento.franquiacop %>">
-                                                            </div>
                                                         </div>
                                                         <div class="col-sm-3">
                                                             <label for="procedimentolimitecarencia"
                                                                 class="form-label">Limite Carência
                                                                 <span>(dias)</span></label>
                                                             <input type="number" name="procedimentolimitecarencia"
-                                                                id="procedimentolimitecarencia" required
+                                                                id="procedimentolimitecarencia"
                                                                 class="form-control"
                                                                 value="<%= procedimento.limitecarenciadias %>">
                                                         </div>
