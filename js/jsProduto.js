@@ -114,82 +114,6 @@ $('.editar-btn').click(function () {
     formularioAberto = !formularioAberto;
 })
 
-$('.adicionar-procedimento').click(function () {
-    const $button = $(this)
-    var divProcedimentos = $(this).siblings('.procedimentos');
-
-    numProcedimentos++;
-
-    const novoProcedimento = `<div class="row procedimento" id="procedimento-${numProcedimentos}">
-    <div class=" row mb-3">
-        <label for="procedimentodescricao" class="form-label">Descrição do procedimento</label>
-        <textarea name="procedimentodescricao" id="procedimentodescricao" required class="form-control" rows="1"></textarea>
-    </div>
-    <div class="mb-3 row cooparticipacao">
-    <h4> Coparticipação e Carências</h4>
-    <div class="col-sm-3">
-        <label for="procedimentocopay" class="form-label">Valor Coparticipação
-            <span>(%)</span></label>
-        <input type="number" name="procedimentocopay" id="procedimentocopay"
-            placeholder="Valor (%)" class="form-control">
-    </div>
-    <div class="col-sm-3">
-        <label for="procedimentolimitecopay" class="form-label">Limite</label>
-        <div class="input-group">
-            <span class="input-group-text">R$</span>
-            <input type="number" name="procedimentolimitecopay" id="procedimentolimitecopay"
-                placeholder="Limite (R$)" class="form-control">
-        </div>
-    </div>
-    <div class="col-sm-1">
-        <label for="tipofranquia" class="form-label">Franquia</label>
-        <select name="tipofranquia" id="tipofranquia"
-        class="form-control">
-            <option value="" disabled selected>Selecionar</option>
-            <option value="%">%</option>
-            <option value="R$">R$
-            </option>
-    </select>
-    </div>
-    <div class="col-sm-2">
-        <label for="procedimentofranquiacopay" class="form-label">Franquia</label>
-        <input type="text" name="procedimentofranquiacopay" id="procedimentofranquiacopay"
-                class="form-control" placeholder="(R$ ou %)">
-    </div>
-    <div class="col-sm-3">
-        <label for="procedimentolimitecarencia" class="form-label">Limite Carência
-            <span>(dias)</span></label>
-        <input type="number" name="procedimentolimitecarencia" id="procedimentolimitecarencia"
-            class="form-control">
-    </div>
-    </div>
-    <div class=" row mb-3">
-        <div class="col-sm-6">
-            <label for="procedimentoreducaocarencia" class="form-label">Redução de carências</label>
-            <textarea name="procedimentoreducaocarencia" id="procedimentoreducaocarencia"
-                placeholder="Condições de redução..." class="form-control" rows="2"></textarea>
-        </div>
-        <div class="col-sm-6">
-            <label for="procedimentocongenere" class="form-label">Congêneres</label>
-            <textarea name="procedimentocongenere" id="procedimentocongenere"
-                placeholder="Condições de congêneres..." class="form-control" rows="2"></textarea>
-        </div>
-    </div>
-    <div class="row mb-3 excluir-div">
-        <div class="col-sm-4">
-        <button type="button" class="btn btn-danger excluir-procedimento"><i class="bi bi-trash-fill"></i></button>
-        </div>
-    </div>
-</div>`;
-
-    $(novoProcedimento).insertBefore($button);
-
-});
-
-$('.procedimentos').on('click', '.excluir-procedimento', function () {
-    $(this).closest('.procedimento').remove();
-    reorganizarIdsProcedimentos();
-});
 
 $('.excluir-btn').click(function () {
     const form = $(this);
@@ -217,14 +141,7 @@ $('.excluir-btn').click(function () {
     }
 });
 
-function reorganizarIdsProcedimentos() {
-    $('.procedimento').each(function (index) {
-        const novoId = `procedimento-${index + 1}`;
-        $(this).attr('id', novoId);
-    });
-}
-
-function calcularTabelaComercial($container) {
+/* function calcularTabelaComercial($container) {
     const valorSpread =  parseFloat($container.find('.valorSpread').val());
 
     if (!isNaN(valorSpread)) {
@@ -257,28 +174,57 @@ function calcularTabelaComercial($container) {
     } else {
         alert('Insira um valor numérico válido no campo Valor de Spread.');
     }
+} */
+
+function calcularTabelaComercial($container) {
+    const valorSpread = parseFloat($container.find('.valorSpread').val());
+
+    if (!isNaN(valorSpread)) {
+        let valorAnterior = null;
+
+        $container.find('.faixaetaria').each(function () {
+            const $row = $(this);
+            const $fxNetInput = $row.find('.fxetaria');
+            const $fxComercialInput = $row.find('.fxComercial');
+            const $variacaoInput = $row.find('.variacao');
+
+            const fxNetValue = parseFloat($fxNetInput.val());
+
+            if (!isNaN(fxNetValue)) {
+                const novoValorFxComercial = fxNetValue + (fxNetValue * valorSpread / 100);
+                const duasCasasDecimais = novoValorFxComercial.toFixed(2);
+                const valorArredondado = parseFloat(duasCasasDecimais);
+
+                if (valorAnterior !== null) {
+                    const variacao = ((valorArredondado - valorAnterior) / valorAnterior) * 100;
+                    const variacaoDuasCasas = variacao.toFixed(2);
+                    $variacaoInput.val(variacaoDuasCasas);
+                    $variacaoInput.attr('value', variacaoDuasCasas)
+                }
+
+                valorAnterior = valorArredondado;
+
+                const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
+                if (terceiraCasaDecimal > 0) {
+                    $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
+                    $fxComercialInput.attr('value', (valorArredondado + 0.01).toFixed(2));
+                } else {
+                    $fxComercialInput.val(valorArredondado.toFixed(2));
+                    $fxComercialInput.attr('value', valorArredondado.toFixed(2));
+                }
+            } else {
+                alert("Preencha todos os campos antes de calcular");
+            }
+        });
+    } else {
+        alert('Insira um valor numérico válido no campo Valor de Spread.');
+    }
 }
+
 
 
 $('#cadastrar-produto').click(function (e) {
     e.preventDefault();
-
-    let procedimentos = [];
-    const form = $(this).closest('form');
-
-    form.find('.procedimento').each(function () {
-        const procedimentoData = {
-            descricao: $(this).find('[name="procedimentodescricao"]').val(),
-            copay: $(this).find('[name="procedimentocopay"]').val(),
-            limitecopay: $(this).find('[name="procedimentolimitecopay"]').val(),
-            tipofranquia: $(this).find('[name="tipofranquia"]').val(),
-            franquiacopay: $(this).find('[name="procedimentofranquiacopay"]').val(),
-            limitecarencia: $(this).find('[name="procedimentolimitecarencia"]').val(),
-            reducaocarencia: $(this).find('[name="procedimentoreducaocarencia"]').val(),
-            congenere: $(this).find('[name="procedimentocongenere"]').val(),
-        }
-        procedimentos.push(procedimentoData)
-    })
 
     let formData = {
         idOperadora: $('#cadastrar-produto-form').attr('data-id'),
@@ -320,17 +266,27 @@ $('#cadastrar-produto').click(function (e) {
         fxComercial9: $('#fx9Comercial').val(),
         fx10: $('#fxetaria10').val(),
         fxComercial10: $('#fx10Comercial').val(),
+        variacao1: $('#variacao1').val(),
+        variacao2: $('#variacao2').val(),
+        variacao3: $('#variacao3').val(),
+        variacao4: $('#variacao4').val(),
+        variacao5: $('#variacao5').val(),
+        variacao6: $('#variacao6').val(),
+        variacao7: $('#variacao7').val(),
+        variacao8: $('#variacao8').val(),
+        variacao9: $('#variacao9').val(),
         planoobs: $('#planoobs').val(),
-        valorSpread: $('#valorSpread').val()
+        valorSpread: $('#valorSpread').val(),
+        reducaocarencia: $('#procedimentoreducaocarencia').val(),
+        congenere: $('#procedimentocongenere').val(),
     };
 
-    console.log(procedimentos)
     console.log(formData)
 
     $.ajax({
         type: 'POST',
         url: '/cadastrar-produto',
-        data: JSON.stringify({ formData: formData, procedimentos: procedimentos }),
+        data: JSON.stringify({ formData: formData }),
         processData: false,
         contentType: 'application/json',
         success: function (response) {
@@ -343,6 +299,25 @@ $('#cadastrar-produto').click(function (e) {
         },
     });
 });
+
+$('.duplicate').click(function () {
+    var produtoId = this.getAttribute('data-produto-id');
+    console.log('Clicou no prouto de ID:', produtoId)
+
+    $.ajax({
+        type: 'POST',
+        url: `/duplicar-produto/${produtoId}`,
+        processData: false,
+        success: function (response) {
+            console.log('Resposta Backend', response);
+            location.reload();
+        },
+        error: function (response) {
+            showMessageError(response.message)
+            console.error('Erro ao cadastrar produto:', response)
+        },
+    });
+})
 
 $('.editar-form').submit(function (e) {
     e.preventDefault();
@@ -389,38 +364,29 @@ $('.editar-form').submit(function (e) {
         fxComercial9: form.find('#fx9Comercial').val(),
         fx10: form.find('#fxetaria10').val(),
         fxComercial10: form.find('#fx10Comercial').val(),
-        planoobs: form.find('#planoobs').val()
+        variacao1: form.find('#variacao1').val(),
+        variacao2: form.find('#variacao2').val(),
+        variacao3: form.find('#variacao3').val(),
+        variacao4: form.find('#variacao4').val(),
+        variacao5: form.find('#variacao5').val(),
+        variacao6: form.find('#variacao6').val(),
+        variacao7: form.find('#variacao7').val(),
+        variacao8: form.find('#variacao8').val(),
+        variacao9: form.find('#variacao9').val(),
+        planoobs: form.find('#planoobs').val(),
+        reducaocarencia: form.find('#procedimentoreducaocarencia').val(),
+        congenere: form.find('#procedimentocongenere').val(),
     }
-
-    let procedimentos = [];
-
-    form.find('.procedimento').each(function () {
-        const procedimento = $(this);
-        const procedimentoData = {
-            id: procedimento.data('id'),
-            descricao: procedimento.find('[name="procedimentodescricao"]').val(),
-            copay: procedimento.find('[name="procedimentocopay"]').val(),
-            limitecopay: procedimento.find('[name="procedimentolimitecopay"]').val(),
-            tipofranquia: procedimento.find('[name="tipofranquia"]').val(),
-            franquiacopay: procedimento.find('[name="procedimentofranquiacopay"]').val(),
-            limitecarencia: procedimento.find('[name="procedimentolimitecarencia"]').val(),
-            reducaocarencia: procedimento.find('[name="procedimentoreducaocarencia"]').val(),
-            congenere: procedimento.find('[name="procedimentocongenere"]').val(),
-        };
-        procedimentos.push(procedimentoData);
-    })
 
     const idProduto = form.data('id');
     const actionUrl = `/editar-produto/${idProduto}`
 
     console.log(formData)
-    console.log(procedimentos)
-    console.log(idProduto)
 
     $.ajax({
         type: 'POST',
         url: actionUrl,
-        data: ({ formData: formData, procedimentos: procedimentos }),
+        data: ({ formData: formData }),
         success: function (response) {
             console.log('Sucesso', response)
             location.reload();

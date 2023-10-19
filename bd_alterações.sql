@@ -35,3 +35,18 @@ ADD COLUMN tipofranquia ENUM('', '%', 'R$');
 /* ALTERAÇÕES A SEREM SREALIZADAS PRÓXIMO DEPLOY */
 ALTER TABLE procedimentos
 DROP FOREIGN KEY procedimentos_ibfk_1;
+
+ALTER TABLE produtos
+ADD COLUMN reducaocarencia TEXT, 
+ADD COLUMN congeneres TEXT
+ADD COLUMN variacao1 DECIMAL(10,5),
+ADD COLUMN variacao2 DECIMAL(10,5),
+ADD COLUMN variacao3 DECIMAL(10,5),
+ADD COLUMN variacao4 DECIMAL(10,5),
+ADD COLUMN variacao5 DECIMAL(10,5),
+ADD COLUMN variacao6 DECIMAL(10,5),
+ADD COLUMN variacao7 DECIMAL(10,5),
+ADD COLUMN variacao8 DECIMAL(10,5),
+ADD COLUMN variacao9 DECIMAL(10,5)
+
+

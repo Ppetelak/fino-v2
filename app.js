@@ -74,6 +74,7 @@ db.connect((error) => {
 
 const verificaAutenticacao = (req, res, next) => {
   if (req.session && req.session.usuario) {
+    res.locals.user = req.session.usuario;
     next();
   } else {
     res.redirect('/');
@@ -91,6 +92,10 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'error.log.json' })
   ]
 });
+
+app.post('/rota-restrita', (req, res) => {
+  res.send('Olá Pablo')
+})
 
 app.post('/login-verifica', (req, res) => {
   const { username, password } = req.body;
@@ -112,10 +117,7 @@ app.post('/login-verifica', (req, res) => {
     if (user.senha !== password) {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
-
-    // Autenticação bem-sucedida, enviar uma resposta de sucesso
     req.session.usuario = user;
-    //res.status(200).json({ message: 'Autenticação bem-sucedida' });
     res.redirect('/operadoras')
   });
 });
@@ -488,30 +490,6 @@ app.delete('/excluir-entidade/:id', verificaAutenticacao, (req, res) => {
   });
 });
 
-app.get('/produtos', verificaAutenticacao, (req, res) => {
-  let operadoras;
-
-  const fetchOperadoras = new Promise((resolve, reject) => {
-    db.query('SELECT * FROM operadora', (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        operadoras = results;
-        resolve();
-      }
-    });
-  });
-
-  fetchOperadoras
-    .then(() => {
-      res.render('produtos', { operadoras: operadoras });
-    })
-    .catch((error) => {
-      console.error('Erro ao buscar dados:', error);
-      res.status(500).send('Erro interno do servidor');
-    })
-})
-
 app.get('/procedimentos', verificaAutenticacao, (req, res) => {
   let operadoras;
 
@@ -536,7 +514,7 @@ app.get('/procedimentos', verificaAutenticacao, (req, res) => {
     })
 })
 
-app.post('/cadastrar-procedimento', (req, res) => {
+app.post('/cadastrar-procedimento', verificaAutenticacao, (req, res) => {
   const { procedimentoData } = req.body;
 
   const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
@@ -551,7 +529,7 @@ app.post('/cadastrar-procedimento', (req, res) => {
   })
 })
 
-app.post('/editar-procedimento/:id', (req, res) => {
+app.post('/editar-procedimento/:id', verificaAutenticacao, (req, res) => {
   const procedimento = req.body.procedimentos
   const idProcedimento = req.params.id
 
@@ -570,7 +548,7 @@ app.post('/editar-procedimento/:id', (req, res) => {
   })
 })
 
-app.get('/procedimentos/:id', async (req, res) => {
+app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
   const idOperadora = req.params.id;
 
   try {
@@ -587,30 +565,40 @@ app.get('/procedimentos/:id', async (req, res) => {
   }
 });
 
+app.get('/produtos', verificaAutenticacao, (req, res) => {
+  let operadoras;
+
+  const fetchOperadoras = new Promise((resolve, reject) => {
+    db.query('SELECT * FROM operadora', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        operadoras = results;
+        resolve();
+      }
+    });
+  });
+
+  fetchOperadoras
+    .then(() => {
+      res.render('produtos', { operadoras: operadoras });
+    })
+    .catch((error) => {
+      console.error('Erro ao buscar dados:', error);
+      res.status(500).send('Erro interno do servidor');
+    })
+})
+
 app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
-  const { procedimentos } = req.body;
 
-  const sqlProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?)';
-  const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres, tipofranquia) VALUES (?,?,?,?,?,?,?,?,?)';
+  const sqlProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora, reducaocarencia, congeneres, variacao1, variacao2, variacao3, variacao4, variacao5, variacao6, variacao7, variacao8, variacao9 ) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  db.query(sqlProduto, [formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.valorSpread, formData.idOperadora], (error, result) => {
+  db.query(sqlProduto, [formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.valorSpread, formData.idOperadora, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9], (error, result) => {
     if (error) {
       console.error('Erro ao cadastrar produto:', error);
       res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
-    }
-
-    const idProduto = result.insertId;
-
-    if (Array.isArray(procedimentos)) {
-      procedimentos.forEach((procedimento) => {
-        db.query(sqlProcedimento, [idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere, procedimento.tipofranquia], (error, result) => {
-          if (error) {
-            console.error('Erro ao cadastrar procedimento', error);
-          }
-        });
-      });
     }
 
     res.cookie('alertSuccess', 'Produto Cadastrado com sucesso', { maxAge: 3000 });
@@ -624,13 +612,11 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
   try {
     const operadoraPromise = util.promisify(db.query).bind(db);
     const produtosPromise = util.promisify(db.query).bind(db);
-    const procedimentosPromise = util.promisify(db.query).bind(db);
 
     const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
     const produtos = await produtosPromise('SELECT * FROM produtos WHERE id_operadora = ?', [idOperadora]);
-    const procedimentos = await procedimentosPromise('SELECT * FROM procedimentos');
 
-    res.render('produto', { operadora: operadora[0], produtos: produtos, procedimentos: procedimentos });
+    res.render('produto', { operadora: operadora[0], produtos: produtos });
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
@@ -640,42 +626,21 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
 app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const idProduto = req.params.id;
   const formData = req.body.formData;
-  const procedimentos = req.body.procedimentos;
 
   const sqlProdutoUpdate =
-    'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, observacoes=? WHERE id=? AND id_operadora=?';
-
-  const sqlProcedimentoInsert =
-    `INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, condicoesreducaocarencia, condicoescongeneres, tipofranquia) VALUES (?,?,?,?,?,?,?,?,?)`;
-
-  const sqlProcedimentoDelete =
-    'DELETE FROM procedimentos WHERE id_produto=?';
+    'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, observacoes=?, reducaocarencia=?, congeneres=?, variacao1=?, variacao2=?, variacao3=?, variacao4=?, variacao5=?, variacao6=?, variacao7=?, variacao8=?, variacao9=? WHERE id=? AND id_operadora=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
 
   try {
-    // Excluir todos os procedimentos vinculados a esse produto
-    await queryPromise(sqlProcedimentoDelete, [idProduto]);
 
     // Atualizar os dados do produto no banco de dados
     await queryPromise(
       sqlProdutoUpdate,
       [
-        formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, idProduto, formData.idOperadora
+        formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9, idProduto, formData.idOperadora
       ]
     );
-
-    // Verificar se existem contatos para adicionar
-    if (Array.isArray(procedimentos)) {
-      for (const procedimento of procedimentos) {
-        await queryPromise(
-          sqlProcedimentoInsert,
-          [
-            idProduto, procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.reducaocarencia, procedimento.congenere, procedimento.tipofranquia
-          ]
-        );
-      }
-    }
 
     res.cookie('alertSuccess', 'Produto atualizado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Produto atualizado com sucesso' });
@@ -689,48 +654,40 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
 app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id;
 
-  // Verifique se o produto está associado a procedimentos
-  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto = ?';
-  db.query(sqlProcedimentos, [idProduto], (errorProcedimentos, resultProcedimentos) => {
-    if (errorProcedimentos) {
-      console.error('Erro ao verificar procedimentos associados ao produto:', errorProcedimentos);
+  const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
+  db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
+    if (errorExcluirProduto) {
+      console.error('Erro ao excluir o produto:', errorExcluirProduto);
       res.status(500).json({ message: 'Erro interno do servidor' });
-    } else if (resultProcedimentos.length > 0) {
-      // Se o produto estiver associado a procedimentos, exclua-os primeiro
-      const sqlExcluirProcedimentos = 'DELETE FROM procedimentos WHERE id_produto = ?';
-      db.query(sqlExcluirProcedimentos, [idProduto], (errorExcluirProcedimentos, resultExcluirProcedimentos) => {
-        if (errorExcluirProcedimentos) {
-          console.error('Erro ao excluir procedimentos do produto:', errorExcluirProcedimentos);
-          res.status(500).json({ message: 'Erro interno do servidor' });
-        } else {
-          // Se os procedimentos forem excluídos com sucesso, exclua o produto
-          const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
-          db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
-            if (errorExcluirProduto) {
-              console.error('Erro ao excluir o produto:', errorExcluirProduto);
-              res.status(500).json({ message: 'Erro interno do servidor' });
-            } else {
-              res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
-              res.status(200).json({ message: 'Produto excluído com sucesso' });
-            }
-          });
-        }
-      });
     } else {
-      // Se o produto não estiver associado a procedimentos, exclua-o diretamente
-      const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
-      db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
-        if (errorExcluirProduto) {
-          console.error('Erro ao excluir o produto:', errorExcluirProduto);
-          res.status(500).json({ message: 'Erro interno do servidor' });
-        } else {
-          res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
-          res.status(200).json({ message: 'Produto excluído com sucesso' });
-        }
-      });
+      res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
+      res.status(200).json({ message: 'Produto excluído com sucesso' });
     }
   });
 });
+
+app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
+  const idProduto = req.params.id
+
+  const sqlSelecionarProduto = 'SELECT * FROM produtos WHERE id = ?'
+  const sqlInserirProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora, reducaocarencia, congeneres, variacao1, variacao2, variacao3, variacao4, variacao5, variacao6, variacao7, variacao8, variacao9) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(sqlSelecionarProduto, [idProduto], (err, result) => {
+    if(err){
+      console.error('Erro ao buscar produto com a ID passada')
+    }
+    const p = result[0]
+    db.query(sqlInserirProduto, [p.nomedoplano + ' - COPIA', p.ans, p.contratacao, p.cobertura, p.abrangencia, p.cooparticipacao, p.acomodacao, p.areadeabrangencia, p.condicoesconjuges, p.condicoesfilhos, p.condicoesnetos, p.condicoespais, p.condicoesoutros, p.documentosconjuges, p.documentosfilhos, p.documentosnetos, p.documentospais, p.documentosoutros, p.fx1, p.fx2, p.fx3, p.fx4, p.fx5, p.fx6, p.fx7, p.fx8, p.fx9, p.fx10, p.fx1comercial, p.fx2comercial, p.fx3comercial, p.fx4comercial, p.fx5comercial, p.fx6comercial, p.fx7comercial, p.fx8comercial, p.fx9comercial, p.fx10comercial, p.observacoes, p.valorSpread, p.id_operadora, p.reducaocarencia, p.congeneres,  p.variacao1, p.variacao2, p.variacao3, p.variacao4, p.variacao5, p.variacao6, p.variacao7, p.variacao8, p.variacao9], (err, result) => {
+      if(err){
+        console.error('Erro ao DUPLICAR produto:', err);
+        res.cookie('alertError', 'Erro ao DUPLICAR Produto', { maxAge: 3000 });
+        res.status(500).json({ message: 'Erro interno do servidor' });
+      }
+      res.cookie('alertSuccess', 'Produto DUPLICADO com sucesso, lembre-se de editar suas informações', { maxAge: 3000 });
+      res.status(200).json({ message: 'Produto DUPLICADO com sucesso' });
+
+    })
+  })
+})
 
 app.get('/finos', verificaAutenticacao, (req, res) => {
   const sqlFinos = 'SELECT *FROM formularios';

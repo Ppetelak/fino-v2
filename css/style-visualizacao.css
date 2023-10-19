@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     list-style: none;
+    box-sizing: border-box;
 }
 :root{
     --primaryColor :#20325d ;
@@ -221,6 +222,29 @@ span{
 .btn-primary:hover {
     background: var(--secondColor);
     border-color: var(--secondColor);
+}
+
+.update{
+    border: 1px solid #5e5e5e68;
+    border-radius: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    contain: content;
+}
+
+.updateTitle {
+    background: var(--thirdColor);
+    color:#fff;
+}
+
+.atualizacao:nth-child(odd) {
+    background-color: white; /* Fundo branco */
+}
+
+/* Estilo para as divs .produto de índice par */
+.atualizacao:nth-child(even) {
+    background-color: #e9e9e9; /* Fundo cinza claro */
 }
 
 @media print {

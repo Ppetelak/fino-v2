@@ -7,7 +7,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Produtos</title>
+    <title>Cadastro de Produtos - F.I.N.O</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@200;300;400;700&display=swap"
         rel="stylesheet">
@@ -17,12 +17,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"
         integrity="sha512-efAcjYoYT0sXxQRtxGY37CKYmqsFVOIwMApaEbrxJr4RwqVVGw8o+Lfh/+59TU07+suZn1BWq4fDl5fdgyCNkw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style-dashboard.css">
+    
 </head>
 
 
@@ -202,25 +204,28 @@
                 <div class="row tabela-de-precos">
                     <h3>Tabela de preços</h3>
                     <div class="mb-3 row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <h5> Idades </h5>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <h5> Tabela Net </h5>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <h5> Tabela Comercial </h5>
+                        </div>
+                        <div class="col-sm-3">
+                            <h5> Variação </h5>
                         </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria1" class="col-sm-4 col-form-label">De 0 a 18 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria1" class="col-sm-3 col-form-label">De 0 a 18 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria1" id="fxetaria1" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx1Comercial" id="fx1Comercial"
@@ -229,176 +234,252 @@
                         </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria2" class="col-sm-4 col-form-label">De 19 a 23 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria2" class="col-sm-3 col-form-label">De 19 a 23 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria2" id="fxetaria2" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx2Comercial" id="fx2Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao1" id="variacao1"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria3" class="col-sm-4 col-form-label">De 24 a 28 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria3" class="col-sm-3 col-form-label">De 24 a 28 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria3" id="fxetaria3" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx3Comercial" id="fx3Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao2" id="variacao2"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria4" class="col-sm-4 col-form-label">De 29 a 33 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria4" class="col-sm-3 col-form-label">De 29 a 33 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria4" id="fxetaria4" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx4Comercial" id="fx4Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao3" id="variacao3"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria5" class="col-sm-4 col-form-label">De 34 a 38 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria5" class="col-sm-3 col-form-label">De 34 a 38 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria5" id="fxetaria5" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx5Comercial" id="fx5Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao4" id="variacao4"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria6" class="col-sm-4 col-form-label">De 39 a 43 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria6" class="col-sm-3 col-form-label">De 39 a 43 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria6" id="fxetaria6" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx6Comercial" id="fx6Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao5" id="variacao5"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria7" class="col-sm-4 col-form-label">De 44 a 48 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria7" class="col-sm-3 col-form-label">De 44 a 48 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria7" id="fxetaria7" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx7Comercial" id="fx7Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao6" id="variacao6"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria8" class="col-sm-4 col-form-label">De 49 a 53 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria8" class="col-sm-3 col-form-label">De 49 a 53 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria8" id="fxetaria8" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx8Comercial" id="fx8Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao7" id="variacao7"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria9" class="col-sm-4 col-form-label">De 54 a 58 anos</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria9" class="col-sm-3 col-form-label">De 54 a 58 anos</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria9" id="fxetaria9" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx9Comercial" id="fx9Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao8" id="variacao8"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row faixaetaria">
-                        <label for="fxetaria10" class="col-sm-4 col-form-label">De 59+</label>
-                        <div class="col-sm-4">
+                        <label for="fxetaria10" class="col-sm-3 col-form-label">De 59+</label>
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fxetaria10" id="fxetaria10" class="form-control fxetaria">
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
                                 <input type="number" name="fx10Comercial" id="fx10Comercial"
                                     class="form-control fxComercial" disabled>
                             </div>
                         </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <input type="number" name="variacao9" id="variacao9"
+                                    class="form-control variacao" disabled>
+                            </div>
+                        </div>
                     </div>
                     <div class="row infoSpread">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <label for="ValorSpread" class="formllabel">
                                 Valor de Spread
                             </label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">(%)</span>
                                 <input type="number" name="valorSpread" id="valorSpread"
                                     class="form-control valorSpread">
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-secondary calcular">Calcular</button>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-secondary calcular">Calcular Net e Variação</button>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <h3> Outras informações </h3>
+                    <div class=" row mb-3">
+                        <div class="col-sm-6">
+                            <label for="procedimentoreducaocarencia" class="form-label">Redução de carências</label>
+                            <textarea name="procedimentoreducaocarencia" id="procedimentoreducaocarencia"
+                                placeholder="Condições de redução..." class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="procedimentocongenere" class="form-label">Congêneres</label>
+                            <textarea name="procedimentocongenere" id="procedimentocongenere"
+                                placeholder="Condições de congêneres..." class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
                     <div class="mb">
                         <label for="planoobs" class="form-label">Observações sobre o plano</label>
                         <textarea name="planoobs" id="planoobs" class="form-control"
                             placeholder="Escreva aqui..."></textarea>
                     </div>
                 </div>
-                <div class="row procedimentos">
+
+                <!-- <div class="row procedimentos">
                     <h3>Procedimentos</h3>
                     <div class="row procedimento" id="procedimento-1">
                         <div class=" row mb-3">
@@ -465,8 +546,8 @@
                     </div>
                     <button type="button" class="btn btn-primary adicionar-procedimento"><i
                             class="bi bi-plus-circle"></i></button>
-                </div>
-                <div class="row">
+                </div> -->
+                <div class="row mt-3">
                     <button type="submit" form="cadastrar-produto-form" class="btn btn-primary"
                         id="cadastrar-produto">CADASTRAR PRODUTO</button>
                 </div>
@@ -507,6 +588,7 @@
                                     Editar
                                 </button>
                                 <button type="button" class="btn btn-secondary cancelar-btn d-none">Cancelar</button>
+                                <button type="button" class="btn btn-secondary duplicate" title="Duplicar Produto" data-produto-id="<%= produto.id %>"><i class="bi bi-copy"></i></button>
                             </td>
                         </tr>
                         <tr class="collapse editar-form-container" id="editar<%= produto.id %>"
@@ -722,27 +804,27 @@
                                         <div class="row tabela-de-precos">
                                             <h3>Tabela de preços</h3>
                                             <div class="mb-3 row">
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <h5> Idades </h5>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <h5> Tabela Net </h5>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <h5> Tabela Comercial </h5>
                                                 </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria1" class="col-sm-4 col-form-label">De 0 a 18
+                                                <label for="fxetaria1" class="col-sm-3 col-form-label">De 0 a 18
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria1" id="fxetaria1"
                                                             class="form-control fxetaria" value="<%= produto.fx1 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx1Comercial" id="fx1Comercial"
@@ -752,16 +834,16 @@
                                                 </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria2" class="col-sm-4 col-form-label">De 19 a 23
+                                                <label for="fxetaria2" class="col-sm-3 col-form-label">De 19 a 23
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria2" id="fxetaria2"
                                                             class="form-control fxetaria" value="<%= produto.fx2 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx2Comercial" id="fx2Comercial"
@@ -769,18 +851,25 @@
                                                             value="<%= produto.fx2comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao1"
+                                                            class="form-control variacao" id="variacao1" value="<%= produto.variacao1 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria3" class="col-sm-4 col-form-label">De 24 a 28
+                                                <label for="fxetaria3" class="col-sm-3 col-form-label">De 24 a 28
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria3" id="fxetaria3"
                                                             class="form-control fxetaria" value="<%= produto.fx3 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx3Comercial" id="fx3Comercial"
@@ -788,18 +877,25 @@
                                                             value="<%= produto.fx3comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao2"
+                                                            class="form-control variacao" id="variacao2" value="<%= produto.variacao2 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria4" class="col-sm-4 col-form-label">De 29 a 33
+                                                <label for="fxetaria4" class="col-sm-3 col-form-label">De 29 a 33
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria4" id="fxetaria4"
                                                             class="form-control fxetaria" value="<%= produto.fx4 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx4Comercial" id="fx4Comercial"
@@ -807,18 +903,25 @@
                                                             value="<%= produto.fx4comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao3"
+                                                            class="form-control variacao" id="variacao3" value="<%= produto.variacao3 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria5" class="col-sm-4 col-form-label">De 34 a 38
+                                                <label for="fxetaria5" class="col-sm-3 col-form-label">De 34 a 38
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria5" id="fxetaria5"
                                                             class="form-control fxetaria" value="<%= produto.fx5 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx5Comercial" id="fx5Comercial"
@@ -826,19 +929,25 @@
                                                             value="<%= produto.fx5comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao4"
+                                                            class="form-control variacao" id="variacao4" value="<%= produto.variacao4 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria6" class="col-sm-4 col-form-label">De 39 a 43
+                                                <label for="fxetaria6" class="col-sm-3 col-form-label">De 39 a 43
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria6" id="fxetaria6"
-                                                            class="form-control fxetaria" value="<%= produto.fx6 %>"
-                                                            disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx6 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx6Comercial" id="fx6Comercial"
@@ -846,19 +955,25 @@
                                                             value="<%= produto.fx6comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao5"
+                                                            class="form-control variacao" id="variacao5" value="<%= produto.variacao5 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria7" class="col-sm-4 col-form-label">De 44 a 48
+                                                <label for="fxetaria7" class="col-sm-3 col-form-label">De 44 a 48
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria7" id="fxetaria7"
-                                                            class="form-control fxetaria" value="<%= produto.fx7 %>"
-                                                            disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx7 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx7Comercial" id="fx7Comercial"
@@ -866,19 +981,25 @@
                                                             value="<%= produto.fx7comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao6"
+                                                            class="form-control variacao" id="variacao6" value="<%= produto.variacao6 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria8" class="col-sm-4 col-form-label">De 49 a 53
+                                                <label for="fxetaria8" class="col-sm-3 col-form-label">De 49 a 53
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria8" id="fxetaria8"
-                                                            class="form-control fxetaria" value="<%= produto.fx8 %>"
-                                                            disabled>
+                                                            class="form-control fxetaria" value="<%= produto.fx8 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx8Comercial" id="fx8Comercial"
@@ -886,18 +1007,25 @@
                                                             value="<%= produto.fx8comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao7"
+                                                            class="form-control variacao" id="variacao7" value="<%= produto.variacao7 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria9" class="col-sm-4 col-form-label">De 54 a 58
+                                                <label for="fxetaria9" class="col-sm-3 col-form-label">De 54 a 58
                                                     anos</label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria9" id="fxetaria9"
                                                             class="form-control fxetaria" value="<%= produto.fx9 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx9Comercial" id="fx9Comercial"
@@ -905,17 +1033,24 @@
                                                             value="<%= produto.fx9comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao8"
+                                                            class="form-control variacao" id="variacao8" value="<%= produto.variacao8 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row faixaetaria">
-                                                <label for="fxetaria10" class="col-sm-4 col-form-label">De 59+</label>
-                                                <div class="col-sm-4">
+                                                <label for="fxetaria10" class="col-sm-3 col-form-label">De 59+</label>
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fxetaria10" id="fxetaria10"
                                                             class="form-control fxetaria" value="<%= produto.fx10 %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">R$</span>
                                                         <input type="number" name="fx10Comercial" id="fx10Comercial"
@@ -923,22 +1058,28 @@
                                                             value="<%= produto.fx10comercial %>">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">%</span>
+                                                        <input type="number" name="variacao9"
+                                                            class="form-control variacao" id="variacao9" value="<%= produto.variacao9 %>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row infoSpread">
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <label for="ValorSpread" class="formllabel">
                                                         Valor de Spread
                                                     </label>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <span class="input-group-text">(%)</span>
                                                         <input type="number" name="valorSpread" id="valorSpread"
-                                                            class="form-control valorSpread"
-                                                            value="<%= produto.valorSpread %>">
+                                                            class="form-control valorSpread" value="<%= produto.valorSpread %>">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <button type="button"
                                                         class="btn btn-secondary calcular">Calcular</button>
                                                 </div>
@@ -946,6 +1087,18 @@
                                         </div>
                                         <div class="row">
                                             <h3> Outras informações </h3>
+                                            <div class=" row mb-3">
+                                                <div class="col-sm-6">
+                                                    <label for="procedimentoreducaocarencia" class="form-label">Redução de carências</label>
+                                                    <textarea name="procedimentoreducaocarencia" id="procedimentoreducaocarencia"
+                                                        placeholder="Condições de redução..." class="form-control" rows="2"><%= produto.reducaocarencia %></textarea>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label for="procedimentocongenere" class="form-label">Congêneres</label>
+                                                    <textarea name="procedimentocongenere" id="procedimentocongenere"
+                                                        placeholder="Condições de congêneres..." class="form-control" rows="2"><%= produto.congeneres %></textarea>
+                                                </div>
+                                            </div>
                                             <div class="mb">
                                                 <label for="planoobs" class="form-label">Observações sobre o
                                                     plano</label>
@@ -953,110 +1106,13 @@
                                                     placeholder="Escreva aqui..."><%= produto.observacoes %></textarea>
                                             </div>
                                         </div>
-                                        <div class="row procedimentos">
-                                            <h3>Procedimentos</h3>
-                                            <% for (let i=0; i < procedimentos.length; i++) { const
-                                                procedimento=procedimentos[i]; if (procedimento.id_produto===produto.id)
-                                                { %>
-                                                <div class="row procedimento" id="procedimento-1"
-                                                    data-id="<%= procedimento.id %>">
-                                                    <div class=" row mb-3">
-                                                        <label for="procedimentodescricao" class="form-label">Descrição
-                                                            do procedimento</label>
-                                                        <textarea name="procedimentodescricao"
-                                                            id="procedimentodescricao" required class="form-control"
-                                                            rows="1"><%= procedimento.descricao %></textarea>
-                                                    </div>
-                                                    <div class="mb-3 row cooparticipacao">
-                                                        <h4> Coparticipação e Carências</h4>
-                                                        <div class="col-sm-3">
-                                                            <label for="procedimentocopay" class="form-label">Valor
-                                                                Coparticipação <span>(%)</span></label>
-                                                            <input type="number" name="procedimentocopay"
-                                                                id="procedimentocopay" placeholder="Valor (%)"
-                                                                class="form-control"
-                                                                value="<%= procedimento.valorcop %>">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label for="procedimentolimitecopay"
-                                                                class="form-label">Limite</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text">R$</span>
-                                                                <input type="number" name="procedimentolimitecopay"
-                                                                    id="procedimentolimitecopay"
-                                                                    placeholder="Limite (R$)"
-                                                                    class="form-control"
-                                                                    value="<%= procedimento.limitecop %>">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-1">
-                                                            <input type="hidden" name="tipofranquiaValue" value="<%= procedimento.tipofranquia %>">
-                                                            <label for="tipofranquia" class="form-label">Franquia</label>
-                                                            <select name="tipofranquia" class="form-control tipofranquia-select">
-                                                                <option value="" disabled selected>Selecionar</option>
-                                                                <option value="%">%</option>
-                                                                <option value="R$">R$
-                                                                </option>
-                                                        </select>
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <label for="procedimentofranquiacopay"
-                                                                class="form-label">Franquia</label>
-                                                                <input type="text" name="procedimentofranquiacopay"
-                                                                    id="procedimentofranquiacopay"
-                                                                    class="form-control" placeholder="(% ou R$)"
-                                                                    value="<%= procedimento.franquiacop %>">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label for="procedimentolimitecarencia"
-                                                                class="form-label">Limite Carência
-                                                                <span>(dias)</span></label>
-                                                            <input type="number" name="procedimentolimitecarencia"
-                                                                id="procedimentolimitecarencia"
-                                                                class="form-control"
-                                                                value="<%= procedimento.limitecarenciadias %>">
-                                                        </div>
-                                                    </div>
-                                                    <div class=" row mb-3">
-                                                        <div class="col-sm-6">
-                                                            <label for="procedimentoreducaocarencia"
-                                                                class="form-label">Redução de carências</label>
-                                                            <textarea name="procedimentoreducaocarencia"
-                                                                id="procedimentoreducaocarencia"
-                                                                placeholder="Condições de redução..."
-                                                                class="form-control"
-                                                                rows="2"><%= procedimento.condicoesreducaocarencia %></textarea>
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <label for="procedimentocongenere"
-                                                                class="form-label">Congêneres</label>
-                                                            <textarea name="procedimentocongenere"
-                                                                id="procedimentocongenere"
-                                                                placeholder="Condições de congêneres..."
-                                                                class="form-control"
-                                                                rows="2"><%= procedimento.condicoescongeneres %></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3 excluir-div">
-                                                        <div class="col-sm-4">
-                                                            <button type="button"
-                                                                class="btn btn-danger excluir-procedimento"><i
-                                                                    class="bi bi-trash-fill"></i></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% }} %>
-                                                    <button type="button"
-                                                        class="btn btn-primary adicionar-procedimento"><i
-                                                            class="bi bi-plus-circle"></i></button>
-                                                    <div class="row acoes-produto">
-                                                        <!-- Botões "Salvar" e "Cancelar" -->
-                                                        <button type="submit" class="btn btn-success salvar-btn">Salvar
-                                                            Alterações</button>
-                                                        <button type="button" class="btn btn-danger excluir-btn"
-                                                            data-id="<%= produto.id %>">Excluir Produto <%=
-                                                                produto.nomedoplano %></button>
-                                                    </div>
+                                        <div class="row acoes-produto mt-3">
+                                            <!-- Botões "Salvar" e "Cancelar" -->
+                                            <button type="submit" class="btn btn-success salvar-btn">Salvar
+                                                Alterações</button>
+                                            <button type="button" class="btn btn-danger excluir-btn"
+                                                data-id="<%= produto.id %>">Excluir Produto <%=
+                                                    produto.nomedoplano %></button>
                                         </div>
                                 </form>
                             </td>
