@@ -81,6 +81,7 @@ $('.editar-form').submit(function (e) {
         website: form.find('#website').val(),
         telatendimento: form.find('#telatendimento').val(),
         telouvidoria: form.find('#telouvidoria').val(),
+        emailouvidoria: form.find('#emailouvidoria').val(),
     };
     console.log(formData);
 
@@ -181,6 +182,7 @@ $('.cadastrar').click(function (e) {
         website: $('#website').val(),
         telatendimento: $('#telatendimento').val(),
         telouvidoria: $('#telouvidoria').val(),
+        emailouvidoria: $('#emailouvidoria').val()
     };
 
     console.log(formData, contatos)

@@ -218,14 +218,16 @@ app.get('/operadoras', verificaAutenticacao, (req, res) => {
     });
 });
 
+
+
 app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
   const { contatos } = req.body;
 
-  const sqlOperadora = 'INSERT INTO operadora (razaosocial, cnpj, nomefantasia, codans, endereco, numeroendereco, complemento, cep, cidade, uf, website, telatendimento, telouvidoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const sqlOperadora = 'INSERT INTO operadora (razaosocial, cnpj, nomefantasia, codans, endereco, numeroendereco, complemento, cep, cidade, uf, website, telatendimento, telouvidoria, emailouvidoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
   const sqlContatos = 'INSERT INTO contatos (id_operadora, nome, email, telefone, cargo) VALUES (?, ?, ?, ?, ?)';
 
-  db.query(sqlOperadora, [formData.razaosocial, formData.cnpj, formData.nomefantasia, formData.codans, formData.endereco, formData.numeroendereco, formData.complemento, formData.cep, formData.cidade, formData.uf, formData.website, formData.telatendimento, formData.telouvidoria], (error, result) => {
+  db.query(sqlOperadora, [formData.razaosocial, formData.cnpj, formData.nomefantasia, formData.codans, formData.endereco, formData.numeroendereco, formData.complemento, formData.cep, formData.cidade, formData.uf, formData.website, formData.telatendimento, formData.telouvidoria, formData.emailouvidoria], (error, result) => {
     if (error) {
       console.error('Erro ao cadastrar operadora:', error);
       res.cookie('alertError', 'Erro ao cadastrar Operadora, verifique e tente novamente', { maxAge: 3000 });
@@ -264,7 +266,7 @@ app.post('/editar-operadora/:id', verificaAutenticacao, async (req, res) => {
   const contatos = req.body.contatos;
 
   const sqlOperadoraUpdate =
-    'UPDATE operadora SET razaosocial=?, cnpj=?, nomefantasia=?, codans=?, endereco=?, numeroendereco=?, complemento=?, cep=?, cidade=?, uf=?, website=?, telatendimento=?, telouvidoria=? WHERE id=?';
+    'UPDATE operadora SET razaosocial=?, cnpj=?, nomefantasia=?, codans=?, endereco=?, numeroendereco=?, complemento=?, cep=?, cidade=?, uf=?, website=?, telatendimento=?, telouvidoria=?, emailouvidoria=? WHERE id=?';
 
   const sqlContatoInsert =
     `INSERT INTO contatos (nome, email, telefone, cargo, id_operadora) VALUES (?, ?, ?, ?, ?)`;
@@ -295,6 +297,7 @@ app.post('/editar-operadora/:id', verificaAutenticacao, async (req, res) => {
         formData.website,
         formData.telatendimento,
         formData.telouvidoria,
+        formData.emailouvidoria,
         idOperadora,
       ]
     );
@@ -508,6 +511,81 @@ app.get('/produtos', verificaAutenticacao, (req, res) => {
       res.status(500).send('Erro interno do servidor');
     })
 })
+
+app.get('/procedimentos', verificaAutenticacao, (req, res) => {
+  let operadoras;
+
+  const fetchOperadoras = new Promise((resolve, reject) => {
+    db.query('SELECT * FROM operadora', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        operadoras = results;
+        resolve();
+      }
+    });
+  });
+
+  fetchOperadoras
+    .then(() => {
+      res.render('procedimentos', { operadoras: operadoras });
+    })
+    .catch((error) => {
+      console.error('Erro ao buscar dados:', error);
+      res.status(500).send('Erro interno do servidor');
+    })
+})
+
+app.post('/cadastrar-procedimento', (req, res) => {
+  const { procedimentoData } = req.body;
+
+  const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  db.query(sqlProcedimento, [procedimentoData.idOperadora, procedimentoData.descricao, procedimentoData.copay, procedimentoData.limitecopay, procedimentoData.franquiacopay, procedimentoData.limitecarencia,  procedimentoData.tipofranquia], (error, result) => {
+    if(error) {
+      console.error("Erro ao cadastrar procedimento:", error)
+      res.cookie('alertError', 'Erro ao cadastrar Procedimento', {maxAge: 3000});
+      res.status(500).json({ message: 'Erro ao cadastrar Procedimento'});
+    }
+    res.cookie('alertSuccess', 'Procedimento Cadastrado com sucesso', { maxAge: 3000 });
+    res.status(200).json({ message: 'Novo Procedimento criado com sucesso' });
+  })
+})
+
+app.post('/editar-procedimento/:id', (req, res) => {
+  const procedimento = req.body.procedimentos
+  const idProcedimento = req.params.id
+
+  console.log(procedimento)
+
+  const sqlProcedimentoUpdate = 'UPDATE procedimentos SET descricao=?, valorcop=?, limitecop=?, franquiacop=?, limitecarenciadias=?, tipofranquia=? WHERE id=?'
+
+  db.query(sqlProcedimentoUpdate, [procedimento.descricao, procedimento.copay, procedimento.limitecop, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.tipofranquia, idProcedimento], (err, result) => {
+    if(err){
+      console.error("Erro ao editar procedimento:", err)
+      res.cookie('alertError', 'Erro ao editar Procedimento', {maxAge: 3000});
+      res.status(500).json({ message: 'Erro ao editar Procedimento'});
+    }
+    res.cookie('alertSuccess', 'Procedimento editado com sucesso', { maxAge: 3000 });
+    res.status(200).json({ message: 'Procedimento editado com sucesso' });
+  })
+})
+
+app.get('/procedimentos/:id', async (req, res) => {
+  const idOperadora = req.params.id;
+
+  try {
+    const operadoraPromise = util.promisify(db.query).bind(db);
+    const produtosPromise = util.promisify(db.query).bind(db);
+
+    const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
+    const procedimentos = await produtosPromise('SELECT * FROM procedimentos WHERE id_produto = ?', [idOperadora]);
+
+    res.render('procedimento', { operadora: operadora[0], procedimentos: procedimentos });
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+});
 
 app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;

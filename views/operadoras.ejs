@@ -59,6 +59,10 @@
                         <label for="numeroendereco" class="form-label">Número: <span>(apenas números)</span></label>
                         <input type="number" class="form-control" id="numeroendereco" name="numeroendereco" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="emailouvidoria" class="form-label">Email Ouvidoria: <span>(se não houver deixar vazio)</span></label>
+                        <input type="email" class="form-control" id="emailouvidoria" name="emailouvidoria">
+                    </div>
                 </div>
                 <!-- Segunda coluna -->
                 <div class="col-md-6">
@@ -226,6 +230,10 @@
                                                 <label for="numeroendereco" class="form-label">Número:</label>
                                                 <input type="number" class="form-control" id="numeroendereco"
                                                     name="numeroendereco" value="<%= operadora.numeroendereco %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="emailouvidoria" class="form-label">Emai Ouvidoria:</label>
+                                                <input type="email" class="form-control" id="emailouvidoria" name="emailouvidoria" value="<%= operadora.emailouvidoria %>">
                                             </div>
                                         </td>
                                         <!-- Segunda coluna com os campos restantes de edição -->

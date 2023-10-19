@@ -28,4 +28,10 @@ CHANGE COLUMN nova_cooparticipacao cooparticipacao ENUM('Com Coparticipação', 
 SET SQL_SAFE_UPDATES = 0;
 
 ALTER TABLE procedimentos
-ADD COLUMN tipofranquia ENUM('%', 'R$');
+ADD COLUMN tipofranquia ENUM('', '%', 'R$');
+
+
+
+/* ALTERAÇÕES A SEREM SREALIZADAS PRÓXIMO DEPLOY */
+ALTER TABLE procedimentos
+DROP FOREIGN KEY procedimentos_ibfk_1;
