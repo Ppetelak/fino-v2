@@ -32,7 +32,7 @@ ADD COLUMN tipofranquia ENUM('', '%', 'R$');
 
 
 
-/* ALTERAÇÕES A SEREM SREALIZADAS PRÓXIMO DEPLOY */
+/* ALTERAÇÕES A SEREM REALIZADAS PRÓXIMO DEPLOY */
 ALTER TABLE procedimentos
 DROP FOREIGN KEY procedimentos_ibfk_1;
 

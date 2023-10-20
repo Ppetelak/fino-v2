@@ -86,7 +86,11 @@ const sqlFinoEditar = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde,
 
 const sqlAdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PRODUTOS", "Adicionado um produto ao formulário", ?, ?)';
 
-const sqlExclusaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PRODUTOS", "Foi excluído um produto do formulário", ?, ?)';
+const sqlEdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "PRODUTOS", "Produto vinculado editado", ?, ?)';
+
+const sqlExclusaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PRODUTOS", ?, ?, ?)';
+
+const sqlInclusaoProcedimento = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PROCEDIMENTOS", ?, ?, ?)'
 
 /* REGISTRO de erros da aplicação */
 const logger = winston.createLogger({
@@ -545,14 +549,48 @@ app.get('/procedimentos', verificaAutenticacao, (req, res) => {
 
 app.post('/cadastrar-procedimento', verificaAutenticacao, (req, res) => {
   const { procedimentoData } = req.body;
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
+  const idOperadora = procedimentoData.idOperadora;
 
   const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  db.query(sqlProcedimento, [procedimentoData.idOperadora, procedimentoData.descricao, procedimentoData.copay, procedimentoData.limitecopay, procedimentoData.franquiacopay, procedimentoData.limitecarencia,  procedimentoData.tipofranquia], (error, result) => {
+  db.query(sqlProcedimento, [idOperadora, procedimentoData.descricao, procedimentoData.copay, procedimentoData.limitecopay, procedimentoData.franquiacopay, procedimentoData.limitecarencia, procedimentoData.tipofranquia], (error, result) => {
     if(error) {
       console.error("Erro ao cadastrar procedimento:", error)
       res.cookie('alertError', 'Erro ao cadastrar Procedimento', {maxAge: 3000});
       res.status(500).json({ message: 'Erro ao cadastrar Procedimento'});
     }
+    const idInserido = result.insertId;
+    const sqlSelectDescricao = 'SELECT descricao FROM procedimentos WHERE id = ?';
+    db.query(sqlSelectDescricao, [idInserido], (err, result) =>{
+      if(err){
+        console.error('Erro ao buscar nome do procedimento inserido')
+      }
+      const nomeProcedimento = `Novo procedimento: ${result[0].descricao}`;
+      verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
+        if (err) {
+          console.error('Erro ao verificar existência da operadora', err);
+          res.status(500).json({ error: 'Erro ao verificar existência da operadora' });
+          return;
+        }
+  
+        if (!resultadoVerificacao) {
+          console.error('Resultado de verificação não recebido');
+          res.status(500).json({ error: 'Resultado de verificação não recebido' });
+          return;
+        }
+  
+        const { existeOperadora, idFormulario } = resultadoVerificacao;
+  
+        if (existeOperadora) {
+          db.query(sqlInclusaoProcedimento, [idFormulario, nomeProcedimento, usuarioLogado, dataAgora], (err, result) => {
+            if (err) {
+              console.error('Erro ao inserir atualização na timeline', err);
+            }
+          });
+        }
+      })
+    });
     res.cookie('alertSuccess', 'Procedimento Cadastrado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Novo Procedimento criado com sucesso' });
   })
@@ -655,22 +693,64 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
 app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const idProduto = req.params.id;
   const formData = req.body.formData;
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
+
+  const sqlSelectProduto = 'SELECT *FROM produtos WHERE id=?'
 
   const sqlProdutoUpdate =
     'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, observacoes=?, reducaocarencia=?, congeneres=?, variacao1=?, variacao2=?, variacao3=?, variacao4=?, variacao5=?, variacao6=?, variacao7=?, variacao8=?, variacao9=? WHERE id=? AND id_operadora=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
-
   try {
 
+    const resultProduto = await queryPromise(sqlSelectProduto, [idProduto]);
+
+    if (resultProduto.length === 0) {
+      console.error('Produto não encontrado');
+      res.status(404).json({ error: 'Produto não encontrado' });
+      return;
+    }
+
+    const idOperadora = resultProduto[0].id_operadora;
+
     // Atualizar os dados do produto no banco de dados
-    await queryPromise(
+    const resultUpdate = await queryPromise(
       sqlProdutoUpdate,
       [
         formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9, idProduto, formData.idOperadora
-      ]
+      ], 
     );
+    
+    if (resultUpdate.affectedRows === 0) {
+      console.error('Produto não atualizado');
+      res.status(500).json({ error: 'Erro ao atualizar Produto' });
+      return;
+    }
 
+    verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
+      if (err) {
+        console.error('Erro ao verificar existência da operadora', err);
+        res.status(500).json({ error: 'Erro ao verificar existência da operadora' });
+        return;
+      }
+
+      if (!resultadoVerificacao) {
+        console.error('Resultado de verificação não recebido');
+        res.status(500).json({ error: 'Resultado de verificação não recebido' });
+        return;
+      }
+
+      const { existeOperadora, idFormulario } = resultadoVerificacao;
+
+      if (existeOperadora) {
+        db.query(sqlEdicaoProduto, [idFormulario, usuarioLogado, dataAgora], (err, result) => {
+          if (err) {
+            console.error('Erro ao inserir atualização na timeline', err);
+          }
+        });
+      }
+    })
     res.cookie('alertSuccess', 'Produto atualizado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Produto atualizado com sucesso' });
   } catch (error) {
@@ -682,19 +762,50 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
 
 app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id;
-
-  
-
+  const sqlSelectProduto = 'SELECT *FROM produtos WHERE id =?'
   const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
-  db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
-    if (errorExcluirProduto) {
-      console.error('Erro ao excluir o produto:', errorExcluirProduto);
-      res.status(500).json({ message: 'Erro interno do servidor' });
-    } else {
-      res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
-      res.status(200).json({ message: 'Produto excluído com sucesso' });
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
+
+  db.query(sqlSelectProduto, [idProduto], (err, result) => {
+    if(err){
+      console.error('Erro ao consultar produto', err)
     }
-  });
+    const idOperadora = result[0].id_operadora
+    const nomeProduto = `Produto: ${result[0].nomedoplano}`
+    verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
+      if (err) {
+        console.error('Erro ao verificar existência da operadora', err);
+        res.status(500).json({ error: 'Erro ao verificar existência da operadora' });
+        return;
+      }
+
+      if (!resultadoVerificacao) {
+        console.error('Resultado de verificação não recebido');
+        res.status(500).json({ error: 'Resultado de verificação não recebido' });
+        return;
+      }
+
+      const { existeOperadora, idFormulario } = resultadoVerificacao;
+
+      if (existeOperadora) {
+        db.query(sqlExclusaoProduto, [idFormulario, nomeProduto, usuarioLogado, dataAgora], (err, result) => {
+          if (err) {
+            console.error('Erro ao inserir atualização na timeline', err);
+          }
+        });
+      }
+    })
+    db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
+      if (errorExcluirProduto) {
+        console.error('Erro ao excluir o produto:', errorExcluirProduto);
+        res.status(500).json({ message: 'Erro interno do servidor' });
+      } else {
+        res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
+        res.status(200).json({ message: 'Produto excluído com sucesso' });
+      }
+    });
+  })
 });
 
 app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
