@@ -61,7 +61,6 @@ const db = mysql.createConnection({
   port: '3306'
 }); */
 
-
 db.connect((error) => {
   if (error) {
     console.error('Erro ao conectar ao banco de dados:', error);
@@ -80,6 +79,14 @@ const verificaAutenticacao = (req, res, next) => {
     res.redirect('/');
   }
 };
+
+/* QUERIES PARA ATUALIZAR TIMELINE DO FINO */
+
+const sqlFinoEditar = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "FINO", "Atualização de informações no formulário", ?, ?)';
+
+const sqlAdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PRODUTOS", "Adicionado um produto ao formulário", ?, ?)';
+
+const sqlExclusaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PRODUTOS", "Foi excluído um produto do formulário", ?, ?)';
 
 /* REGISTRO de erros da aplicação */
 const logger = winston.createLogger({
@@ -220,7 +227,29 @@ app.get('/operadoras', verificaAutenticacao, (req, res) => {
     });
 });
 
+const verificaExistenciaOperadora = (idOperadora, callback) => {
+  const sqlVerificaOperadora = `
+    SELECT 
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM formularios WHERE id_operadora = ?) THEN 1
+            ELSE 0
+        END AS resultado,
+        (SELECT id FROM formularios WHERE id_operadora = ? LIMIT 1) AS id_formulario;
+  `;
 
+  db.query(sqlVerificaOperadora, [idOperadora, idOperadora], (err, results) => {
+    if (err) {
+      console.error('Erro na consulta SQL', err);
+      callback(err, null);
+      return;
+    }
+
+    const existeOperadora = results[0].resultado === 1;
+    const idFormulario = existeOperadora ? results[0].id_formulario : null;
+
+    callback(null, { existeOperadora, idFormulario });
+  });
+};
 
 app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
@@ -654,6 +683,8 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
 app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id;
 
+  
+
   const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
   db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
     if (errorExcluirProduto) {
@@ -668,6 +699,8 @@ app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
 
 app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
 
   const sqlSelecionarProduto = 'SELECT * FROM produtos WHERE id = ?'
   const sqlInserirProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora, reducaocarencia, congeneres, variacao1, variacao2, variacao3, variacao4, variacao5, variacao6, variacao7, variacao8, variacao9) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -675,6 +708,25 @@ app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
     if(err){
       console.error('Erro ao buscar produto com a ID passada')
     }
+    const idOperadora = result[0].id_operadora;
+
+    verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
+      if (err) {
+        console.error('Erro ao verificar existência da operadora', err);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+        return;
+      }
+
+      const { existeOperadora, idFormulario } = resultadoVerificacao;
+
+      if (existeOperadora) {
+        db.query(sqlAdicaoProduto, [idFormulario, usuarioLogado, dataAgora], (err, result) => {
+          if (err) {
+            console.error('Erro ao adicionar atualização ao formulário vinculado a operadora em que está vinculado esse produto', err);
+          }
+        });
+      }
+    })
     const p = result[0]
     db.query(sqlInserirProduto, [p.nomedoplano + ' - COPIA', p.ans, p.contratacao, p.cobertura, p.abrangencia, p.cooparticipacao, p.acomodacao, p.areadeabrangencia, p.condicoesconjuges, p.condicoesfilhos, p.condicoesnetos, p.condicoespais, p.condicoesoutros, p.documentosconjuges, p.documentosfilhos, p.documentosnetos, p.documentospais, p.documentosoutros, p.fx1, p.fx2, p.fx3, p.fx4, p.fx5, p.fx6, p.fx7, p.fx8, p.fx9, p.fx10, p.fx1comercial, p.fx2comercial, p.fx3comercial, p.fx4comercial, p.fx5comercial, p.fx6comercial, p.fx7comercial, p.fx8comercial, p.fx9comercial, p.fx10comercial, p.observacoes, p.valorSpread, p.id_operadora, p.reducaocarencia, p.congeneres,  p.variacao1, p.variacao2, p.variacao3, p.variacao4, p.variacao5, p.variacao6, p.variacao7, p.variacao8, p.variacao9], (err, result) => {
       if(err){
@@ -743,6 +795,7 @@ app.get('/fino/:id', async (req, res) => {
   const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
   const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const sqlAtualizacoes = 'SELECT * FROM atualizacoes WHERE id_fino=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
 
@@ -754,20 +807,14 @@ app.get('/fino/:id', async (req, res) => {
     }
 
     const vigenciasResult = await queryPromise(sqlVigencias, [idFino]);
+    const atualizacoesResult = await queryPromise(sqlAtualizacoes, [idFino]);
     const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
     const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
     const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
     const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
+    const procedimentoResult = await queryPromise(sqlProcedimentos, [finoResult.id_operadora])
 
 
-    const produtoIds = produtosResult.map(produto => produto.id);
-
-    const procedimentosPorProduto = {};
-
-    for (const produtoId of produtoIds) {
-      const procedimentosProduto = await queryPromise(sqlProcedimentos, [produtoId]);
-      procedimentosPorProduto[produtoId] = procedimentosProduto;
-    }
 
     res.render('finoIndividual',
       {
@@ -775,9 +822,10 @@ app.get('/fino/:id', async (req, res) => {
         vigencias: vigenciasResult,
         operadora: operadoraResult,
         produtos: produtosResult,
-        procedimentos: procedimentosPorProduto,
+        procedimentos: procedimentoResult,
         contatos: contatosResult,
-        entidades: entidadesResult
+        entidades: entidadesResult,
+        atualizacoes: atualizacoesResult
       })
   } catch (error) {
     console.error('Erro ao buscar informações:', error);
@@ -840,6 +888,8 @@ app.post('/editar-fino/:id', async (req, res) => {
   const formData = req.body.formData;
   const entidades = req.body.entidades;
   const vigencias = req.body.vigencias;
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
 
   const partesData = formData.dataAtual.split('/');
   const dataFormatada = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
@@ -891,9 +941,13 @@ app.post('/editar-fino/:id', async (req, res) => {
         )
       }
     }
-
-    res.cookie('alertSuccess', 'Fino atualizado com sucesso', { maxAge: 3000 });
-    res.status(200).json({ message: 'Fino atualizado com sucesso' });
+    db.query(sqlFinoEditar, [idFino, usuarioLogado , dataAgora], (err, result) => {
+      if(err){
+        console.error('Erro ao informar atualização', err)
+      }
+      res.cookie('alertSuccess', 'Fino atualizado com sucesso', { maxAge: 3000 });
+      res.status(200).json({ message: 'Fino atualizado com sucesso' });
+    })
   } catch (error) {
     console.error('Erro ao atualizar fino:', error);
     res.cookie('alertError', 'Erro ao atualizar fino, verifique e tente novamente', { maxAge: 3000 });

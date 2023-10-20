@@ -49,4 +49,13 @@ ADD COLUMN variacao7 DECIMAL(10,5),
 ADD COLUMN variacao8 DECIMAL(10,5),
 ADD COLUMN variacao9 DECIMAL(10,5)
 
+CREATE TABLE atualizacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_fino INT,
+    tipoAtualizacao ENUM('INCLUSÃO', 'EXCLUSÃO', 'EDIÇÃO'),
+    onde ENUM('PROCEDIMENTOS', 'OPERADORA', 'FINO', 'PRODUTOS', 'ENTIDADES'),
+    descricao TEXT,
+    responsavel VARCHAR(30),
+    dataAtualizacao DATETIME
+)
 

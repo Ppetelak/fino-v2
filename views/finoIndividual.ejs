@@ -28,46 +28,40 @@
             <a href="#">Topo</a>
             <a href="#dadosOperadora">Dados Operadora</a>
             <a href="#produtos">Produtos</a>
-            <a href="#entidades">Entidades</a>
-            <a href="#vigencias">Vigências</a>
-            <a href="#documentacao">Documentação</a>
+            <a href="#procedimentosLista">Procedimentos</a>
+            <a href="#entidades">Entidades/ Vigências/ Documentação </a>
             <a href="#marketing">Marketing</a>
+            <a href="#update">Atualizações </a>
             <a href="#acoes">Ações</a>
         </div>
         <div class="content imprimir">
             <div class="row cabecalho">
                 <h2>Formulário de Implantação de novas Operadoras - Linha Master </h2>
-                <div class="col-md-3">
+                <div class="col">
                     <label>Fino de numero:</label>
                     <p><%= fino.id %></p>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <label>Operadora: </label>
                     <p><%= operadora.nomefantasia %></p>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <label>Administradora: </label>
                     <p><%= fino.administradora %></p>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <label>Modalidade: </label>
                     <p><%= fino.modalidade %></p>
                 </div>
-                <div class="col-md-6">
+                <div class="col">
                     <label>Data Criação: </label>
+                    <p>
                     <script>
                         const optionsDC = { year: 'numeric', month: '2-digit', day: '2-digit' };
                         const dataAtualizacaoDC = new Date('<%= fino.datacriacao %>').toLocaleDateString('pt-BR', optionsDC);
                         document.write(dataAtualizacaoDC);
                     </script>
-                </div>
-                <div class="col-md-6">
-                    <label>Data Atualização: </label>
-                    <script>
-                        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                        const dataAtualizacao = new Date('<%= fino.dataatualizacao %>').toLocaleDateString('pt-BR', options);
-                        document.write(dataAtualizacao);
-                    </script>
+                    </p>
                 </div>
             </div>
             <div class="row dadosOperadora" id="dadosOperadora">
@@ -118,7 +112,7 @@
                 <h3> Produtos </h3>
                 <% produtos.forEach(function (produto) { %>
                 <div class="row produto" data-id="<%= produto.id %>">
-                    <h4>Dados do Plano</h4>
+                    <h4><%= produto.nomedoplano %></h4>
                     <div class="row">
                         <div class="tm-33">
                             <p><strong>Nome do Plano: </strong> <span> <%= produto.nomedoplano %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
@@ -144,49 +138,7 @@
                     <div class="row">
                         <div class="tm-100">
                             <p><strong>Área de abrangência: </strong><p>
-                            <p> <span> <%= produto.cooparticipacao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <h4>Procedimentos</h4>
-                        <div class="row procedimentos">
-                            <% if (produto.id in procedimentos) { %>
-                                <% procedimentos[produto.id].forEach(function(procedimento) { %>
-                                    <div class="row procedimento">
-                                        <div class="tm-50">
-                                            <strong>Descrição</strong>
-                                            <p> <span><%= procedimento.descricao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
-                                        </div>
-                                        <div class="tm-50">
-                                            <strong>Cooparticipação </strong>
-                                            <table class="table">
-                                                <thead>
-                                                    <th>Valor</th>
-                                                    <th>Limite</th>
-                                                    <th>Franquia</th>
-                                                    <th>Carência (dias)</th>
-                                                </thead>
-                                                <tr>
-                                                    <td>R$ <%= procedimento.valorcop %></td>
-                                                    <td>R$ <%= procedimento.limitecop %></td>
-                                                    <td><%= procedimento.franquiacop %></td>
-                                                    <td><%= procedimento.limitecarenciadias %></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div class="tm-50">
-                                            <label> Condições de redução de carência </label>
-                                            <p><span> <%= procedimento.condicoesreducaocarencia %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
-                                        </div>
-                                        <div class="tm-50">
-                                            <label> Condições congêneres </label>
-                                            <p><span><%= procedimento.condicoescongeneres %> </span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
-                                        </div>
-                                    </div>
-                                <% }); %>
-                            <% } else { %>
-                                <p>Sem procedimentos vinculados ao produto</p>
-                            <% } %>
+                            <p> <span> <%= produto.areadeabrangencia %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
                         </div>
                     </div>
                     <div class="row dependentes">
@@ -313,11 +265,55 @@
                     </div>
                     <div class="row">
                         <strong> Observações do plano </strong>
-                        <p> <%= produto.observacoes %> </p>
+                        <p> <span><%= produto.observacoes %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong> Condições de redução de carência </strong>
+                            <p> <span> <%= produto.reducaocarencia %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
+                        <div class="col-6">
+                            <strong> Condições de congeneres </strong>
+                            <p><span> <%= produto.congeneres %> </span><button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                        </div>
                     </div>
                     
                 </div>             
                 <% })%>
+            </div>
+            <div class="row procedimentosLista" id="procedimentosLista">
+                <h3>Procedimentos</h3>
+                <div class="row">
+                    <% if (procedimentos.length > 0) { %>
+                        <% procedimentos.forEach(function(procedimento) { %>
+                            <div class="row procedimento mt-3 mb-3">
+                                <div class="tm-50">
+                                    <strong>Descrição</strong>
+                                    <p> <span><%= procedimento.descricao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
+                                </div>
+                                <div class="tm-50">
+                                    <strong>Cooparticipação </strong>
+                                    <table class="table">
+                                        <thead>
+                                            <th>Valor</th>
+                                            <th>Limite</th>
+                                            <th>Franquia</th>
+                                            <th>Carência (dias)</th>
+                                        </thead>
+                                        <tr>
+                                            <td>R$ <%= procedimento.valorcop %></td>
+                                            <td>R$ <%= procedimento.limitecop %></td>
+                                            <td><%= procedimento.franquiacop %></td>
+                                            <td><%= procedimento.limitecarenciadias %></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>Sem procedimentos vinculados ao produto</p>
+                    <% } %>
+                </div>
             </div>
             <div class="row entidades" id="entidades"> 
                 <h3> Entidades Aprovadas </h3>
@@ -360,7 +356,16 @@
             <div class="row vigencias" id="vigencias">
                 <h3> Vigências </h3>
                 <div class="row">
-                    <p><strong>Aniversário de Contrato: </strong> <span> <%= fino.aniversariocontrato %> </span> <button class="copy-button"><i class="bi bi-back"></i></button></p>
+                    <p><strong>Aniversário de Contrato: </strong> 
+                        <span>
+                            <script>
+                                const optionsAC = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                                const dataAniversarioContrato = new Date('<%= fino.aniversariocontrato %>').toLocaleDateString('pt-BR', optionsAC);
+                                document.write(dataAniversarioContrato);
+                            </script>
+                        </span> 
+                        <button class="copy-button"><i class="bi bi-back"></i></button>
+                    </p>
                 </div>
                 <div class="row">
                     <table class="table">
@@ -461,52 +466,58 @@
                     </div>
                 </div>
             </div>
-            <div class="col update">
+            <div class="col update" id="update">
                 <h3> ALTERAÇÕES </h3>
                 <div class="row updateTitle">
-                    <div class="col-1">
+                    <div class="col-2">
                         <strong>Data</strong>
+                    </div>
+                    <div class="col-1">
+                        <strong>Tipo</strong>
                     </div>
                     <div class="col-1">
                         <strong>Local</strong>
                     </div>
-                    <div class="col-10">
+                    <div class="col-7">
                         <strong>Atualização</strong>
                     </div>
-                </div>
-                <div class="row atualizacao">
                     <div class="col-1">
-                        12/12/23
-                    </div>
-                    <div class="col-1">
-                        PROCEDIMENTOS
-                    </div>
-                    <div class="col-10">
-                        Adicionado um novo procedimento a operadora
+                        <strong>Responsável</strong>
                     </div>
                 </div>
-                <div class="row atualizacao">
-                    <div class="col-1">
-                        12/12/23
-                    </div>
-                    <div class="col-1">
-                        OPERADORA
-                    </div>
-                    <div class="col-10">
-                        Alterado informações da operadora
-                    </div>
-                </div>
-                <div class="row atualizacao">
-                    <div class="col-1">
-                        12/12/23
-                    </div>
-                    <div class="col-1">
-                        FINO
-                    </div>
-                    <div class="col-10">
-                        Alterado informações do Fino 
-                    </div>
-                </div>
+                <% if(atualizacoes.length > 0) { %>
+                    <% atualizacoes.forEach(function (atualizacao) { %>
+                        <div class="row atualizacao">
+                            <div class="col-2">
+                                <script>
+                                    var optionsdt = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                                    var dataAtualizacaofn = new Date('<%= atualizacao.dataAtualizacao %>').toLocaleString('pt-BR', optionsdt);
+                                    var horaFormatada = dataAtualizacaofn.split(',')[1].trim();
+                                    var dataFormatada = dataAtualizacaofn.split(',')[0].trim() + ' às ' + horaFormatada + 'h';
+                                    document.write(dataFormatada);
+                                </script>                                 
+                            </div>
+                            <div class="col-1">
+                                <%= atualizacao.tipoAtualizacao %>
+                            </div>
+                            <div class="col-1">
+                                <%= atualizacao.onde %>
+                            </div>
+                            <div class="col-7">
+                                <%= atualizacao.descricao %>
+                            </div>
+                            <div class="col-1">
+                                <%= atualizacao.responsavel %>
+                            </div>
+                        </div>
+                    <% }); %>
+                    <% } else { %>
+                        <div class="row atualizacao">
+                            <div class="col-12">
+                                Sem atualizações para o fino desde a criação
+                            </div>
+                        </div>                  
+                <% } %>
             </div>
         </div>
         
@@ -515,6 +526,7 @@
             <input type="hidden" id="idFino" value="<%= fino.id %>">
             <button class="btn btn-primary" type="button" id="baixarJson">   <i class="bi bi-filetype-json"></i> GERAR JSON </button>
             <button class="btn btn-primary" type="button" id="copiarLink"> <i class="bi bi-share-fill"> </i>COPIAR LINK </button>
+            <button class="btn btn-primary" type="button" id="acessoRestrito"> <i class="bi bi-lock"></i>ACESSO RESTRITO</button>
         </div>
         
     </main>
