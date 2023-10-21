@@ -12,6 +12,7 @@ const bodyParser = require('body-parser')
 const util = require('util')
 const cookie = require('cookie-parser')
 const { url } = require('inspector')
+const ExcelJS = require('exceljs');
 
 /* CONFIGURAÇÕES DOS PACOTES */
 
@@ -76,37 +77,10 @@ const verificaAutenticacao = (req, res, next) => {
     res.locals.user = req.session.usuario;
     next();
   } else {
-    res.redirect('/');
+    req.session.originalUrl = req.originalUrl;
+    res.redirect('/login');
   }
 };
-
-/* QUERIES PARA ATUALIZAR TIMELINE DO FINO */
-
-const sqlFinoEditar = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "FINO", "Atualização de informações no formulário", ?, ?)';
-
-const sqlAdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PRODUTOS", "Adicionado um produto ao formulário", ?, ?)';
-
-const sqlEdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "PRODUTOS", "Produto vinculado editado", ?, ?)';
-
-const sqlExclusaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PRODUTOS", ?, ?, ?)';
-
-const sqlInclusaoProcedimento = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PROCEDIMENTOS", ?, ?, ?)'
-
-/* REGISTRO de erros da aplicação */
-const logger = winston.createLogger({
-  level: 'error',
-  format: winston.format.combine(
-    winston.format.timestamp(), // Adiciona um timestamp com a hora atual
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.File({ filename: 'error.log.json' })
-  ]
-});
-
-app.post('/rota-restrita', (req, res) => {
-  res.send('Olá Pablo')
-})
 
 app.post('/login-verifica', (req, res) => {
   const { username, password } = req.body;
@@ -116,24 +90,29 @@ app.post('/login-verifica', (req, res) => {
   db.query(query, [username], (err, results) => {
     if (err) {
       console.error('Erro ao consultar o banco de dados:', err);
-      return res.status(500).json({ error: 'Erro ao processar a solicitação' });
+      //return res.status(500).json({ error: 'Erro ao processar a solicitação' });
+      return res.render('login', { error: 'Erro no servidor contate o suporte' });
     }
 
     if (results.length === 0) {
-      return res.status(401).json({ error: 'Usuário não encontrado' });
+      //return res.status(401).json({ error: 'Usuário não encontrado' });
+      return res.render('login', { error: 'Usuário não encontrado' });
     }
 
     const user = results[0];
 
     if (user.senha !== password) {
-      return res.status(401).json({ error: 'Senha incorreta' });
+      //return res.status(401).json({ error: 'Senha incorreta' });
+      return res.render('login', { error: 'Senha incorreta' });
     }
+
+    const originalUrl = req.session.originalUrl
     req.session.usuario = user;
-    res.redirect('/operadoras')
+    res.redirect(originalUrl);
   });
 });
 
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
   res.render('login');
 })
 
@@ -146,6 +125,33 @@ app.get('/logout', (req, res) => {
     // Redirecionar o usuário para a página de login ou para outra página desejada
     res.redirect('/');
   });
+});
+
+
+/* QUERIES PARA ATUALIZAR TIMELINE DO FINO */
+
+const sqlFinoEditar = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "FINO", "Atualização de informações no formulário", ?, ?)';
+
+const sqlAdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PRODUTOS", "Adicionado um produto ao formulário", ?, ?)';
+
+const sqlEdicaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EDIÇÃO", "PRODUTOS", ?, ?, ?)';
+
+const sqlExclusaoProduto = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PRODUTOS", ?, ?, ?)';
+
+const sqlInclusaoProcedimento = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "INCLUSÃO", "PROCEDIMENTOS", ?, ?, ?)'
+
+const sqlExclusaoProcedimento = 'INSERT INTO atualizacoes (id_fino, tipoAtualizacao, onde, descricao, responsavel, dataAtualizacao) VALUES (?, "EXCLUSÃO", "PROCEDIMENTOS", ?, ?, ?)'
+
+/* REGISTRO de erros da aplicação */
+const logger = winston.createLogger({
+  level: 'error',
+  format: winston.format.combine(
+    winston.format.timestamp(), // Adiciona um timestamp com a hora atual
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'error.log.json' })
+  ]
 });
 
 
@@ -632,6 +638,54 @@ app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
   }
 });
 
+app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
+  const idProcedimento = req.params.id;
+  const sqlSelectProcedimento = 'SELECT *FROM procedimentos WHERE id =?'
+  const sqlExcluirProcedimento = 'DELETE FROM procedimentos WHERE id = ?';
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome
+
+  db.query(sqlSelectProcedimento, [idProcedimento], (err, result) => {
+    if(err){
+      console.error('Erro ao consultar produto', err)
+    }
+    const idOperadora = result[0].id_produto
+    const nomeProcedimento = `Procedimento: ${result[0].descricao}`
+    verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
+      if (err) {
+        console.error('Erro ao verificar existência da operadora', err);
+        res.status(500).json({ error: 'Erro ao verificar existência da operadora' });
+        return;
+      }
+
+      if (!resultadoVerificacao) {
+        console.error('Resultado de verificação não recebido');
+        res.status(500).json({ error: 'Resultado de verificação não recebido' });
+        return;
+      }
+
+      const { existeOperadora, idFormulario } = resultadoVerificacao;
+
+      if (existeOperadora) {
+        db.query(sqlExclusaoProcedimento, [idFormulario, nomeProcedimento, usuarioLogado, dataAgora], (err, result) => {
+          if (err) {
+            console.error('Erro ao inserir atualização na timeline', err);
+          }
+        });
+      }
+    })
+    db.query(sqlExcluirProcedimento, [idProcedimento], (errorExcluirProduto, resultExcluirProduto) => {
+      if (errorExcluirProduto) {
+        console.error('Erro ao excluir o procedimento:', errorExcluirProduto);
+        res.status(500).json({ message: 'Erro interno do servidor' });
+      } else {
+        res.cookie('alertSuccess', 'Procedimento excluído com sucesso', { maxAge: 3000 })
+        res.status(200).json({ message: 'Procedimento excluído com sucesso' });
+      }
+    });
+  })
+});
+
 app.get('/produtos', verificaAutenticacao, (req, res) => {
   let operadoras;
 
@@ -713,6 +767,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
     }
 
     const idOperadora = resultProduto[0].id_operadora;
+    const nomeProduto = `Produto: ${resultProduto[0].nomedoplano}`
 
     // Atualizar os dados do produto no banco de dados
     const resultUpdate = await queryPromise(
@@ -744,7 +799,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
       const { existeOperadora, idFormulario } = resultadoVerificacao;
 
       if (existeOperadora) {
-        db.query(sqlEdicaoProduto, [idFormulario, usuarioLogado, dataAgora], (err, result) => {
+        db.query(sqlEdicaoProduto, [idFormulario, nomeProduto, usuarioLogado, dataAgora], (err, result) => {
           if (err) {
             console.error('Erro ao inserir atualização na timeline', err);
           }
@@ -852,7 +907,7 @@ app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
   })
 })
 
-app.get('/finos', verificaAutenticacao, (req, res) => {
+app.get('/', verificaAutenticacao, (req, res) => {
   const sqlFinos = 'SELECT *FROM formularios';
   const sqlOperadora = 'SELECT *FROM operadora';
   const sqlVigencias = 'SELECT *FROM vigencias'
@@ -943,6 +998,54 @@ app.get('/fino/:id', async (req, res) => {
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
+
+app.get('/fino-restrito/:id', verificaAutenticacao, async (req, res) => {
+  const idFino = req.params.id;
+
+  const sqlFino = 'SELECT * FROM formularios WHERE id=?';
+  const sqlVigencias = 'SELECT * FROM vigencias WHERE id_fino=?';
+  const sqlOperadora = 'SELECT * FROM operadora WHERE id=?';
+  const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
+  const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
+  const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const sqlAtualizacoes = 'SELECT * FROM atualizacoes WHERE id_fino=?';
+
+  const queryPromise = util.promisify(db.query).bind(db);
+
+  try {
+    const [finoResult] = await queryPromise(sqlFino, [idFino]);
+
+    if (!finoResult) {
+      return res.status(404).json({ message: 'Fino não encontrado' });
+    }
+
+    const vigenciasResult = await queryPromise(sqlVigencias, [idFino]);
+    const atualizacoesResult = await queryPromise(sqlAtualizacoes, [idFino]);
+    const [operadoraResult] = await queryPromise(sqlOperadora, [finoResult.id_operadora]);
+    const produtosResult = await queryPromise(sqlProdutos, [finoResult.id_operadora]);
+    const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
+    const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
+    const procedimentoResult = await queryPromise(sqlProcedimentos, [finoResult.id_operadora])
+
+
+
+    res.render('finoRestrito',
+      {
+        fino: finoResult,
+        vigencias: vigenciasResult,
+        operadora: operadoraResult,
+        produtos: produtosResult,
+        procedimentos: procedimentoResult,
+        contatos: contatosResult,
+        entidades: entidadesResult,
+        atualizacoes: atualizacoesResult
+      })
+  } catch (error) {
+    console.error('Erro ao buscar informações:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+})
 
 app.get('/finojson/:id', async (req, res) => {
   const idFino = req.params.id;
@@ -1141,9 +1244,110 @@ app.post('/cadastrar-fino', (req, res) => {
   res.status(200).json({ message: 'Novo Fino criado com sucesso' })
 });
 
-app.get('/gerar', (req, res) => {
-  res.render('gerar-fino')
-})
+app.get('/gerar-excel/:id/:nomefantasia/:adm', verificaAutenticacao, (req, res) => {
+  const idOperadora = req.params.id;
+  const nomeFantasia = req.params.nomefantasia;
+  const adm = req.params.adm;
+  const sqlSelectPlanos = 'SELECT * FROM produtos WHERE id_operadora = ?';
+
+  db.query(sqlSelectPlanos, [idOperadora], (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar os produtos vinculados', err);
+      return res.status(500).send('Erro ao gerar o arquivo Excel');
+    }
+
+    const produtos = result;
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet 1');
+
+    worksheet.addRow(['COD. GRUPO', 'COD.PLANO', 'ID FX ETÁRIA', 'NOME FX ETÁRIA', 'PREÇO NET', 'PREÇO COBRANÇA']);
+    produtos.forEach(function (produto) {
+      worksheet.addRow(['em branco', produto.nomedoplano, 1, '00 a 18 Anos', produto.fx1, produto.fx1comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 2, '19 a 23 Anos', produto.fx2, produto.fx2comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 3, '24 a 28 Anos', produto.fx3, produto.fx3comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 4, '29 a 33 Anos', produto.fx4, produto.fx4comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 5, '34 a 38 Anos', produto.fx5, produto.fx5comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 6, '39 a 43 Anos', produto.fx6, produto.fx6comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 7, '44 a 48 Anos', produto.fx7, produto.fx7comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 8, '49 a 53 Anos', produto.fx8, produto.fx8comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 9, '54 a 58 Anos', produto.fx9, produto.fx9comercial]);
+      worksheet.addRow(['em branco', produto.nomedoplano, 10, 'Mais de 59 Anos', produto.fx10, produto.fx10comercial]);
+    });
+
+    // Configurar cabeçalhos para download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=Tabela DS Operadora_${nomeFantasia} ${adm}.xlsx`);
+
+    // Enviar o arquivo ao cliente
+    workbook.xlsx.write(res)
+      .then(() => {
+        console.log('Arquivo Excel enviado com sucesso!');
+      })
+      .catch((err) => {
+        console.error('Erro ao enviar o arquivo Excel:', err);
+        res.status(500).send('Erro ao gerar o arquivo Excel');
+      });
+  });
+});
+
+app.get('/gerar-excel-interno/:id/:nomefantasia/:adm', verificaAutenticacao, (req, res) => {
+  const idOperadora = req.params.id;
+  const nomeFantasia = req.params.nomefantasia;
+  const adm = req.params.adm;
+  const sqlSelectPlanos = 'SELECT * FROM produtos WHERE id_operadora = ?';
+
+  db.query(sqlSelectPlanos, [idOperadora], (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar os produtos vinculados', err);
+      return res.status(500).send('Erro ao gerar o arquivo Excel');
+    }
+
+    const produtos = result;
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet 1');
+
+    produtos.forEach(function (produto) {
+      worksheet.addRow(['Operadora', nomeFantasia])
+      worksheet.addRow(['Valor Spread', produto.valorSpread])
+      worksheet.addRow(['Nome Plano', produto.nomedoplano])
+      worksheet.addRow(['ANS', produto.ans])
+      worksheet.addRow(['Acomodação', produto.acomodacao])
+      worksheet.addRow(['Fator Moderador', produto.cooparticipacao])
+      worksheet.addRow([''])
+      worksheet.addRow(['Faixa Etária', 'Valor NET', 'Valor Venda', 'Variação'])
+      worksheet.addRow(['00 a 18 Anos', produto.fx1, produto.fx1Comercial, 0])
+      worksheet.addRow(['19 a 23 Anos', produto.fx2, produto.fx2Comercial, produto.variacao1])
+      worksheet.addRow(['24 a 28 anos', produto.fx3, produto.fx3Comercial, produto.variacao2])
+      worksheet.addRow(['29 a 33 anos	', produto.fx4, produto.fx4Comercial, produto.variacao3])
+      worksheet.addRow(['34 a 38 anos', produto.fx5, produto.fx5Comercial, produto.variacao4])
+      worksheet.addRow(['39 a 43 anos', produto.fx6, produto.fx6Comercial, produto.variacao5])
+      worksheet.addRow(['44 a 48 anos	', produto.fx7, produto.fx7Comercial, produto.variacao6])
+      worksheet.addRow(['49 a 53 anos', produto.fx8, produto.fx8Comercial, produto.variacao7])
+      worksheet.addRow(['54 a 58 anos', produto.fx9, produto.fx9Comercial, produto.variacao8])
+      worksheet.addRow(['59+', produto.fx10, produto.fx10Comercial, produto.variacao9])
+      worksheet.addRow([''])
+      worksheet.addRow([''])
+      worksheet.addRow([''])
+
+    });
+
+    // Configurar cabeçalhos para download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=Tabela ${adm} Operadora_${nomeFantasia}.xlsx`);
+
+    // Enviar o arquivo ao cliente
+    workbook.xlsx.write(res)
+      .then(() => {
+        console.log('Arquivo Excel enviado com sucesso!');
+      })
+      .catch((err) => {
+        console.error('Erro ao enviar o arquivo Excel:', err);
+        res.status(500).send('Erro ao gerar o arquivo Excel');
+      });
+  });
+});
+
+
 
 app.listen(3050, () => {
   console.log('Aplicação rodando na porta 3050');

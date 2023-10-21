@@ -526,7 +526,7 @@
             <input type="hidden" id="idFino" value="<%= fino.id %>">
             <button class="btn btn-primary" type="button" id="baixarJson">   <i class="bi bi-filetype-json"></i> GERAR JSON </button>
             <button class="btn btn-primary" type="button" id="copiarLink"> <i class="bi bi-share-fill"> </i>COPIAR LINK </button>
-            <button class="btn btn-primary" type="button" id="acessoRestrito"> <i class="bi bi-lock"></i>ACESSO RESTRITO</button>
+            <a href="/fino-restrito/<%= fino.id %>" target="_blank"><button class="btn btn-primary" type="button" id="acessoRestrito"> <i class="bi bi-lock"></i>ACESSO RESTRITO</button></a>
         </div>
         
     </main>

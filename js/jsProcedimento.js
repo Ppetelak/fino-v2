@@ -110,6 +110,7 @@ $('.editar-btn').click(function () {
 $('.excluir-btn').click(function () {
     const form = $(this);
     const idProcedimento = form.data('id');
+    console.log(idProcedimento);
 
     // Exibir um alerta de confirmação
     const confirmDelete = window.confirm(`Tem certeza que deseja excluir este Procedimento?`);
@@ -119,7 +120,7 @@ $('.excluir-btn').click(function () {
         // Envie a ação de excluir para a rota do servidor responsável por realizar a exclusão
         $.ajax({
             type: 'DELETE',
-            url: `/excluir-produto/${idProcedimento}`,
+            url: `/excluir-procedimento/${idProcedimento}`,
             success: function (response) {
                 console.log('Sucesso', response);
                 location.reload();
@@ -127,7 +128,7 @@ $('.excluir-btn').click(function () {
             error: function (xhr, status, error) {
                 const response = JSON.parse(xhr.responseText);
                 showMessageError(response.message);
-                console.error('Erro ao excluir a operadora:', error);
+                console.error('Erro ao excluir procedimento:', error);
             },
         });
     }
