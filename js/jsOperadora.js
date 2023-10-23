@@ -235,6 +235,7 @@ $('.adicionar-contato').click(function () {
     `;
 
     $button.before(novoContato);
+    mascaras();
 });
 
 $('.contatos').on('click', '.remover-contato', function () {

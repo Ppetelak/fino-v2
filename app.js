@@ -146,12 +146,14 @@ const sqlExclusaoProcedimento = 'INSERT INTO atualizacoes (id_fino, tipoAtualiza
 const logger = winston.createLogger({
   level: 'error',
   format: winston.format.combine(
-    winston.format.timestamp(), // Adiciona um timestamp com a hora atual
-    winston.format.json()
+      winston.format.timestamp(),
+      winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: 'error.log.json' })
-  ]
+      new winston.transports.File({
+          filename: path.join('erros', 'error.log.json'),
+      }),
+  ],
 });
 
 
@@ -362,6 +364,12 @@ app.post('/editar-operadora/:id', verificaAutenticacao, async (req, res) => {
     res.cookie('alertSuccess', 'Operadora atualizada com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Operadora atualizada com sucesso' });
   } catch (error) {
+    logger.error({
+      message: 'Erro ao atualizar operadora:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+  });
     console.error('Erro ao atualizar operadora:', error);
     res.cookie('alertError', 'Erro ao atualizar Operadora, verifique e tente novamente', { maxAge: 3000 });
     res.status(500).json({ message: 'Erro interno do servidor' });
