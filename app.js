@@ -156,54 +156,6 @@ const logger = winston.createLogger({
   ],
 });
 
-
-app.get('/criarpdf', async (request, response) => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  /* var dominio = window.location.host;
-  var protocolo = window.location.protocol; */
-  var link = 'http://localhost:3050/renderizar';
-
-  await page.goto(link, {
-    waitUntil: "networkidle0"
-  })
-
-  // Extrair o conteúdo da tag <main>
-  const mainContent = await page.evaluate(() => {
-    const mainElement = document.querySelector('main');
-    return mainElement.innerHTML;
-  });
-
-  // Extrair o link CSS
-  const cssLink = await page.evaluate(() => {
-    const cssElement = document.querySelector('link[rel="stylesheet"]');
-    return cssElement.href;
-  });
-
-  // Carregar o arquivo CSS na página do Puppeteer
-  await page.goto(cssLink, {
-    waitUntil: "networkidle0"
-  });
-
-  // Inserir o conteúdo da tag <main> na página
-  await page.setContent(`<html><head><link rel="stylesheet" href="${cssLink}"></head><body>${mainContent}</body></html>`);
-
-  const pdf = await page.pdf({
-    printBackground: true,
-    format: "A4",
-    margin: {
-      top: "20px",
-      bottom: "20px",
-      left: "20px",
-      right: "20px"
-    }
-  })
-
-  await browser.close()
-  response.contentType("application/pdf")
-  return response.send(pdf)
-})
-
 app.get('/operadoras', verificaAutenticacao, (req, res) => {
   let operadoras, contatos;
 
@@ -211,6 +163,12 @@ app.get('/operadoras', verificaAutenticacao, (req, res) => {
     db.query('SELECT * FROM operadora', (error, results) => {
       if (error) {
         reject(error);
+        logger.error({
+          message: 'Erro ao selecionar operadoras:',
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+      });
       } else {
         operadoras = results;
         resolve();
@@ -252,6 +210,12 @@ const verificaExistenciaOperadora = (idOperadora, callback) => {
   db.query(sqlVerificaOperadora, [idOperadora, idOperadora], (err, results) => {
     if (err) {
       console.error('Erro na consulta SQL', err);
+      logger.error({
+        message: 'Erro ao consultar existencia de fino vinculado a operadora:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+    });
       callback(err, null);
       return;
     }
@@ -272,6 +236,12 @@ app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
 
   db.query(sqlOperadora, [formData.razaosocial, formData.cnpj, formData.nomefantasia, formData.codans, formData.endereco, formData.numeroendereco, formData.complemento, formData.cep, formData.cidade, formData.uf, formData.website, formData.telatendimento, formData.telouvidoria, formData.emailouvidoria], (error, result) => {
     if (error) {
+      logger.error({
+        message: 'Erro ao cadastrar operadora:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+    });
       console.error('Erro ao cadastrar operadora:', error);
       res.cookie('alertError', 'Erro ao cadastrar Operadora, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
@@ -293,14 +263,6 @@ app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
     res.cookie('alertSuccess', 'Operadora criada com Sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Nova operadora criada com sucesso' });
   });
-});
-
-app.post('/dados-recebidos', verificaAutenticacao, (req, res) => {
-  const { formData, contatos } = req.body;
-
-  console.log(formData, contatos)
-  // Renderize uma página ou retorne os dados como JSON, dependendo da sua preferência
-  res.send('Dados recebidos com sucesso');
 });
 
 app.post('/editar-operadora/:id', verificaAutenticacao, async (req, res) => {
@@ -424,6 +386,12 @@ app.delete('/excluir-operadora/:id', verificaAutenticacao, (req, res) => {
                   } else {
                     db.commit((commitError) => {
                       if (commitError) {
+                        logger.error({
+                          message: 'Erro ao excluir operadora:',
+                          error: error.message,
+                          stack: error.stack,
+                          timestamp: new Date().toISOString()
+                      });
                         console.error('Erro ao finalizar a transação:', commitError);
                         db.rollback(() => {
                           res.status(500).json({ message: 'Erro interno do servidor' });
@@ -456,6 +424,12 @@ app.post('/cadastrar-entidade', verificaAutenticacao, (req, res) => {
   const sql = 'INSERT INTO entidades (nome, descricao, publico, documentos, taxa) VALUES (?, ?, ?, ?, ?)'
   db.query(sql, [nome, descricao, publico, documentos, taxa], (error, result) => {
     if (error) {
+      logger.error({
+        message: 'Erro ao cadastrar entidade:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+    });
       console.error('Erro ao cadastrar entidade:', error);
       res.cookie('alertError', 'Erro ao cadastrar Entidade, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
@@ -490,6 +464,12 @@ app.post('/editar-entidade/:id', verificaAutenticacao, (req, res) => {
     ],
     (error, result) => {
       if (error) {
+        logger.error({
+          message: 'Erro ao editar entidade:',
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+      });
         console.error('Erro ao atualizar operadora:', error);
         res.cookie('alertError', 'Erro ao atualizar Entidade, verifique e tente novamente', {
           maxAge: 3000,
@@ -525,6 +505,12 @@ app.delete('/excluir-entidade/:id', verificaAutenticacao, (req, res) => {
 
         db.query(sqlExcluirEntidade, [idEntidade], (error, result) => {
           if (error) {
+            logger.error({
+              message: 'Erro ao excluir entidade:',
+              error: error.message,
+              stack: error.stack,
+              timestamp: new Date().toISOString()
+            });
             console.error('Erro ao excluir a entidade:', error);
             res.status(500).json({ message: 'Erro interno do servidor' });
           } else {
@@ -570,6 +556,12 @@ app.post('/cadastrar-procedimento', verificaAutenticacao, (req, res) => {
   const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
   db.query(sqlProcedimento, [idOperadora, procedimentoData.descricao, procedimentoData.copay, procedimentoData.limitecopay, procedimentoData.franquiacopay, procedimentoData.limitecarencia, procedimentoData.tipofranquia], (error, result) => {
     if(error) {
+      logger.error({
+        message: 'Erro ao cadastrar novo procedimento:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
       console.error("Erro ao cadastrar procedimento:", error)
       res.cookie('alertError', 'Erro ao cadastrar Procedimento', {maxAge: 3000});
       res.status(500).json({ message: 'Erro ao cadastrar Procedimento'});
@@ -620,6 +612,12 @@ app.post('/editar-procedimento/:id', verificaAutenticacao, (req, res) => {
 
   db.query(sqlProcedimentoUpdate, [procedimento.descricao, procedimento.copay, procedimento.limitecop, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.tipofranquia, idProcedimento], (err, result) => {
     if(err){
+      logger.error({
+        message: 'Erro ao editar procedimento:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
       console.error("Erro ao editar procedimento:", err)
       res.cookie('alertError', 'Erro ao editar Procedimento', {maxAge: 3000});
       res.status(500).json({ message: 'Erro ao editar Procedimento'});
@@ -684,6 +682,12 @@ app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
     })
     db.query(sqlExcluirProcedimento, [idProcedimento], (errorExcluirProduto, resultExcluirProduto) => {
       if (errorExcluirProduto) {
+        logger.error({
+          message: 'Erro ao excluir procedimento:',
+          error: errorExcluirProduto.message,
+          stack: errorExcluirProduto.stack,
+          timestamp: new Date().toISOString()
+        });
         console.error('Erro ao excluir o procedimento:', errorExcluirProduto);
         res.status(500).json({ message: 'Erro interno do servidor' });
       } else {
@@ -725,6 +729,12 @@ app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
 
   db.query(sqlProduto, [formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.valorSpread, formData.idOperadora, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9], (error, result) => {
     if (error) {
+      logger.error({
+        message: 'Erro ao cadastrar produto:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
       console.error('Erro ao cadastrar produto:', error);
       res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
@@ -817,6 +827,12 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
     res.cookie('alertSuccess', 'Produto atualizado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Produto atualizado com sucesso' });
   } catch (error) {
+    logger.error({
+      message: 'Erro ao atualizar produto:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     console.error('Erro ao atualizar Produto:', error);
     res.cookie('alertError', 'Erro ao atualizar Produto, verifique e tente novamente', { maxAge: 3000 });
     res.status(500).json({ message: 'Erro interno do servidor' });
@@ -861,6 +877,12 @@ app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
     })
     db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
       if (errorExcluirProduto) {
+        logger.error({
+          message: 'Erro ao excluiur produto:',
+          error: errorExcluirProduto.message,
+          stack: errorExcluirProduto.stack,
+          timestamp: new Date().toISOString()
+        });
         console.error('Erro ao excluir o produto:', errorExcluirProduto);
         res.status(500).json({ message: 'Erro interno do servidor' });
       } else {
@@ -904,6 +926,12 @@ app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
     const p = result[0]
     db.query(sqlInserirProduto, [p.nomedoplano + ' - COPIA', p.ans, p.contratacao, p.cobertura, p.abrangencia, p.cooparticipacao, p.acomodacao, p.areadeabrangencia, p.condicoesconjuges, p.condicoesfilhos, p.condicoesnetos, p.condicoespais, p.condicoesoutros, p.documentosconjuges, p.documentosfilhos, p.documentosnetos, p.documentospais, p.documentosoutros, p.fx1, p.fx2, p.fx3, p.fx4, p.fx5, p.fx6, p.fx7, p.fx8, p.fx9, p.fx10, p.fx1comercial, p.fx2comercial, p.fx3comercial, p.fx4comercial, p.fx5comercial, p.fx6comercial, p.fx7comercial, p.fx8comercial, p.fx9comercial, p.fx10comercial, p.observacoes, p.valorSpread, p.id_operadora, p.reducaocarencia, p.congeneres,  p.variacao1, p.variacao2, p.variacao3, p.variacao4, p.variacao5, p.variacao6, p.variacao7, p.variacao8, p.variacao9], (err, result) => {
       if(err){
+        logger.error({
+          message: 'Erro ao duplicar produto:',
+          error: err.message,
+          stack: err.stack,
+          timestamp: new Date().toISOString()
+      });
         console.error('Erro ao DUPLICAR produto:', err);
         res.cookie('alertError', 'Erro ao DUPLICAR Produto', { maxAge: 3000 });
         res.status(500).json({ message: 'Erro interno do servidor' });
@@ -1002,6 +1030,12 @@ app.get('/fino/:id', async (req, res) => {
         atualizacoes: atualizacoesResult
       })
   } catch (error) {
+    logger.error({
+      message: 'Erro ao buscar informações para renderizar o fino:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     console.error('Erro ao buscar informações:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
@@ -1050,6 +1084,12 @@ app.get('/fino-restrito/:id', verificaAutenticacao, async (req, res) => {
         atualizacoes: atualizacoesResult
       })
   } catch (error) {
+    logger.error({
+      message: 'Erro ao renderizar fino restrito:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     console.error('Erro ao buscar informações:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
@@ -1165,6 +1205,12 @@ app.post('/editar-fino/:id', async (req, res) => {
     }
     db.query(sqlFinoEditar, [idFino, usuarioLogado , dataAgora], (err, result) => {
       if(err){
+        logger.error({
+          message: 'Erro ao atualizar fino:',
+          error: err.message,
+          stack: err.stack,
+          timestamp: new Date().toISOString()
+        });
         console.error('Erro ao informar atualização', err)
       }
       res.cookie('alertSuccess', 'Fino atualizado com sucesso', { maxAge: 3000 });
@@ -1194,6 +1240,12 @@ app.delete('/excluir-fino/:id', (req, res) => {
       }
       db.query(sqlDeleteFino, [idFino], (erro, result) => {
         if (erro) {
+          logger.error({
+            message: 'Erro ao excluir o fino:',
+            error: erro.message,
+            stack: erro.stack,
+            timestamp: new Date().toISOString()
+          });
           console.error('Erro ao excluir formulário', erro)
           res.status(500).json({ message: 'Erro ao excluir formulário' });
         } else {
@@ -1222,6 +1274,12 @@ app.post('/cadastrar-fino', (req, res) => {
 
   db.query(sqlFino, [formData.operadora, dataFormatada, formData.administradora, formData.enviopropostas, formData.layoutpropostas, formData.aniversariocontrato, formData.negcomissao, formData.comissaovalor, formData.negagenciamento, formData.agenciamentovalor, formData.negobs, formData.docoperadora, formData.assOperadora, formData.assAdm, formData.logoOperadora, formData.manualmarca, formData.modelodeclaracao, formData.obsFino], (error, result) => {
     if (error) {
+      logger.error({
+        message: 'Erro ao cadastrar fino:',
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
       console.error(`Error ao cadastrar o Fino`, error);
       res.cookie('alertError', 'Erro ao cadastrar Fino, verifique e tente novamente', { maxage: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
@@ -1292,6 +1350,12 @@ app.get('/gerar-excel/:id/:nomefantasia/:adm', verificaAutenticacao, (req, res) 
         console.log('Arquivo Excel enviado com sucesso!');
       })
       .catch((err) => {
+        logger.error({
+          message: 'Erro ao gerar Excel modelo Digital Saúde:',
+          error: err.message,
+          stack: err.stack,
+          timestamp: new Date().toISOString()
+        });
         console.error('Erro ao enviar o arquivo Excel:', err);
         res.status(500).send('Erro ao gerar o arquivo Excel');
       });
@@ -1349,13 +1413,17 @@ app.get('/gerar-excel-interno/:id/:nomefantasia/:adm', verificaAutenticacao, (re
         console.log('Arquivo Excel enviado com sucesso!');
       })
       .catch((err) => {
+        logger.error({
+          message: 'Erro ao gerar Excel modelo interno:',
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        });
         console.error('Erro ao enviar o arquivo Excel:', err);
         res.status(500).send('Erro ao gerar o arquivo Excel');
       });
   });
 });
-
-
 
 app.listen(3050, () => {
   console.log('Aplicação rodando na porta 3050');
