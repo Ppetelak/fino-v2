@@ -146,6 +146,11 @@ $('.excluir-btn').click(function () {
     }
 });
 
+$('.esconderMostrar').click(function () {
+    const form = $('#form-nova-operadora');
+    form.toggleClass('d-none');
+});
+
 $('.cadastrar').click(function (e) {
     e.preventDefault();
     

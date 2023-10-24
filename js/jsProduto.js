@@ -92,6 +92,11 @@ function showMessageError(message) {
     Mensagem.style.display = 'block';
 }
 
+$('.esconderMostrar').click(function () {
+    const form = $('#cadastrar-produto-form');
+    form.toggleClass('d-none');
+});
+
 $('.editar-btn').click(function () {
 
     const tr = $(this).closest('tr');
@@ -141,40 +146,6 @@ $('.excluir-btn').click(function () {
     }
 });
 
-/* function calcularTabelaComercial($container) {
-    const valorSpread =  parseFloat($container.find('.valorSpread').val());
-
-    if (!isNaN(valorSpread)) {
-        $container.find('.faixaetaria').each(function () {
-            const $row = $(this);
-            const $fxNetInput = $row.find('.fxetaria');
-            const $fxComercialInput = $row.find('.fxComercial');
-
-            const fxNetValue = parseFloat($fxNetInput.val());
-
-            if (!isNaN(fxNetValue)) {
-                const novoValorFxComercial = fxNetValue + (fxNetValue * valorSpread / 100);
-                const duasCasasDecimais = novoValorFxComercial.toFixed(2);
-                const valorArredondado = parseFloat(duasCasasDecimais);
-
-                // Verifica se a terceira casa decimal é maior ou igual a 5
-                const terceiraCasaDecimal = Math.floor((valorArredondado * 1000) % 10);
-                if (terceiraCasaDecimal > 0) {
-                    $fxComercialInput.val((valorArredondado + 0.01).toFixed(2));
-                    $fxComercialInput.attr('value', (valorArredondado + 0.01).toFixed(2));
-                } else {
-                    $fxComercialInput.val(valorArredondado.toFixed(2));
-                    $fxComercialInput.attr('value', valorArredondado.toFixed(2));
-                }
-            }
-            else {
-                alert("Preencha todos os campos antes de calcular");
-            }
-        });
-    } else {
-        alert('Insira um valor numérico válido no campo Valor de Spread.');
-    }
-} */
 
 function calcularTabelaComercial($container) {
     const valorSpread = parseFloat($container.find('.valorSpread').val());
@@ -221,10 +192,39 @@ function calcularTabelaComercial($container) {
     }
 }
 
+function validateForm(formId) {
+    // Seletor para todos os campos de entrada e selects obrigatórios dentro do formulário específico
+    const $requiredFields = $('#' + formId + ' input[required], #' + formId + ' select[required]');
+
+    let valid = true;
+
+    $requiredFields.each(function () {
+        const fieldValue = $(this).val();
+
+        // Verifica se o valor não é nulo ou indefinido antes de chamar o trim
+        if (fieldValue === null || fieldValue === undefined || fieldValue.trim() === '') {
+            valid = false;
+            // Adiciona uma classe de erro ao campo vazio para destacá-lo
+            $(this).addClass('is-invalid');
+        } else {
+            // Remove a classe de erro, caso tenha sido preenchido corretamente
+            $(this).removeClass('is-invalid');
+        }
+    });
+
+    return valid;
+}
 
 
 $('#cadastrar-produto').click(function (e) {
     e.preventDefault();
+    const form = $(this).closest('form')
+    const formId = form.attr('id');
+
+    if (!validateForm(formId)) {
+        showMessageError('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
 
     let formData = {
         idOperadora: $('#cadastrar-produto-form').attr('data-id'),
@@ -291,7 +291,7 @@ $('#cadastrar-produto').click(function (e) {
         contentType: 'application/json',
         success: function (response) {
             console.log('Resposta Backend', response);
-            location.reload();
+           location.reload();
         },
         error: function (response) {
             showMessageError(response.message)
@@ -319,10 +319,16 @@ $('.duplicate').click(function () {
     });
 })
 
-$('.editar-form').submit(function (e) {
+$('.salvar-btn').click(function (e) {
     e.preventDefault();
-    const form = $(this);
+    const form = $(this).closest('form')
+    const formId = form.attr('id');
     const idOperadora = document.getElementById('idOperadora').value
+
+    if (!validateForm(formId)) {
+        showMessageError('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
 
     const formData = {
         idOperadora: idOperadora,

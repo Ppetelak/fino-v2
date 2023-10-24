@@ -16,17 +16,19 @@ const ExcelJS = require('exceljs');
 
 /* CONFIGURAÇÕES DOS PACOTES */
 
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json())
-app.use('/css', express.static('css'))
-app.use('/js', express.static('js'))
+app.use('/css', express.static('css', { maxAge: 0 }))
+app.use('/js', express.static('js', { maxAge: 0 }))
 app.use('/logo-adm', express.static('logo-adm'))
 app.use('/img-privadas', express.static('img-privadas'));
 app.use(express.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.use('/bootstrap', express.static('node_modules/bootstrap/dist'));
 app.use('/bootstrap-icons', express.static('node_modules/bootstrap-icons'));
+
 
 /* CRIPTOGRAFIA DE ACESSO */
 
@@ -189,7 +191,7 @@ app.get('/operadoras', verificaAutenticacao, (req, res) => {
 
   Promise.all([fetchOperadoras, fetchContatos])
     .then(() => {
-      res.render('operadoras', { operadoras: operadoras, contatos: contatos });
+      res.render('operadoras', { operadoras: operadoras, contatos: contatos, rotaAtual: 'operadoras' });
     })
     .catch((error) => {
       console.error('Erro ao buscar dados:', error);
@@ -226,6 +228,24 @@ const verificaExistenciaOperadora = (idOperadora, callback) => {
     callback(null, { existeOperadora, idFormulario });
   });
 };
+
+app.get('/conta', verificaAutenticacao, (req, res) => {
+  res.render('conta', {rotaAtual: 'conta'});
+})
+
+app.post('/alterarSenha/:userId', verificaAutenticacao, (req, res) => {
+  const userId = req.params.userId
+  const novaSenha = req.body.novaSenha
+
+  const sqlUser = 'UPDATE users SET senha = ? WHERE id = ?';
+  db.query(sqlUser, [novaSenha, userId], (err, result) => {
+    if(err) {
+      console.error('Erro ao editar sua senha:', err);
+      res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+    res.status(200).json({ message: 'Alteração de senha com sucesso' });
+  })
+})
 
 app.post('/cadastrar-operadora', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
@@ -415,7 +435,7 @@ app.delete('/excluir-operadora/:id', verificaAutenticacao, (req, res) => {
 app.get('/entidades', verificaAutenticacao, (req, res) => {
   db.query('SELECT * FROM entidades', (error, results) => {
     if (error) throw error;
-    res.render('entidades', { entidades: results });
+    res.render('entidades', { entidades: results, rotaAtual: 'entidades'  });
   })
 })
 
@@ -539,7 +559,7 @@ app.get('/procedimentos', verificaAutenticacao, (req, res) => {
 
   fetchOperadoras
     .then(() => {
-      res.render('procedimentos', { operadoras: operadoras });
+      res.render('procedimentos', { operadoras: operadoras, rotaAtual: 'procedimentos' });
     })
     .catch((error) => {
       console.error('Erro ao buscar dados:', error);
@@ -637,7 +657,7 @@ app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
     const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
     const procedimentos = await produtosPromise('SELECT * FROM procedimentos WHERE id_produto = ?', [idOperadora]);
 
-    res.render('procedimento', { operadora: operadora[0], procedimentos: procedimentos });
+    res.render('procedimento', { operadora: operadora[0], procedimentos: procedimentos, rotaAtual: 'procedimentos' });
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
@@ -714,7 +734,7 @@ app.get('/produtos', verificaAutenticacao, (req, res) => {
 
   fetchOperadoras
     .then(() => {
-      res.render('produtos', { operadoras: operadoras });
+      res.render('produtos', { operadoras: operadoras, rotaAtual: 'produtos' });
     })
     .catch((error) => {
       console.error('Erro ao buscar dados:', error);
@@ -755,7 +775,7 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
     const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
     const produtos = await produtosPromise('SELECT * FROM produtos WHERE id_operadora = ?', [idOperadora]);
 
-    res.render('produto', { operadora: operadora[0], produtos: produtos });
+    res.render('produto', { operadora: operadora[0], produtos: produtos, rotaAtual: 'produtos' });
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
@@ -979,7 +999,7 @@ app.get('/', verificaAutenticacao, (req, res) => {
               console.error("Erro ao buscar a relação de entidades e formularios", err)
             }
             entidades_formularios = BDentidades_formularios;
-            res.render('finos', { finos: finos, operadoras: operadoras, vigencias: vigencias, entidades: entidades, entidadesform: entidades_formularios })
+            res.render('finos', { finos: finos, operadoras: operadoras, vigencias: vigencias, entidades: entidades, entidadesform: entidades_formularios, rotaAtual: 'finos' })
           })
         })
       })
@@ -1423,6 +1443,10 @@ app.get('/gerar-excel-interno/:id/:nomefantasia/:adm', verificaAutenticacao, (re
         res.status(500).send('Erro ao gerar o arquivo Excel');
       });
   });
+});
+
+app.use((req, res, next) => {
+  res.status(404).render('404');
 });
 
 app.listen(3050, () => {

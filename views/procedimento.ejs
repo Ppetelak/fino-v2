@@ -39,13 +39,14 @@
         style="display:none">
         Erro!
     </div>
+    <div class="title">
+        <p> Você está editando os <strong>PROCEDIMENTOS</strong> da Operadora:<strong>
+                <%= operadora.nomefantasia %>
+            </strong> </p>
+        <a href="/procedimentos"><button type="button" class="btn btn-secondary voltar"> Voltar </button></a>
+    </div>
     <div class="container mt-5 content">
-        <div class="title">
-            <p> Você está editando os PROCEDIMENTOS da Operadora:<strong>
-                    <%= operadora.nomefantasia %>
-                </strong> </p>
-            <a href="/procedimentos"><button type="button" class="btn btn-secondary voltar"> Voltar </button></a>
-        </div>
+        
         <input type="hidden" name="idOperadora" id="idOperadora" value="<%= operadora.id %>">
         <form id="cadastrar-procedimento-form" data-id="<%= operadora.id %>">
             <div class="row procedimentos">

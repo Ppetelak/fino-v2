@@ -17,11 +17,13 @@
             </div>
             <h1>Linha Master</h1>
             
-            <li><a href="/operadoras"><i class="bi bi-file-medical"></i></i>&emsp;Operadoras</a></li>
-            <li><a href="/produtos"><i class="bi bi-box2-heart"></i></i>&emsp;Produtos</a></li>
-            <li><a href="/procedimentos"><i class="bi bi-activity"></i>&emsp;Procedimentos</a></li>
-            <li><a href="/entidades"><i class="bi bi-people"></i></i>&emsp;Entidades</a></li>
-            <li><a href="/"><i class="bi bi-file-earmark-check"></i></i>&emsp;Finos</a></li>
+            <li class="<%= rotaAtual === 'operadoras' ? 'rota-atual' : '' %>"><a href="/operadoras"><i class="bi bi-file-medical"></i></i>&emsp;Operadoras</a></li>
+            <li class="<%= rotaAtual === 'produtos' ? 'rota-atual' : '' %>"><a href="/produtos"><i class="bi bi-box2-heart"></i></i>&emsp;Produtos</a></li>
+            <li class="<%= rotaAtual === 'procedimentos' ? 'rota-atual' : '' %>"><a href="/procedimentos"><i class="bi bi-activity"></i>&emsp;Procedimentos</a></li>
+            <li class="<%= rotaAtual === 'entidades' ? 'rota-atual' : '' %>"><a href="/entidades"><i class="bi bi-people"></i></i>&emsp;Entidades</a></li>
+            <li class="<%= rotaAtual === 'finos' ? 'rota-atual' : '' %>"><a href="/"><i class="bi bi-file-earmark-check"></i></i>&emsp;Finos</a></li>
+            <li class="<%= rotaAtual === 'conta' ? 'rota-atual' : '' %>"><a href="/conta"><i class="bi bi-person-fill-gear"></i></i></i>&emsp;Conta</a></li>
+            
  </ul>
     </div>
 </body>

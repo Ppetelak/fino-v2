@@ -10,78 +10,90 @@ $(document).ready(function () {
                 $(this).prop('selected', true);
             }
         });
+        
         const modalidadeSelected = $(this).find('[name="modalidade-value"]').val();
         $(this).find('#modalidade option').each(function () {
             if ($(this).val() === modalidadeSelected) {
                 $(this).prop('selected', true);
             }
         });
+        
         const operadoraSelected = $(this).find('[name="operadora-value"]').val();
         $(this).find('#operadora option').each(function () {
             if ($(this).val() === operadoraSelected) {
                 $(this).prop('selected', true);
             }
         });
+        
         const negcomissaoSelected = $(this).find('[name="negcomissao-value"]').val();
-        if (negcomissaoSelected === 'Sim') {
-            $(this).find('#opcaoSim').prop('checked', true);
-        } else if (negcomissaoSelected === 'Não') {
-            $(this).find('#opcaoNao').prop('checked', true);
-        }
+        $(this).find('#negcomissao option').each(function () {
+            if ($(this).val() === negcomissaoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+        
         const negagenciamentoSelected = $(this).find('[name="negagenciamento-value"]').val();
-        if (negagenciamentoSelected === 'Sim') {
-            $(this).find('#negagenciamentoSim').prop('checked', true);
-        } else if (negagenciamentoSelected === 'Não') {
-            $(this).find('#negagenciamentoNao').prop('checked', true);
-        }
+        $(this).find('#negagenciamento option').each(function () {
+            if ($(this).val() === negagenciamentoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const docoperadoraSelected = $(this).find('[name="docoperadora-value"]').val();
-        if (docoperadoraSelected === 'Sim') {
-            $(this).find('#docoperadoraSim').prop('checked', true);
-        } else if (negagenciamentoSelected === 'Não') {
-            $(this).find('#docoperadoraNao').prop('checked', true);
-        }
+        $(this).find('#docoperadora option').each(function () {
+            if ($(this).val() === docoperadoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const assOperadoraSelected = $(this).find('[name="assOperadora-value"]').val();
-        if (assOperadoraSelected === 'Sim') {
-            $(this).find('#assOperadoraSim').prop('checked', true);
-        } else if (negagenciamentoSelected === 'Não') {
-            $(this).find('#assOperadoraNao').prop('checked', true);
-        }
+        $(this).find('#assOperadora option').each(function () {
+            if ($(this).val() === assOperadoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const assAdministradoraSelected = $(this).find('[name="assAdministradora-value"]').val();
-        if (assAdministradoraSelected === 'Sim') {
-            $(this).find('#assAdmSim').prop('checked', true);
-        } else if (negagenciamentoSelected === 'Não') {
-            $(this).find('#assAdmNao').prop('checked', true);
-        }
+        $(this).find('#assAdm option').each(function () {
+            if ($(this).val() === assAdministradoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const enviopropostasSelected = $(this).find('[name="enviopropostas-value"]').val();
-        if (enviopropostasSelected === 'Preenchimento direto no portal da operadora') {
-            $(this).find('#enviopropostas1').prop('checked', true);
-        } else if (enviopropostasSelected === 'Envio por e-mail') {
-            $(this).find('#enviopropostas2').prop('checked', true);
-        }
+        $(this).find('#enviopropostas option').each(function () {
+            if ($(this).val() === enviopropostasSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const layoutpropostasSelected = $(this).find('[name="layoutpropostas-value"]').val();
-        if (layoutpropostasSelected === 'Padrão da Operadora') {
-            $(this).find('#layoutpropostas1').prop('checked', true);
-        } else if (layoutpropostasSelected === 'Sugerido pela Administradora') {
-            $(this).find('#layoutpropostas2').prop('checked', true);
-        }
+        $(this).find('#layoutpropostas option').each(function () {
+            if ($(this).val() === layoutpropostasSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const logoOperadoraSelected = $(this).find('[name="logoOperadora-value"]').val();
-        if (logoOperadoraSelected === 'Sim') {
-            $(this).find('#logoOperadoraSim').prop('checked', true);
-        } else if (logoOperadoraSelected === 'Não') {
-            $(this).find('#logoOperadoraNao').prop('checked', true);
-        }
+        $(this).find('#logoOperadora option').each(function () {
+            if ($(this).val() === logoOperadoraSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const manualmarcaSelected = $(this).find('[name="manualmarca-value"]').val();
-        if (manualmarcaSelected === 'Sim') {
-            $(this).find('#manualmarcaSim').prop('checked', true);
-        } else if (logoOperadoraSelected === 'Não') {
-            $(this).find('#manualmarcaNao').prop('checked', true);
-        }
+        $(this).find('#manualmarca option').each(function () {
+            if ($(this).val() === manualmarcaSelected) {
+                $(this).prop('selected', true);
+            }
+        });
+
         const modelodeclaracaoSelected = $(this).find('[name="modelodeclaracao-value"]').val();
-        if (modelodeclaracaoSelected === 'Sim') {
-            $(this).find('#modelodeclaracaoSim').prop('checked', true);
-        } else if (logoOperadoraSelected === 'Não') {
-            $(this).find('#modelodeclaracaoNao').prop('checked', true);
-        }
+        $(this).find('#modelodeclaracao option').each(function () {
+            if ($(this).val() === modelodeclaracaoSelected) {
+                $(this).prop('selected', true);
+            }
+        });
     });
 });
 
@@ -122,6 +134,41 @@ function showMessageError(message) {
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>`
     Mensagem.style.display = 'block';
 }
+
+function resetarInputsRadioValidate () {
+    const attentionIcons = document.querySelectorAll('.attention-icon');
+
+    attentionIcons.forEach(function (icone) {
+        icone.classList.add('d-none');
+    });
+}
+
+function validateForm(formId) {
+
+    const $requiredFields = $('#' + formId + ' input[required], #' + formId + ' select[required]');
+
+    let valid = true;
+
+    $requiredFields.each(function () {
+        const fieldValue = $(this).val();
+
+        if (fieldValue === null || fieldValue === undefined || fieldValue.trim() === '') {
+            valid = false;
+            $(this).addClass('is-invalid');
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+
+    return valid;
+}
+
+
+
+$('.esconderMostrar').click(function () {
+    const form = $('#cadastrar-fino-form');
+    form.toggleClass('d-none');
+});
 
 $('.adicionar-vigencia').click(function () {
     const $button = $(this)
@@ -266,6 +313,13 @@ $('.cadastrar').click(function (e) {
     let selectedEntidades = [];
 
     const form = $(this).closest('form')
+    const formId = form.attr('id');
+
+    if (!validateForm(formId)) {
+        showMessageError('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
 
     $('.entidades input[type="checkbox"]:checked').each(function() {
         const formEntidades = {
@@ -287,20 +341,20 @@ $('.cadastrar').click(function (e) {
         administradora: $('#administradora').val(),
         operadora: $('#operadora').val(),
         modalidade: $('#modalidade').val(),
-        negcomissao: $("input[name='negcomissao']:checked").val(),
+        negcomissao: $("#negcomissao").val(),
         comissaovalor: $('#comissaovalor').val(),
-        negagenciamento: $("input[name='negagenciamento']:checked").val(),
+        negagenciamento: $("#negagenciamento").val(),
         agenciamentovalor: $('#agenciamentovalor').val(),
         negobs: $('#negobs').val(),
         aniversariocontrato: $('#aniversariocontrato').val(),
-        docoperadora: $("input[name='docoperadora']:checked").val(),
-        assOperadora: $("input[name='assOperadora']:checked").val(),
-        assAdm: $("input[name='assAdm']:checked").val(),
-        enviopropostas: $("input[name='enviopropostas']:checked").val(),
-        layoutpropostas: $("input[name='layoutpropostas']:checked").val(),
-        logoOperadora: $("input[name='logoOperadora']:checked").val(),
-        manualmarca: $("input[name='manualmarca']:checked").val(),
-        modelodeclaracao: $("input[name='modelodeclaracao']:checked").val(),
+        docoperadora: $("#docoperadora").val(),
+        assOperadora: $("#assOperadora").val(),
+        assAdm: $("#assAdm").val(),
+        enviopropostas: $("#enviopropostas").val(),
+        layoutpropostas: $("#layoutpropostas").val(),
+        logoOperadora: $("#logoOperadora").val(),
+        manualmarca: $("#manualmarca").val(),
+        modelodeclaracao: $("#modelodeclaracao").val(),
         obsFino: $('#obsFino').val(),
         dataAtual: new Date().toLocaleDateString('pt-BR')
     }
@@ -329,6 +383,7 @@ $('.editar-btn').click(function () {
     const tr = $(this).closest('tr');
     const formContainer = tr.next('.editar-form-container');
     const form = formContainer.find('.editar-form');
+
     //mascaras();
 
     if (!formularioAberto) {
@@ -351,24 +406,31 @@ $('.editar-form').submit(function (e) {
     const form = $(this);
     const idFino = form.data('id')
 
+    const formId = form.attr('id');
+
+    if (!validateForm(formId)) {
+        showMessageError('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
     const formData = {
         administradora: form.find('#administradora').val(),
         operadora: form.find('#operadora').val(),
         modalidade: form.find('#modalidade').val(),
-        negcomissao: form.find("input[name='negcomissao']:checked").val(),
+        negcomissao: form.find("#negcomissao").val(),
         comissaovalor: form.find('#comissaovalor').val(),
-        negagenciamento: form.find("input[name='negagenciamento']:checked").val(),
+        negagenciamento: form.find("#negagenciamento").val(),
         agenciamentovalor: form.find('#agenciamentovalor').val(),
         negobs: form.find('#negobs').val(),
         aniversariocontrato: form.find('#aniversariocontrato').val(),
-        docoperadora: form.find("input[name='docoperadora']:checked").val(),
-        assOperadora: form.find("input[name='assOperadora']:checked").val(),
-        assAdm: form.find("input[name='assAdm']:checked").val(),
-        enviopropostas: form.find("input[name='enviopropostas']:checked").val(),
-        layoutpropostas: form.find("input[name='layoutpropostas']:checked").val(),
-        logoOperadora: form.find("input[name='logoOperadora']:checked").val(),
-        manualmarca: form.find("input[name='manualmarca']:checked").val(),
-        modelodeclaracao: form.find("input[name='modelodeclaracao']:checked").val(),
+        docoperadora: form.find("#docoperadora").val(),
+        assOperadora: form.find("#assOperadora").val(),
+        assAdm: form.find("#assAdm").val(),
+        enviopropostas: form.find("#enviopropostas").val(),
+        layoutpropostas: form.find("#layoutpropostas").val(),
+        logoOperadora: form.find("#logoOperadora").val(),
+        manualmarca: form.find("#manualmarca").val(),
+        modelodeclaracao: form.find("#modelodeclaracao").val(),
         obsFino: form.find('#obsFino').val(),
         dataAtual: new Date().toLocaleDateString('pt-BR')
     }

@@ -42,7 +42,10 @@
     <div class="container mt-5 content">
         <h2>Formulário de Implantação de Novas Operadoras</h2>
         <div id="novoFino">
-            <form id="cadastrar-fino-form">
+            <button class="btn btn-secondary esconderMostrar mb-4" type="button">
+                <i class="bi bi-chevron-compact-right"></i> Exibir/ Esconder Formulário
+            </button>
+            <form id="cadastrar-fino-form" class="d-none">
                 <div class="row">
                     <label for="administradora" class="form-label">Administradora</label>
                     <select name="administradora" id="administradora" class="form-control" required>
@@ -54,7 +57,7 @@
                 </div>
                 <div class="row">
                     <label for="modalidade" class="form-label">Modalidade</label>
-                    <select name="modalidade" id="modalidade" class="form-control">
+                    <select name="modalidade" id="modalidade" class="form-control" required>
                         <option value="" disabled selected>Selecionar</option>
                         <option value="Estipulante">Estipulante</option>
                         <option value="Subestipulante">Subestipulante</option>
@@ -62,7 +65,7 @@
                 </div>
                 <div class="row">
                     <label for="operadora" class="form-label">Operadora</label>
-                    <select name="operadora" id="operadora" class="form-control">
+                    <select name="operadora" id="operadora" class="form-control" required>
                         <option value="" disabled selected>Selecionar</option>
                         <% operadoras.forEach(function(operadora) { %>
                             <option value="<%= operadora.id %>">
@@ -94,20 +97,11 @@
                             <label for="">Comissão</label>
                         </div>
                         <div class="col-sm-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="negcomissao" id="opcaoSim"
-                                    value="Sim">
-                                <label class="form-check-label" for="opcaoSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="negcomissao" id="opcaoNao"
-                                    value="Não">
-                                <label class="form-check-label" for="opcaoNao">
-                                    Não
-                                </label>
-                            </div>
+                            <select name="negcomissao" id="negcomissao" class="form-control" required>
+                                <option value="" disabled selected>Selecionar</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                            </select>
                         </div>
                         <div class="col-sm-3">
                             <div class="input-group">
@@ -119,31 +113,23 @@
                     <div class="mb-3 row">
                         <div class="col-sm-3">
                             <label for="">Agenciamento</label>
+                            <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                         </div>
                         <div class="col-sm-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="negagenciamento"
-                                    id="negagenciamentoSim" value="Sim">
-                                <label class="form-check-label" for="negagenciamentoSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="negagenciamento"
-                                    id="negagenciamentoNao" value="Não">
-                                <label class="form-check-label" for="negagenciamentoNao">
-                                    Não
-                                </label>
-                            </div>
+                            <select name="negcomissao" id="negagenciamento" class="form-control" required>
+                                <option value="" disabled selected>Selecionar</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                            </select>
                         </div>
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-text">%</span>
-                                <input type="number" name="agenciamentovalor" id="agenciamentovalor"
-                                    class="form-control">
+                                <input type="number" name="agenciamentovalor" id="agenciamentovalor" class="form-control">
                             </div>
                         </div>
                     </div>
+                    
                     <div class="mb-3 row">
                         <label for="fxetaria1" class="col-sm-3 col-form-label">Observações Negociações</label>
                         <div class="col-sm-6 d-flex align-items-start">
@@ -291,175 +277,97 @@
                     <h3>Documentação</h3>
                     <div class="col-sm-6">
                         <label for="">A operadora requisitou a documentação para análise de propostas?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="docoperadora" id="docoperadoraSim"
-                                    value="Sim">
-                                <label class="form-check-label" for="docoperadoraSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="docoperadora" id="docoperadoraNao"
-                                    value="Não">
-                                <label class="form-check-label" for="docoperadoraNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="docoperadora" id="docoperadora" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <label for="">O contrato já foi assinado pela Operadora?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="assOperadora" id="assOperadoraSim"
-                                    value="Sim">
-                                <label class="form-check-label" for="assOperadoraSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="assOperadora" id="assOperadoraNao"
-                                    value="Não">
-                                <label class="form-check-label" for="assOperadoraNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="assOperadora" id="assOperadora" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <label for="">O contrato já foi assinado pela Administradora?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="assAdm" id="assAdmSim" value="Sim">
-                                <label class="form-check-label" for="assAdmSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="assAdm" id="assAdmNao" value="Não">
-                                <label class="form-check-label" for="assAdmNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="assAdm" id="assAdm" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row layouts">
                     <h3>Propostas</h3>
                     <div class="col-sm-6">
                         <label for="">Forma de envio das propostas:</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="enviopropostas" id="enviopropostas1"
-                                    value="Preenchimento direto no portal da operadora">
-                                <label class="form-check-label" for="enviopropostas1">
-                                    Preenchimento direto no portal da operadora
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="enviopropostas" id="enviopropostas2"
-                                    value="Envio por e-mail">
-                                <label class="form-check-label" for="enviopropostas2">
-                                    Envio por e-mail
-                                </label>
-                            </div>
-                        </div>
+                        <select name="enviopropostas" id="enviopropostas" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Preenchimento direto no portal da operadora">Preenchimento direto no portal da operadora</option>
+                            <option value="Envio por e-mail">Envio por e-mail</option>
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <label for="">Layout das propostas:</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="layoutpropostas"
-                                    id="layoutpropostas1" value="Padrão da Operadora">
-                                <label class="form-check-label" for="layoutpropostas1">
-                                    Padrão da Operadora
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="layoutpropostas"
-                                    id="layoutpropostas2" value="Sugerido pela Administradora">
-                                <label class="form-check-label" for="layoutpropostas2">
-                                    Sugerido pela Administradora
-                                </label>
-                            </div>
-                        </div>
+                        <select name="layoutpropostas" id="layoutpropostas" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Padrão da Operadora">Padrão da Operadora</option>
+                            <option value="Sugerido pela Administradora">Sugerido pela Administradora</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row outros">
                     <h3>Outros</h3>
                     <div class="col-sm-6">
                         <label for="">O logo da operadora foi enviado ao marketing?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="logoOperadora" id="logoOperadoraSim"
-                                    value="Sim">
-                                <label class="form-check-label" for="logoOperadoraSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="logoOperadora" id="logoOperadoraNao"
-                                    value="Não">
-                                <label class="form-check-label" for="logoOperadoraNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="logoOperadora" id="logoOperadora" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <label for="">O manual da marca foi enviado ao marketing?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="manualmarca" id="manualmarcaSim"
-                                    value="Sim">
-                                <label class="form-check-label" for="manualmarcaSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="manualmarca" id="manualmarcaNao"
-                                    value="Não">
-                                <label class="form-check-label" for="manualmarcaNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="manualmarca" id="manualmarca" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <label for="">Possui modelo de declaração de saúde?</label>
+                        <span class="attention-icon d-none"><i class="bi bi-exclamation-triangle-fill"></i></span>
                     </div>
                     <div class="col-sm-6">
-                        <div class="checkboxes">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="modelodeclaracao"
-                                    id="modelodeclaracaoSim" value="Sim">
-                                <label class="form-check-label" for="modelodeclaracaoSim">
-                                    Sim
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="modelodeclaracao"
-                                    id="modelodeclaracaoNao" value="Não">
-                                <label class="form-check-label" for="modelodeclaracaoNao">
-                                    Não
-                                </label>
-                            </div>
-                        </div>
+                        <select name="modelodeclaracao" id="modelodeclaracao" class="form-control" required>
+                            <option value="" disabled selected>Selecionar</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -604,20 +512,11 @@
                                                             <label for="">Comissão</label>
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="negcomissao" id="opcaoSim" value="Sim">
-                                                                <label class="form-check-label" for="opcaoSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="negcomissao" id="opcaoNao" value="Não">
-                                                                <label class="form-check-label" for="opcaoNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
+                                                            <select name="negcomissao" id="negcomissao" class="form-control" required>
+                                                                <option value="" disabled selected>Selecionar</option>
+                                                                <option value="Sim">Sim</option>
+                                                                <option value="Não">Não</option>
+                                                            </select>
                                                         </div>
                                                         <div class="col-sm-3">
                                                             <div class="input-group">
@@ -636,24 +535,11 @@
                                                             <label for="">Agenciamento</label>
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="negagenciamento" id="negagenciamentoSim"
-                                                                    value="Sim">
-                                                                <label class="form-check-label"
-                                                                    for="negagenciamentoSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="negagenciamento" id="negagenciamentoNao"
-                                                                    value="Não">
-                                                                <label class="form-check-label"
-                                                                    for="negagenciamentoNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
+                                                            <select name="negcomissao" id="negagenciamento" class="form-control" required>
+                                                                <option value="" disabled selected>Selecionar</option>
+                                                                <option value="Sim">Sim</option>
+                                                                <option value="Não">Não</option>
+                                                            </select>
                                                         </div>
                                                         <div class="col-sm-3">
                                                             <div class="input-group">
@@ -759,24 +645,11 @@
                                                             de propostas?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="docoperadora" id="docoperadoraSim"
-                                                                    value="Sim">
-                                                                <label class="form-check-label" for="docoperadoraSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="docoperadora" id="docoperadoraNao"
-                                                                    value="Não">
-                                                                <label class="form-check-label" for="docoperadoraNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="docoperadora" id="docoperadora" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="hidden" class="form-control"
@@ -785,24 +658,11 @@
                                                         <label for="">O contrato já foi assinado pela Operadora?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="assOperadora" id="assOperadoraSim"
-                                                                    value="Sim">
-                                                                <label class="form-check-label" for="assOperadoraSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="assOperadora" id="assOperadoraNao"
-                                                                    value="Não">
-                                                                <label class="form-check-label" for="assOperadoraNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="assOperadora" id="assOperadora" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="hidden" class="form-control"
@@ -812,22 +672,11 @@
                                                             Administradora?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="assAdm" id="assAdmSim" value="Sim">
-                                                                <label class="form-check-label" for="assAdmSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="assAdm" id="assAdmNao" value="Não">
-                                                                <label class="form-check-label" for="assAdmNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="assAdm" id="assAdm" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="row layouts">
@@ -839,24 +688,11 @@
                                                         <label for="">Forma de envio das propostas:</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="enviopropostas" id="enviopropostas1"
-                                                                    value="Preenchimento direto no portal da operadora">
-                                                                <label class="form-check-label" for="enviopropostas1">
-                                                                    Preenchimento direto no portal da operadora
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="enviopropostas" id="enviopropostas2"
-                                                                    value="Envio por e-mail">
-                                                                <label class="form-check-label" for="enviopropostas2">
-                                                                    Envio por e-mail
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="enviopropostas" id="enviopropostas" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Preenchimento direto no portal da operadora">Preenchimento direto no portal da operadora</option>
+                                                            <option value="Envio por e-mail">Envio por e-mail</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="hidden" class="form-control"
@@ -865,24 +701,11 @@
                                                         <label for="">Layout das propostas:</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="layoutpropostas" id="layoutpropostas1"
-                                                                    value="Padrão da Operadora">
-                                                                <label class="form-check-label" for="layoutpropostas1">
-                                                                    Padrão da Operadora
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="layoutpropostas" id="layoutpropostas2"
-                                                                    value="Sugerido pela Administradora">
-                                                                <label class="form-check-label" for="layoutpropostas2">
-                                                                    Sugerido pela Administradora
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="layoutpropostas" id="layoutpropostas" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Padrão da Operadora">Padrão da Operadora</option>
+                                                            <option value="Sugerido pela Administradora">Sugerido pela Administradora</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="row outros">
@@ -895,24 +718,11 @@
                                                             marketing?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="logoOperadora" id="logoOperadoraSim"
-                                                                    value="Sim">
-                                                                <label class="form-check-label" for="logoOperadoraSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="logoOperadora" id="logoOperadoraNao"
-                                                                    value="Não">
-                                                                <label class="form-check-label" for="logoOperadoraNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="logoOperadora" id="logoOperadora" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="hidden" class="form-control" id="manualmarca-value"
@@ -921,22 +731,11 @@
                                                             marketing?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="manualmarca" id="manualmarcaSim" value="Sim">
-                                                                <label class="form-check-label" for="manualmarcaSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="manualmarca" id="manualmarcaNao" value="Não">
-                                                                <label class="form-check-label" for="manualmarcaNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="manualmarca" id="manualmarca" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="hidden" class="form-control"
@@ -945,26 +744,11 @@
                                                         <label for="">Possui modelo de declaração de saúde?</label>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <div class="checkboxes">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="modelodeclaracao" id="modelodeclaracaoSim"
-                                                                    value="Sim">
-                                                                <label class="form-check-label"
-                                                                    for="modelodeclaracaoSim">
-                                                                    Sim
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="modelodeclaracao" id="modelodeclaracaoNao"
-                                                                    value="Não">
-                                                                <label class="form-check-label"
-                                                                    for="modelodeclaracaoNao">
-                                                                    Não
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                        <select name="modelodeclaracao" id="modelodeclaracao" class="form-control" required>
+                                                            <option value="" disabled selected>Selecionar</option>
+                                                            <option value="Sim">Sim</option>
+                                                            <option value="Não">Não</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="row">

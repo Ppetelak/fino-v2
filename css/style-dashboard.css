@@ -104,6 +104,14 @@
     color: #fb923c;
 }
 
+.attention-icon i{
+    color: red;
+}
+.attention-icon::after{
+    content: ' Obrigatório';
+    color: red;
+}
+
 .navbar a {
     transition: 250ms ease;
 }
@@ -217,19 +225,29 @@ span{
     margin-right: 12px;
 }
 
+.rota-atual {
+    background-color: var(--thirdColor); 
+    color: #fff; 
+    border-radius: 10px;
+}
+.rota-atual i{
+    color: var(--primaryColor);
+}
+
 .title{
-    background: #ffffff;
+    background: var(--primaryColor);
+    color: #ffffff;
     position: fixed;
     display: flex;
     flex-direction: row;
-    font-size: 24px;
-    border-left: 1px solid var(--primaryColor);
-    border-bottom: 1px solid var(--primaryColor);
-    border-right: 1px solid var(--primaryColor);
-    padding: 12px;
+    font-size: 16px;
+    border-bottom: 1px solid var(--thirdColor);
+    padding: 3px;
     top: 0;
     z-index: 999;
     gap: 12px;
+    width: 100%;
+    justify-content: center;
 }
 
 .infoSpread{
