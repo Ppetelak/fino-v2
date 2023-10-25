@@ -167,10 +167,11 @@ $('#cadastrar-procedimento').click(function (e) {
     });
 });
 
-$('.editar-form').submit(function (e) {
+$('.salvar-btn').click(function (e) {
     e.preventDefault();
-    const form = $(this);
-    const idProcedimento = document.getElementById('idProcedimento').value
+    console.log('clicou em salvar procedimento')
+    const form = $(this).closest('form');
+    const idProcedimento = form.data('id');
     const procedimentoData = {
         id: idProcedimento,
         descricao: form.find('[name="procedimentodescricao"]').val(),

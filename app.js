@@ -573,7 +573,7 @@ app.post('/cadastrar-procedimento', verificaAutenticacao, (req, res) => {
   const usuarioLogado = req.session.usuario.nome
   const idOperadora = procedimentoData.idOperadora;
 
-  const sqlProcedimento = 'INSERT INTO procedimentos (id_produto, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  const sqlProcedimento = 'INSERT INTO procedimentos (id_operadora, descricao, valorcop, limitecop, franquiacop, limitecarenciadias, tipofranquia) VALUES (?, ?, ?, ?, ?, ?, ?)'
   db.query(sqlProcedimento, [idOperadora, procedimentoData.descricao, procedimentoData.copay, procedimentoData.limitecopay, procedimentoData.franquiacopay, procedimentoData.limitecarencia, procedimentoData.tipofranquia], (error, result) => {
     if(error) {
       logger.error({
@@ -630,12 +630,12 @@ app.post('/editar-procedimento/:id', verificaAutenticacao, (req, res) => {
 
   const sqlProcedimentoUpdate = 'UPDATE procedimentos SET descricao=?, valorcop=?, limitecop=?, franquiacop=?, limitecarenciadias=?, tipofranquia=? WHERE id=?'
 
-  db.query(sqlProcedimentoUpdate, [procedimento.descricao, procedimento.copay, procedimento.limitecop, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.tipofranquia, idProcedimento], (err, result) => {
+  db.query(sqlProcedimentoUpdate, [procedimento.descricao, procedimento.copay, procedimento.limitecopay, procedimento.franquiacopay, procedimento.limitecarencia, procedimento.tipofranquia, idProcedimento], (err, result) => {
     if(err){
       logger.error({
         message: 'Erro ao editar procedimento:',
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
         timestamp: new Date().toISOString()
       });
       console.error("Erro ao editar procedimento:", err)
@@ -655,7 +655,7 @@ app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
     const produtosPromise = util.promisify(db.query).bind(db);
 
     const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
-    const procedimentos = await produtosPromise('SELECT * FROM procedimentos WHERE id_produto = ?', [idOperadora]);
+    const procedimentos = await produtosPromise('SELECT * FROM procedimentos WHERE id_operadora = ?', [idOperadora]);
 
     res.render('procedimento', { operadora: operadora[0], procedimentos: procedimentos, rotaAtual: 'procedimentos' });
   } catch (error) {
@@ -675,7 +675,7 @@ app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
     if(err){
       console.error('Erro ao consultar produto', err)
     }
-    const idOperadora = result[0].id_produto
+    const idOperadora = result[0].id_operadora
     const nomeProcedimento = `Procedimento: ${result[0].descricao}`
     verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
       if (err) {
@@ -744,6 +744,9 @@ app.get('/produtos', verificaAutenticacao, (req, res) => {
 
 app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
   const { formData } = req.body;
+  const { procedimentos } = req.body;
+
+  const sqlProcedimentos = 'INSERT INTO procedimentos_produtos (id_procedimento, id_produto, id_operadora) VALUES (?, ?, ?)';
 
   const sqlProduto = 'INSERT INTO produtos (nomedoplano, ans, contratacao, cobertura, abrangencia, cooparticipacao, acomodacao, areadeabrangencia, condicoesconjuges, condicoesfilhos, condicoesnetos, condicoespais, condicoesoutros, documentosconjuges, documentosfilhos, documentosnetos, documentospais, documentosoutros, fx1, fx2, fx3, fx4, fx5, fx6, fx7, fx8, fx9, fx10, fx1comercial, fx2comercial, fx3comercial, fx4comercial, fx5comercial, fx6comercial, fx7comercial, fx8comercial, fx9comercial, fx10comercial, observacoes, valorSpread, id_operadora, reducaocarencia, congeneres, variacao1, variacao2, variacao3, variacao4, variacao5, variacao6, variacao7, variacao8, variacao9 ) VALUES (?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ? , ?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -759,32 +762,59 @@ app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
       res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
     }
-
+    const idProduto = result.insertId
+    if(Array.isArray(procedimentos)) {
+      for (const procedimento of procedimentos){
+        db.query(sqlProcedimentos, [procedimento.idProcedimento, idProduto, procedimento.idOperadora], (err, result) => {
+          if(err){
+            logger.error({
+              message: 'Erro ao vincular os procedimentos as operadoras e aos produtos:',
+              error: err.message,
+              stack: err.stack,
+              timestamp: new Date().toISOString()
+            });
+            console.error('Erro ao vincular os procedimentos aos produtos e operadoras')
+            res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
+            res.status(500).json({ message: 'Erro interno do servidor' });
+          }
+        })
+      }
+    }
     res.cookie('alertSuccess', 'Produto Cadastrado com sucesso', { maxAge: 3000 });
     res.status(200).json({ message: 'Novo Produto criado com sucesso' });
-  });
+  })
 });
+
 
 app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
   const idOperadora = req.params.id;
 
   try {
-    const operadoraPromise = util.promisify(db.query).bind(db);
-    const produtosPromise = util.promisify(db.query).bind(db);
+    const queryPromise = util.promisify(db.query).bind(db);
 
-    const operadora = await operadoraPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
-    const produtos = await produtosPromise('SELECT * FROM produtos WHERE id_operadora = ?', [idOperadora]);
+    const operadora = await queryPromise('SELECT * FROM operadora WHERE id = ?', [idOperadora]);
+    const produtos = await queryPromise('SELECT * FROM produtos WHERE id_operadora = ?', [idOperadora]);
+    const procedimentos = await queryPromise('SELECT * FROM procedimentos WHERE id_operadora = ? ', [idOperadora]);
+    const procedimentosAssociados = await queryPromise('SELECT * FROM procedimentos_produtos WHERE id_operadora = ?', [idOperadora]);
 
-    res.render('produto', { operadora: operadora[0], produtos: produtos, rotaAtual: 'produtos' });
+    res.render('produto', { 
+      operadora: operadora[0], 
+      produtos: produtos, 
+      procedimentos: procedimentos,
+      procedimentosAssociados, 
+      rotaAtual: 'produtos'
+    });
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
   }
 });
 
+
 app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const idProduto = req.params.id;
   const formData = req.body.formData;
+  const selectedProcedimentos = req.body.procedimentos;
   const dataAgora = new Date();
   const usuarioLogado = req.session.usuario.nome
 
@@ -814,6 +844,27 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
         formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9, idProduto, formData.idOperadora
       ], 
     );
+
+    const sqlProcedimentosAtuais = 'SELECT id_procedimento FROM procedimentos_produtos WHERE id_produto = ? AND id_operadora = ?';
+    const procedimentosAtuais = await queryPromise(sqlProcedimentosAtuais, [idProduto, formData.idOperadora]);
+    const procedimentosAtuaisIds = procedimentosAtuais.map(row => row.id_procedimento);
+
+    const procedimentosFrontendIds = selectedProcedimentos.map(procedimento => procedimento.idProcedimento);
+
+    // Remova os procedimentos ausentes
+    const procedimentosRemover = procedimentosAtuaisIds.filter(id => !procedimentosFrontendIds.includes(id));
+    if (procedimentosRemover.length > 0) {
+        const sqlRemoverProcedimentos = 'DELETE FROM procedimentos_produtos WHERE id_produto = ? AND id_operadora = ? AND id_procedimento IN (?)';
+        await queryPromise(sqlRemoverProcedimentos, [idProduto, formData.idOperadora, procedimentosRemover]);
+    }
+
+    // Adicione novos procedimentos
+    const procedimentosAdicionar = procedimentosFrontendIds.filter(id => !procedimentosAtuaisIds.includes(id));
+    if (procedimentosAdicionar.length > 0) {
+        const sqlAdicionarProcedimentos = 'INSERT INTO procedimentos_produtos (id_produto, id_operadora, id_procedimento) VALUES ?';
+        const valuesAdicionar = procedimentosAdicionar.map(id => [idProduto, formData.idOperadora, id]);
+        await queryPromise(sqlAdicionarProcedimentos, [valuesAdicionar]);
+    }
     
     if (resultUpdate.affectedRows === 0) {
       console.error('Produto não atualizado');
@@ -1016,7 +1067,7 @@ app.get('/fino/:id', async (req, res) => {
   const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
   const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
-  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_operadora=?';
   const sqlAtualizacoes = 'SELECT * FROM atualizacoes WHERE id_fino=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
@@ -1061,6 +1112,28 @@ app.get('/fino/:id', async (req, res) => {
   }
 });
 
+app.get('/buscar-ultimo-procedimento/:idOperadora', (req, res) => {
+  const idOperadora = req.params.idOperadora;
+
+  const query = `
+      SELECT *
+      FROM procedimentos
+      WHERE id_operadora = ?
+      ORDER BY id DESC
+      LIMIT 1;
+  `;
+
+  db.query(query, [idOperadora], (error, result) => {
+      if (error) {
+          console.error('Erro ao buscar último procedimento:', error);
+          res.status(500).json({ error: 'Erro interno do servidor' });
+      } else {
+          const ultimoProcedimento = result[0];
+          res.json(ultimoProcedimento);
+      }
+  });
+});
+
 app.get('/fino-restrito/:id', verificaAutenticacao, async (req, res) => {
   const idFino = req.params.id;
 
@@ -1070,7 +1143,7 @@ app.get('/fino-restrito/:id', verificaAutenticacao, async (req, res) => {
   const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
   const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
-  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_operadora=?';
   const sqlAtualizacoes = 'SELECT * FROM atualizacoes WHERE id_fino=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
@@ -1124,7 +1197,7 @@ app.get('/finojson/:id', async (req, res) => {
   const sqlProdutos = 'SELECT * FROM produtos WHERE id_operadora=?';
   const sqlContatos = 'SELECT * FROM contatos WHERE id_operadora=?';
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
-  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_produto=?';
+  const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_operadora=?';
   const queryPromise = util.promisify(db.query).bind(db);
 
   try {

@@ -213,6 +213,19 @@ span{
     align-items: center;
 }
 
+.procedimentosPorProduto {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: left;
+    flex-wrap: wrap;
+}
+
+.modal-header {
+    background: var(--primaryColor);
+    color: #ffffff;
+}
+
 .procedimento{
     position: relative;
 }

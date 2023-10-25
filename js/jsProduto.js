@@ -48,11 +48,83 @@ $(document).ready(function () {
     });
 });
 
+function fecharModal () {
+    $('.btn-close').click()
+}
+
 $('.calcular').click(function () {
     const $button = $(this);
     const $container = $button.closest('.tabela-de-precos');
     calcularTabelaComercial($container);
 });
+
+$('.cadastrar-procedimento').click(async function (e) {
+    e.preventDefault();
+    const idOperadora = $('#cadastrar-procedimento-form').data('id');
+    const form = $(this).closest('#cadastrar-procedimento-form')
+    const formId = form.attr('id');
+
+    if (!validateForm(formId)) {
+        showMessageError('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+    const procedimentoData = {
+        idOperadora: idOperadora,
+        descricao: $('#procedimentodescricao').val(),
+        copay: $('#procedimentocopay').val(),
+        limitecopay: $('#procedimentolimitecopay').val(),
+        tipofranquia: $('#tipofranquia').val(),
+        franquiacopay: $('#procedimentofranquiacopay').val(),
+        limitecarencia: $('#procedimentolimitecarencia').val(),
+    }
+
+    console.log(procedimentoData);
+
+    try {
+        const response = await $.ajax({
+            type: 'POST',
+            url: '/cadastrar-procedimento',
+            data: JSON.stringify({ procedimentoData: procedimentoData }),
+            processData: false,
+            contentType: 'application/json',
+        });
+
+        console.log('Resposta Backend', response);
+        await atualizarProcedimentos(idOperadora);
+        fecharModal();
+    } catch (error) {
+        showMessageError(error.message);
+        console.error('Erro ao cadastrar procedimento:', error);
+    }
+});
+
+// Função para atualizar procedimentos
+async function atualizarProcedimentos(idOperadora) {
+    const url = `/buscar-ultimo-procedimento/${idOperadora}`;
+
+    try {
+        const procedimento = await fetch(url).then(response => response.json());
+        const procedimentosContainers = $('.procedimentosContainer');
+
+        if (procedimento) {
+            procedimentosContainers.each(function () {
+                const divElement = $('<div>').addClass('form-check form-check-inline');
+
+                divElement.html(`
+                    <input class="form-check-input" type="checkbox" id="procedimento_${procedimento.id}" value="${procedimento.id}" data-operadora-id="${idOperadora}" >
+                    <label class="form-check-label" for="procedimento_${procedimento.id}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="${procedimento.descricao}">
+                        ${procedimento.descricao}
+                    </label>
+                `);
+
+                $(this).append(divElement);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar procedimentos:', error);
+    }
+}
 
 function getCookieValue(name) {
     const cookieName = `${name}=`;
@@ -193,8 +265,8 @@ function calcularTabelaComercial($container) {
 }
 
 function validateForm(formId) {
-    // Seletor para todos os campos de entrada e selects obrigatórios dentro do formulário específico
-    const $requiredFields = $('#' + formId + ' input[required], #' + formId + ' select[required]');
+
+    const $requiredFields = $('#' + formId + ' input[required], #' + formId + ' select[required], #' + formId + ' textarea[required]');
 
     let valid = true;
 
@@ -220,11 +292,24 @@ $('#cadastrar-produto').click(function (e) {
     e.preventDefault();
     const form = $(this).closest('form')
     const formId = form.attr('id');
+    let selectedProcedimentos = []
 
     if (!validateForm(formId)) {
         showMessageError('Por favor, preencha todos os campos obrigatórios.');
         return;
     }
+
+    $('.procedimentosPorProduto input[type="checkbox"]:checked').each(function () {
+        const idProcedimento = $(this).val();
+        const idOperadora = $(this).data('operadora-id');
+
+        const formProcedimentos = {
+            idProcedimento: idProcedimento,
+            idOperadora: idOperadora
+        };
+
+        selectedProcedimentos.push(formProcedimentos);
+    })
 
     let formData = {
         idOperadora: $('#cadastrar-produto-form').attr('data-id'),
@@ -282,11 +367,12 @@ $('#cadastrar-produto').click(function (e) {
     };
 
     console.log(formData)
+    console.log(selectedProcedimentos)
 
     $.ajax({
         type: 'POST',
         url: '/cadastrar-produto',
-        data: JSON.stringify({ formData: formData }),
+        data: JSON.stringify({ formData: formData, procedimentos: selectedProcedimentos }),
         processData: false,
         contentType: 'application/json',
         success: function (response) {
@@ -324,11 +410,25 @@ $('.salvar-btn').click(function (e) {
     const form = $(this).closest('form')
     const formId = form.attr('id');
     const idOperadora = document.getElementById('idOperadora').value
+    
+    let selectedProcedimentos = []
 
     if (!validateForm(formId)) {
         showMessageError('Por favor, preencha todos os campos obrigatórios.');
         return;
     }
+
+    form.find('.procedimentosPorProduto input[type="checkbox"]:checked').each(function () {
+        const idProcedimento = $(this).val();
+        const idOperadora = $(this).data('operadora-id');
+
+        const formProcedimentos = {
+            idProcedimento: idProcedimento,
+            idOperadora: idOperadora
+        };
+
+        selectedProcedimentos.push(formProcedimentos);
+    })
 
     const formData = {
         idOperadora: idOperadora,
@@ -392,7 +492,7 @@ $('.salvar-btn').click(function (e) {
     $.ajax({
         type: 'POST',
         url: actionUrl,
-        data: ({ formData: formData }),
+        data: ({ formData: formData, procedimentos: selectedProcedimentos }),
         success: function (response) {
             console.log('Sucesso', response)
             location.reload();

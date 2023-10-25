@@ -163,8 +163,6 @@ function validateForm(formId) {
     return valid;
 }
 
-
-
 $('.esconderMostrar').click(function () {
     const form = $('#cadastrar-fino-form');
     form.toggleClass('d-none');
