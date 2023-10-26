@@ -659,65 +659,16 @@ app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
 
     res.render('procedimento', { operadora: operadora[0], procedimentos: procedimentos, rotaAtual: 'procedimentos' });
   } catch (error) {
+    logger.error({
+      message: 'Erro ao atualizar produto:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
   }
 });
-
-/* app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
-  const idProcedimento = req.params.id;
-  const sqlSelectProcedimento = 'SELECT *FROM procedimentos WHERE id =?'
-  const sqlExcluirProcedimento = 'DELETE FROM procedimentos WHERE id = ?';
-  const sqlExcluirRelProProc = 'DELETE * FROM procedimentos_produtos WHERE id_procedimento = ?'
-  const dataAgora = new Date();
-  const usuarioLogado = req.session.usuario.nome
-
-  db.query(sqlSelectProcedimento, [idProcedimento], (err, result) => {
-    if(err){
-      console.error('Erro ao consultar produto', err)
-    }
-    const idOperadora = result[0].id_operadora
-    const nomeProcedimento = `Procedimento: ${result[0].descricao}`
-    verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
-      if (err) {
-        console.error('Erro ao verificar existência da operadora', err);
-        res.status(500).json({ error: 'Erro ao verificar existência da operadora' });
-        return;
-      }
-
-      if (!resultadoVerificacao) {
-        console.error('Resultado de verificação não recebido');
-        res.status(500).json({ error: 'Resultado de verificação não recebido' });
-        return;
-      }
-
-      const { existeOperadora, idFormulario } = resultadoVerificacao;
-
-      if (existeOperadora) {
-        db.query(sqlExclusaoProcedimento, [idFormulario, nomeProcedimento, usuarioLogado, dataAgora], (err, result) => {
-          if (err) {
-            console.error('Erro ao inserir atualização na timeline', err);
-          }
-        });
-      }
-    })
-    db.query(sqlExcluirProcedimento, [idProcedimento], (errorExcluirProduto, resultExcluirProduto) => {
-      if (errorExcluirProduto) {
-        logger.error({
-          message: 'Erro ao excluir procedimento:',
-          error: errorExcluirProduto.message,
-          stack: errorExcluirProduto.stack,
-          timestamp: new Date().toISOString()
-        });
-        console.error('Erro ao excluir o procedimento:', errorExcluirProduto);
-        res.status(500).json({ message: 'Erro interno do servidor' });
-      } else {
-        res.cookie('alertSuccess', 'Procedimento excluído com sucesso', { maxAge: 3000 })
-        res.status(200).json({ message: 'Procedimento excluído com sucesso' });
-      }
-    });
-  })
-}); */
 
 app.delete('/excluir-procedimento/:id', verificaAutenticacao, async (req, res) => {
   const idProcedimento = req.params.id;
@@ -892,6 +843,12 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
       rotaAtual: 'produtos'
     });
   } catch (error) {
+    logger.error({
+      message: 'Erro ao atualizar produto:',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     console.error('Erro ao buscar produtos:', error);
     res.status(500).send('Erro interno do servidor');
   }
