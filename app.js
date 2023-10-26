@@ -48,21 +48,21 @@ app.use(session({
 
 /*CONEXÃO COM BANCO DE DADOS */
 
-const db = mysql.createConnection({
+/* const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'pmp078917',
   database: 'fino',
   port: '3306'
-});
+}); */
 
-/* const db = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
   user: 'finoUser',
   password: 'Kl6zu075*',
   database: 'fino',
   port: '3306'
-}); */
+});
 
 db.connect((error) => {
   if (error) {
