@@ -19,17 +19,14 @@
     <link rel="stylesheet" href="/css/style-dashboard.css">
 </head>
 <style>
-    .password-container {
-        position: relative;
-    }
 
-    .toggle-password {
+    /* .toggle-password {
         position: absolute;
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
-    }
+    } */
     #passwordMismatch{
             color: red;
     }
@@ -56,17 +53,21 @@
     <form>
         <div class="form-group password-container">
             <label for="senha">Senha:</label>
-            <input type="password" class="form-control" id="senha" placeholder="Digite sua senha" required>
-            <span class="toggle-password" onclick="togglePassword('senha')">
-                <i class="bi bi-eye"></i>
-            </span>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" id="senha" placeholder="Digite sua senha" required>
+                <span class="input-group-text toggle-password" onclick="togglePassword('senha')">
+                    <i class="bi bi-eye"></i>
+                </span>
+            </div>
         </div>
         <div class="form-group mt-4 password-container">
             <label for="confirmarSenha">Confirmar Senha:</label>
-            <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirme sua senha" required>
-            <span class="toggle-password" onclick="togglePassword('confirmarSenha')">
-                <i class="bi bi-eye"></i>
-            </span>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirme sua senha" required>
+                <span class="input-group-text toggle-password" onclick="togglePassword('confirmarSenha')">
+                    <i class="bi bi-eye"></i>
+                </span>
+            </div>
             <div class="mt-4">
                 <p id="passwordMismatch"></p>
                 <p id="minLength"> ➡ No mínimo 6 caracteres;</p>

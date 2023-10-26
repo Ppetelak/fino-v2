@@ -214,8 +214,8 @@ const verificaExistenciaOperadora = (idOperadora, callback) => {
       console.error('Erro na consulta SQL', err);
       logger.error({
         message: 'Erro ao consultar existencia de fino vinculado a operadora:',
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
         timestamp: new Date().toISOString()
     });
       callback(err, null);
@@ -664,10 +664,11 @@ app.get('/procedimentos/:id', verificaAutenticacao, async (req, res) => {
   }
 });
 
-app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
+/* app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
   const idProcedimento = req.params.id;
   const sqlSelectProcedimento = 'SELECT *FROM procedimentos WHERE id =?'
   const sqlExcluirProcedimento = 'DELETE FROM procedimentos WHERE id = ?';
+  const sqlExcluirRelProProc = 'DELETE * FROM procedimentos_produtos WHERE id_procedimento = ?'
   const dataAgora = new Date();
   const usuarioLogado = req.session.usuario.nome
 
@@ -716,6 +717,73 @@ app.delete('/excluir-procedimento/:id', verificaAutenticacao, (req, res) => {
       }
     });
   })
+}); */
+
+app.delete('/excluir-procedimento/:id', verificaAutenticacao, async (req, res) => {
+  const idProcedimento = req.params.id;
+  const sqlSelectProcedimento = 'SELECT * FROM procedimentos WHERE id = ?';
+  const sqlExcluirProcedimento = 'DELETE FROM procedimentos WHERE id = ?';
+  const sqlExcluirRelProProc = 'DELETE FROM procedimentos_produtos WHERE id_procedimento = ?';
+  const dataAgora = new Date();
+  const usuarioLogado = req.session.usuario.nome;
+  const promisse = util.promisify(db.query).bind(db);
+
+  try {
+    // Consulta o procedimento para obter informações necessárias
+    const [procedimentoResult] = await promisse(sqlSelectProcedimento, [idProcedimento]);
+
+    if (!procedimentoResult || procedimentoResult.length === 0) {
+      res.status(404).json({ message: 'Procedimento não encontrado' });
+      return;
+    }
+
+    const idOperadora = procedimentoResult[0]?.id_operadora;
+    const nomeProcedimento = `Procedimento: ${procedimentoResult[0]?.descricao}`;
+
+    // Verifica se o procedimento está vinculado a algum produto
+    const vinculosResult = await promisse('SELECT COUNT(*) AS total FROM procedimentos_produtos WHERE id_procedimento = ?', [idProcedimento]);
+
+    const totalVinculos = vinculosResult[0]?.total || 0;
+
+    if (totalVinculos > 0) {
+      // Existem produtos vinculados, não exclui o procedimento
+      res.cookie('alertError', 'Existem produtos vinculados a este procedimento. Remova os vínculos antes de excluir o procedimento.', { maxAge: 3000 });
+      res.status(400).json({ message: 'Existem produtos vinculados a este procedimento. Remova os vínculos antes de excluir o procedimento.' });
+      return;
+    }
+
+    // Verifica a existência da operadora
+    const resultadoVerificacao = await new Promise((resolve, reject) => {
+      verificaExistenciaOperadora(idOperadora, (err, resultado) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(resultado);
+        }
+      });
+    });
+
+    // Exclui os relacionamentos
+    await promisse(sqlExcluirRelProProc, [idProcedimento]);
+
+    // Exclui o procedimento
+    await promisse(sqlExcluirProcedimento, [idProcedimento]);
+
+    // Se existe operadora, insere na timeline
+    if (resultadoVerificacao) {
+      const { existeOperadora, idFormulario } = resultadoVerificacao;
+
+      if (existeOperadora) {
+        await promisse(sqlExclusaoProcedimento, [idFormulario, nomeProcedimento, usuarioLogado, dataAgora]);
+      }
+    }
+
+    res.cookie('alertSuccess', 'Procedimento excluído com sucesso', { maxAge: 3000 });
+    res.status(200).json({ message: 'Procedimento excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir procedimento:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 app.get('/produtos', verificaAutenticacao, (req, res) => {
@@ -762,27 +830,40 @@ app.post('/cadastrar-produto', verificaAutenticacao, (req, res) => {
       res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
       res.status(500).json({ message: 'Erro interno do servidor' });
     }
-    const idProduto = result.insertId
-    if(Array.isArray(procedimentos)) {
-      for (const procedimento of procedimentos){
+    const idProduto = result.insertId;
+
+    if (Array.isArray(procedimentos) && procedimentos.length > 0) {
+      let erroVinculacao = false; // Variável para rastrear erros durante o loop
+
+      for (const procedimento of procedimentos) {
         db.query(sqlProcedimentos, [procedimento.idProcedimento, idProduto, procedimento.idOperadora], (err, result) => {
-          if(err){
+          if (err) {
             logger.error({
-              message: 'Erro ao vincular os procedimentos as operadoras e aos produtos:',
+              message: 'Erro ao vincular os procedimentos às operadoras e aos produtos:',
               error: err.message,
               stack: err.stack,
               timestamp: new Date().toISOString()
             });
-            console.error('Erro ao vincular os procedimentos aos produtos e operadoras')
-            res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
-            res.status(500).json({ message: 'Erro interno do servidor' });
+            console.error('Erro ao vincular os procedimentos aos produtos e operadoras');
+            erroVinculacao = true; // Defina a variável de erro para verdadeira se houver um erro
           }
-        })
+        });
       }
+
+      // Envie a resposta somente após a conclusão do loop
+      if (erroVinculacao) {
+        res.cookie('alertError', 'Erro ao cadastrar Produto, verifique e tente novamente', { maxAge: 3000 });
+        res.status(500).json({ message: 'Erro interno do servidor' });
+      } else {
+        res.cookie('alertSuccess', 'Produto Cadastrado com sucesso', { maxAge: 3000 });
+        res.status(200).json({ message: 'Novo Produto criado com sucesso' });
+      }
+    } else {
+      // Se não houver procedimentos para vincular, envie a resposta de sucesso diretamente
+      res.cookie('alertSuccess', 'Produto Cadastrado com sucesso', { maxAge: 3000 });
+      res.status(200).json({ message: 'Novo Produto criado com sucesso' });
     }
-    res.cookie('alertSuccess', 'Produto Cadastrado com sucesso', { maxAge: 3000 });
-    res.status(200).json({ message: 'Novo Produto criado com sucesso' });
-  })
+  });
 });
 
 
@@ -797,11 +878,17 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
     const procedimentos = await queryPromise('SELECT * FROM procedimentos WHERE id_operadora = ? ', [idOperadora]);
     const procedimentosAssociados = await queryPromise('SELECT * FROM procedimentos_produtos WHERE id_operadora = ?', [idOperadora]);
 
-    res.render('produto', { 
-      operadora: operadora[0], 
-      produtos: produtos, 
+    // Preparar um objeto mapeando os procedimentos associados a cada produto
+    const procedimentosPorProduto = {};
+    produtos.forEach(produto => {
+      procedimentosPorProduto[produto.id] = procedimentosAssociados.filter(associado => associado.id_produto === produto.id);
+    });
+
+    res.render('produto', {
+      operadora: operadora[0],
+      produtos: produtos,
       procedimentos: procedimentos,
-      procedimentosAssociados, 
+      procedimentosPorProduto: procedimentosPorProduto, // Passar o objeto para a página EJS
       rotaAtual: 'produtos'
     });
   } catch (error) {
@@ -809,7 +896,6 @@ app.get('/produtos/:id', verificaAutenticacao, async (req, res) => {
     res.status(500).send('Erro interno do servidor');
   }
 });
-
 
 app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const idProduto = req.params.id;
@@ -912,17 +998,22 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
 
 app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
   const idProduto = req.params.id;
-  const sqlSelectProduto = 'SELECT *FROM produtos WHERE id =?'
+  const sqlSelectProduto = 'SELECT * FROM produtos WHERE id =?';
   const sqlExcluirProduto = 'DELETE FROM produtos WHERE id = ?';
+  const sqlExcluirRelProdutoProcedimento = 'DELETE FROM procedimentos_produtos WHERE id_produto = ?';
   const dataAgora = new Date();
-  const usuarioLogado = req.session.usuario.nome
+  const usuarioLogado = req.session.usuario.nome;
 
   db.query(sqlSelectProduto, [idProduto], (err, result) => {
-    if(err){
-      console.error('Erro ao consultar produto', err)
+    if (err) {
+      console.error('Erro ao consultar produto', err);
+      res.status(500).json({ message: 'Erro interno do servidor' });
+      return;
     }
-    const idOperadora = result[0].id_operadora
-    const nomeProduto = `Produto: ${result[0].nomedoplano}`
+
+    const idOperadora = result[0].id_operadora;
+    const nomeProduto = `Produto: ${result[0].nomedoplano}`;
+
     verificaExistenciaOperadora(idOperadora, (err, resultadoVerificacao) => {
       if (err) {
         console.error('Erro ao verificar existência da operadora', err);
@@ -939,29 +1030,36 @@ app.delete('/excluir-produto/:id', verificaAutenticacao, (req, res) => {
       const { existeOperadora, idFormulario } = resultadoVerificacao;
 
       if (existeOperadora) {
-        db.query(sqlExclusaoProduto, [idFormulario, nomeProduto, usuarioLogado, dataAgora], (err, result) => {
+        db.query(sqlExcluirRelProdutoProcedimento, [idProduto], (err, result) => {
           if (err) {
-            console.error('Erro ao inserir atualização na timeline', err);
+            console.error('Erro ao excluir vínculos de produto com procedimentos:', err);
+            res.status(500).json({ message: 'Erro interno do servidor' });
+            return;
           }
+
+          db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
+            if (errorExcluirProduto) {
+              console.error('Erro ao excluir o produto:', errorExcluirProduto);
+              res.status(500).json({ message: 'Erro interno do servidor' });
+              return;
+            }
+
+            // Executar o SQL de exclusão do produto (sqlExclusaoProduto)
+            db.query(sqlExclusaoProduto, [idFormulario, nomeProduto, usuarioLogado, dataAgora], (errExclusaoProduto, resultExclusaoProduto) => {
+              if (errExclusaoProduto) {
+                console.error('Erro ao executar SQL de exclusão do produto:', errExclusaoProduto);
+                res.status(500).json({ message: 'Erro interno do servidor' });
+                return;
+              }
+
+              res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 });
+              res.status(200).json({ message: 'Produto excluído com sucesso' });
+            });
+          });
         });
-      }
-    })
-    db.query(sqlExcluirProduto, [idProduto], (errorExcluirProduto, resultExcluirProduto) => {
-      if (errorExcluirProduto) {
-        logger.error({
-          message: 'Erro ao excluiur produto:',
-          error: errorExcluirProduto.message,
-          stack: errorExcluirProduto.stack,
-          timestamp: new Date().toISOString()
-        });
-        console.error('Erro ao excluir o produto:', errorExcluirProduto);
-        res.status(500).json({ message: 'Erro interno do servidor' });
-      } else {
-        res.cookie('alertSuccess', 'Produto excluído com sucesso', { maxAge: 3000 })
-        res.status(200).json({ message: 'Produto excluído com sucesso' });
       }
     });
-  })
+  });
 });
 
 app.post('/duplicar-produto/:id', verificaAutenticacao, (req, res) => {
@@ -1069,6 +1167,7 @@ app.get('/fino/:id', async (req, res) => {
   const sqlEntidades = 'SELECT e.* FROM entidades e INNER JOIN formularios_entidades fe ON e.id = fe.entidade_id WHERE fe.formulario_id=?';
   const sqlProcedimentos = 'SELECT * FROM procedimentos WHERE id_operadora=?';
   const sqlAtualizacoes = 'SELECT * FROM atualizacoes WHERE id_fino=?';
+  const sqlRelProdProc = 'SELECT * FROM procedimentos_produtos WHERE id_operadora = ?'
 
   const queryPromise = util.promisify(db.query).bind(db);
 
@@ -1086,7 +1185,12 @@ app.get('/fino/:id', async (req, res) => {
     const contatosResult = await queryPromise(sqlContatos, [finoResult.id_operadora]);
     const entidadesResult = await queryPromise(sqlEntidades, [idFino]);
     const procedimentoResult = await queryPromise(sqlProcedimentos, [finoResult.id_operadora])
+    const procedimentosAssociados = await queryPromise(sqlRelProdProc, [finoResult.id_operadora]);
 
+    const procedimentosPorProduto = {};
+    produtosResult.forEach(produto => {
+      procedimentosPorProduto[produto.id] = procedimentosAssociados.filter(associado => associado.id_produto === produto.id);
+    });
 
 
     res.render('finoIndividual',
@@ -1098,7 +1202,8 @@ app.get('/fino/:id', async (req, res) => {
         procedimentos: procedimentoResult,
         contatos: contatosResult,
         entidades: entidadesResult,
-        atualizacoes: atualizacoesResult
+        atualizacoes: atualizacoesResult,
+        procedimentosPorProduto: procedimentosPorProduto
       })
   } catch (error) {
     logger.error({
@@ -1238,7 +1343,7 @@ app.get('/finojson/:id', async (req, res) => {
   }
 });
 
-app.post('/editar-fino/:id', async (req, res) => {
+app.post('/editar-fino/:id', verificaAutenticacao, async (req, res) => {
   const idFino = req.params.id;
   const formData = req.body.formData;
   const entidades = req.body.entidades;

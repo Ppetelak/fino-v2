@@ -120,7 +120,7 @@
                         <select name="cooparticipacao" id="cooparticipacao" class="form-control" required>
                             <option value="" disabled selected hidden>Selecionar</option>
                             <option value="Com Coparticipação">Com Coparticipação</option>
-                            <option value="Sem coparticipação">Sem Coparticipação</option>
+                            <option value="Sem Coparticipação">Sem Coparticipação</option>
                             <option value="Franquia">Franquia</option>
                             <option value="Coparticipação + Franquia">Coparticipação + Franquia</option>
                         </select>
@@ -643,7 +643,7 @@
                                                     required>
                                                     <option value="" disabled selected hidden>Selecionar</option>
                                                     <option value="Com Coparticipação">Com Coparticipação</option>
-                                                    <option value="Sem coparticipação">Sem Coparticipação</option>
+                                                    <option value="Sem Coparticipação">Sem Coparticipação</option>
                                                     <option value="Franquia">Franquia</option>
                                                     <option value="Coparticipação + Franquia">Coparticipação + Franquia
                                                     </option>
@@ -1114,33 +1114,30 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="procedimentosPorProduto procedimentosContainer">
-                                            <% procedimentos.forEach(function(procedimento) { %>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox"
-                                                    id="procedimento_<%= procedimento.id %>"
-                                                    value="<%= procedimento.id %>"
+
+                                            <!-- PROCEDIMENTOS VINCULADOS AO PRODUTO -->
+
+                                            
+                    <div class="procedimentosPorProduto procedimentosContainer">
+                        <% procedimentos.forEach(function(procedimento) { %>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"
+                            id="procedimento_<%= procedimento.id %>"
+                            value="<%= procedimento.id %>"
+                            <%= procedimentosPorProduto[produto.id].some(associado => associado.id_procedimento === procedimento.id) ? 'checked' : '' %>
+                            >
+                            <label class="form-check-label"
+                            for="procedimento_<%= procedimento.id %>"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="<%= procedimento.descricao %>">
+                            <%= procedimento.descricao %>
+                            </label>
+                        </div>
+                        <% }); %>
+                    </div>
                                               
-                                                    <% produtos.forEach(function(produto) { %>
-                                                      <% procedimentosAssociados.forEach(function(Associado) { %>
-                                                        <% if (Associado.id_produto === produto.id && Associado.id_procedimento === procedimento.id) { %>
-                                                          checked
-                                                        <% } %>
-                                                      <% }) %>
-                                                    <% }) %>
-                                                  >
-                                                  <label class="form-check-label"
-                                                    for="procedimento_<%= procedimento.id %>"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="<%= procedimento.descricao %>">
-                                                    <%= procedimento.descricao %>
-                                                  </label>
-                                                </div>
-                                              <% }); %>
-                                            </div>
-                                              
-                                              
+                                              <!-- FIM PROCEDIMENTOS VINCULADOS AO PRODUTO -->
                                               
                                         </div>
                                         <div class="row acoes-produto mt-3">

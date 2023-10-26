@@ -278,44 +278,48 @@
                             <p><span> <%= produto.congeneres %> </span><button class="copy-button"><i class="bi bi-back"></i></i></button></p>
                         </div>
                     </div>
+                    <div class="row procedimentosLista" id="procedimentosLista">
+                        <h4>Procedimentos</h4>
+                        <div class="row">
+                            <% procedimentos.forEach(function(procedimento) { %>
+                                <% if(procedimentosPorProduto[produto.id].some(associado => associado.id_procedimento === procedimento.id)) { %>
+                                    <div class="row procedimento mt-3 mb-3">
+                                        <div class="tm-50">
+                                            <strong>Descrição</strong>
+                                            <p><span><%= procedimento.descricao %></span> <button class="copy-button"><i class="bi bi-back"></i></button></p>
+                                        </div>
+                                        <div class="tm-50">
+                                            <strong>Cooparticipação </strong>
+                                            <table class="table">
+                                                <thead>
+                                                    <th>Valor</th>
+                                                    <th>Limite</th>
+                                                    <th>Franquia</th>
+                                                    <th>Carência (dias)</th>
+                                                </thead>
+                                                <tr>
+                                                    <td>R$ <%= procedimento.valorcop %></td>
+                                                    <td>R$ <%= procedimento.limitecop %></td>
+                                                    <td><%= procedimento.franquiacop %></td>
+                                                    <td><%= procedimento.limitecarenciadias %></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                <% } %>
+                            <% }); %>
+                            <% if(procedimentosPorProduto[produto.id].every(associado => !associado)) { %>
+                                <p>Sem procedimentos vinculados ao produto</p>
+                            <% } %>
+                        </div>
+                    </div>
                     
-                </div>             
+                    
+                </div> 
+                           
                 <% })%>
             </div>
-            <div class="row procedimentosLista" id="procedimentosLista">
-                <h3>Procedimentos</h3>
-                <div class="row">
-                    <% if (procedimentos.length > 0) { %>
-                        <% procedimentos.forEach(function(procedimento) { %>
-                            <div class="row procedimento mt-3 mb-3">
-                                <div class="tm-50">
-                                    <strong>Descrição</strong>
-                                    <p> <span><%= procedimento.descricao %></span> <button class="copy-button"><i class="bi bi-back"></i></i></button></p>
-                                </div>
-                                <div class="tm-50">
-                                    <strong>Cooparticipação </strong>
-                                    <table class="table">
-                                        <thead>
-                                            <th>Valor</th>
-                                            <th>Limite</th>
-                                            <th>Franquia</th>
-                                            <th>Carência (dias)</th>
-                                        </thead>
-                                        <tr>
-                                            <td>R$ <%= procedimento.valorcop %></td>
-                                            <td>R$ <%= procedimento.limitecop %></td>
-                                            <td><%= procedimento.franquiacop %></td>
-                                            <td><%= procedimento.limitecarenciadias %></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        <% }); %>
-                    <% } else { %>
-                        <p>Sem procedimentos vinculados ao produto</p>
-                    <% } %>
-                </div>
-            </div>
+            
             <div class="row entidades" id="entidades"> 
                 <h3> Entidades Aprovadas </h3>
                 <table class="table">

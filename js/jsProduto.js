@@ -299,7 +299,7 @@ $('#cadastrar-produto').click(function (e) {
         return;
     }
 
-    $('.procedimentosPorProduto input[type="checkbox"]:checked').each(function () {
+    form.find('.procedimentosPorProduto input[type="checkbox"]:checked').each(function () {
         const idProcedimento = $(this).val();
         const idOperadora = $(this).data('operadora-id');
 
@@ -366,9 +366,6 @@ $('#cadastrar-produto').click(function (e) {
         congenere: $('#procedimentocongenere').val(),
     };
 
-    console.log(formData)
-    console.log(selectedProcedimentos)
-
     $.ajax({
         type: 'POST',
         url: '/cadastrar-produto',
@@ -420,7 +417,6 @@ $('.salvar-btn').click(function (e) {
 
     form.find('.procedimentosPorProduto input[type="checkbox"]:checked').each(function () {
         const idProcedimento = $(this).val();
-        const idOperadora = $(this).data('operadora-id');
 
         const formProcedimentos = {
             idProcedimento: idProcedimento,
@@ -488,6 +484,7 @@ $('.salvar-btn').click(function (e) {
     const actionUrl = `/editar-produto/${idProduto}`
 
     console.log(formData)
+    console.log(selectedProcedimentos)
 
     $.ajax({
         type: 'POST',
