@@ -211,7 +211,7 @@ $('.adicionar-vigencia').click(function () {
                 </select>
             </div>
             <div class="col-sm-3">
-                                <select name="diaMovimentacao" id="diaMovimentacao" class="form-control" required>
+                                <select name="diaMovimentacao" id="diaMovimentacao" class="form-control">
                                     <option value="" disabled selected>Selecionar</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -247,7 +247,7 @@ $('.adicionar-vigencia').click(function () {
                                 </select>
                             </div>
             <div class="col-sm-3">
-                <select name="diaFechamento" id="diaFechamento" class="form-control" required>
+                <select name="diaFechamento" id="diaFechamento" class="form-control">
                 <option value="" disabled selected>Selecionar</option>
                 <option value="1">1</option>
                 <option value="2">2</option>

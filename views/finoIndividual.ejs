@@ -364,9 +364,10 @@
                     <p><strong>Aniversário de Contrato: </strong> 
                         <span>
                             <script>
-                                const optionsAC = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                                const dataAniversarioContrato = new Date('<%= fino.aniversariocontrato %>').toLocaleDateString('pt-BR', optionsAC);
-                                document.write(dataAniversarioContrato);
+                                const dataDoServidor = '<%= fino.aniversariocontrato %>';
+                                const partesDaData = dataDoServidor.split('-');
+                                const dataFormatadaAC = `${partesDaData[2]}/${partesDaData[1]}/${partesDaData[0]}`;
+                                document.write(dataFormatadaAC);
                             </script>
                         </span> 
                         <button class="copy-button"><i class="bi bi-back"></i></button>
