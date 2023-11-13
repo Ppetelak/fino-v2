@@ -476,6 +476,7 @@ $('.salvar-btn').click(function (e) {
         variacao8: form.find('#variacao8').val(),
         variacao9: form.find('#variacao9').val(),
         planoobs: form.find('#planoobs').val(),
+        valorSpread: form.find('#valorSpread').val(),
         reducaocarencia: form.find('#procedimentoreducaocarencia').val(),
         congenere: form.find('#procedimentocongenere').val(),
     }

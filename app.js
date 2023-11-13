@@ -864,7 +864,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
   const sqlSelectProduto = 'SELECT *FROM produtos WHERE id=?'
 
   const sqlProdutoUpdate =
-    'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, observacoes=?, reducaocarencia=?, congeneres=?, variacao1=?, variacao2=?, variacao3=?, variacao4=?, variacao5=?, variacao6=?, variacao7=?, variacao8=?, variacao9=? WHERE id=? AND id_operadora=?';
+    'UPDATE produtos SET nomedoplano=?, ans=?, contratacao=?, cobertura=?, abrangencia=?, cooparticipacao=?, acomodacao=?, areadeabrangencia=?, condicoesconjuges=?, condicoesfilhos=?, condicoesnetos=?, condicoespais=?, condicoesoutros=?, documentosconjuges=?, documentosfilhos=?, documentosnetos=?, documentospais=?, documentosoutros=?, fx1=?, fx2=?, fx3=?, fx4=?, fx5=?, fx6=?, fx7=?, fx8=?, fx9=?, fx10=?, fx1comercial=?, fx2comercial=?, fx3comercial=?, fx4comercial=?, fx5comercial=?, fx6comercial=?, fx7comercial=?, fx8comercial=?, fx9comercial=?, fx10comercial=?, valorSpread=?, observacoes=?, reducaocarencia=?, congeneres=?, variacao1=?, variacao2=?, variacao3=?, variacao4=?, variacao5=?, variacao6=?, variacao7=?, variacao8=?, variacao9=? WHERE id=? AND id_operadora=?';
 
   const queryPromise = util.promisify(db.query).bind(db);
   try {
@@ -884,7 +884,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
     const resultUpdate = await queryPromise(
       sqlProdutoUpdate,
       [
-        formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.planoobs, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9, idProduto, formData.idOperadora
+        formData.nomedoplano, formData.ansplano, formData.contratoplano, formData.coberturaplano, formData.abrangenciaplano, formData.cooparticipacao, formData.acomodacao, formData.areaabrangencia, formData.condicoesconjuges, formData.condicoesfilhos, formData.condicoesnetos, formData.condicoespais, formData.condicoesoutros, formData.documentosconjuges, formData.documentosfilhos, formData.documentosnetos, formData.documentospais, formData.documentosoutros, formData.fx1, formData.fx2, formData.fx3, formData.fx4, formData.fx5, formData.fx6, formData.fx7, formData.fx8, formData.fx9, formData.fx10, formData.fxComercial1, formData.fxComercial2, formData.fxComercial3, formData.fxComercial4, formData.fxComercial5, formData.fxComercial6, formData.fxComercial7, formData.fxComercial8, formData.fxComercial9, formData.fxComercial10, formData.valorSpread, formData.planoobs, formData.reducaocarencia, formData.congenere, formData.variacao1, formData.variacao2, formData.variacao3, formData.variacao4, formData.variacao5, formData.variacao6, formData.variacao7, formData.variacao8, formData.variacao9, idProduto, formData.idOperadora
       ], 
     );
 
@@ -892,7 +892,7 @@ app.post('/editar-produto/:id', verificaAutenticacao, async (req, res) => {
     const procedimentosAtuais = await queryPromise(sqlProcedimentosAtuais, [idProduto, formData.idOperadora]);
     const procedimentosAtuaisIds = procedimentosAtuais.map(row => row.id_procedimento);
 
-    const procedimentosFrontendIds = selectedProcedimentos.map(procedimento => procedimento.idProcedimento);
+    const procedimentosFrontendIds = selectedProcedimentos ? selectedProcedimentos.map(procedimento => procedimento.idProcedimento) : [];
 
     // Remova os procedimentos ausentes
     const procedimentosRemover = procedimentosAtuaisIds.filter(id => !procedimentosFrontendIds.includes(id));
