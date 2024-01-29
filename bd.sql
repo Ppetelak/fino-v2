@@ -140,3 +140,10 @@ CREATE TABLE `formularios_entidades` (
   CONSTRAINT `formularios_entidades_ibfk_1` FOREIGN KEY (`formulario_id`) REFERENCES `formularios` (`id`),
   CONSTRAINT `formularios_entidades_ibfk_2` FOREIGN KEY (`entidade_id`) REFERENCES `entidades` (`id`)
 )
+
+/* // Alteração em 29/01/2024 */
+
+ALTER TABLE produtos
+MODIFY COLUMN acomodacao ENUM('Enfermaria', 'Apartamento', 'Odontológico') NOT NULL;
+
+
