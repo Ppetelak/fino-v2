@@ -16,7 +16,7 @@ Uso exclusivo e restrito a empresa Linha Master <br/>
 <br>
 
 <p align="center">
-  <img alt="Print tela inicial pública" src=".img-privadas/preview.png" width="50%">
+  <img alt="Print tela inicial pública" src="preview.png" width="50%">
 </p>
 
 ## 🚀 Tecnologias
